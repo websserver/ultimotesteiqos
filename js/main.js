@@ -90,13 +90,13 @@ function handleModelClick(index) {
   models.forEach((model, i) => {
     if (i === index) {
       model.setAttribute('visible', 'true');
-      model.setAttribute('scale', '12 12 12');
+      model.setAttribute('scale', '9 9 9');
       model.setAttribute('position', '0 0 0');
       model.classList.remove('blurred');
       showModelInfo(i);
     } else {
       model.setAttribute('visible', 'true');
-      model.setAttribute('scale', '6 6 6');
+      model.setAttribute('scale', '4 4 4');
       model.classList.add('blurred');
       // Restaurar posição original quando não estiver selecionado
       switch(i) {
