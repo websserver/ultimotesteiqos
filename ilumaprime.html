@@ -31,17 +31,41 @@
 
       .features-dropdown {
         position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        max-width: 400px;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        padding: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        bottom: 80px;
+        right: 20px;
+        width: 300px;
+        background: rgba(0, 0, 0, 0.9);
+        border-radius: 20px;
+        padding: 20px;
+        color: white;
+        font-size: 14px;
         z-index: 1000;
-        font-family: 'IQOSSans-Bold', sans-serif;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        font-family: 'IQOSSans-Regular', sans-serif;
+        position: relative;
+      }
+
+      .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 24px;
+        height: 24px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 50%;
+        transition: background-color 0.3s;
+      }
+
+      .close-button:hover {
+        background-color: rgba(255, 255, 255, 0.1);
       }
 
       .features-dropdown h2 {
@@ -261,6 +285,7 @@
     </button>
 
     <div class="features-dropdown" style="display: none;">
+      <button class="close-button" onclick="toggleFeatures()">×</button>
       <div class="feature-item">
         <div class="feature-header">
           <img src="icons/touch.webp" alt="Ecrã Tátil" class="feature-icon">
