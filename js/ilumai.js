@@ -31,4 +31,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Esconder loading após 5 segundos (fallback)
   setTimeout(hideLoading, 5000);
+
+const element = document.getElementsByClassName("back-button");
+element.addEventListener("click", function() {
+  window.location.href = "https://websserver.github.io/iqosteste/";
+});
+
+
 });
