@@ -269,7 +269,7 @@
       trackingResetThreshold: 0.3;
       debugUIEnabled: true"
       color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
+      renderer="colorManagement: true, physicallyCorrectLights, alpha: true" 
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
       loading-screen="enabled: false">
@@ -289,8 +289,6 @@
           class="clickable"
           animation-mixer="loop: repeat"
           animation="property: position; dur: 300; easing: easeOutQuad"
-          material="opacity: 1; transparent: false; alphaTest: 0.5"
-          renderer="colorManagement: true; physicallyCorrectLights: true"
           gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08">
         </a-entity>
       </a-entity>
