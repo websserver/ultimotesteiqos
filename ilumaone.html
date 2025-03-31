@@ -269,7 +269,7 @@
       trackingResetThreshold: 0.3;
       debugUIEnabled: true"
       color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights, alpha: true" 
+      renderer="colorManagement: true; physicallyCorrectLights: true; alpha: true; antialias: true; gammaOutput: true"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
       loading-screen="enabled: false">
@@ -287,6 +287,8 @@
           rotation="0 0 0" 
           scale="8 8 8" 
           class="clickable"
+          material="opacity: 1; transparent: false; alphaTest: 0.5; blending: NoBlending"
+          material-modifier
           animation-mixer="loop: repeat"
           animation="property: position; dur: 300; easing: easeOutQuad"
           gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08">
@@ -351,6 +353,24 @@
     </div>
 
     <script>
+      // Componente para corrigir transparência
+      AFRAME.registerComponent('material-modifier', {
+        init: function () {
+          this.el.addEventListener('model-loaded', () => {
+            const obj = this.el.getObject3D('mesh');
+            if (obj) {
+              obj.traverse((node) => {
+                if (node.isMesh) {
+                  node.material.transparent = false;
+                  node.material.opacity = 1;
+                  node.material.needsUpdate = true;
+                }
+              });
+            }
+          });
+        }
+      });
+
       const sceneEl = document.querySelector('a-scene');
       const modeloEl = document.querySelector('#modelo3d-1');
       const target = document.querySelector('a-entity[mindar-image-target]');
