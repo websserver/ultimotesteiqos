@@ -32,10 +32,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // Esconder loading após 5 segundos (fallback)
   setTimeout(hideLoading, 5000);
 
-const element = document.getElementsByClassName("back-button");
-element.addEventListener("click", function() {
-  alert("teste");
-});
+  const element = document.getElementsByClassName("back-button")[0];
+  element.addEventListener("click", function() {
+    alert("teste");
+  });
 
 
 });
