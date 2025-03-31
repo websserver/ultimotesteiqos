@@ -20,7 +20,7 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 90;
+const BASE_SCALE = 8;
 const SELECTED_SCALE = 10;
 const CLICK_SCALE = 12;
 const MODEL_NAMES = {
@@ -90,7 +90,7 @@ function handleModelClick(index) {
   models.forEach((model, i) => {
     if (i === index) {
       model.setAttribute('visible', 'true');
-      model.setAttribute('scale', '9 9 9');
+      model.setAttribute('scale', '12 12 12');
       model.setAttribute('position', '0 0 0');
       model.classList.remove('blurred');
       showModelInfo(i);

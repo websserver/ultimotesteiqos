@@ -80,14 +80,14 @@
         <a-asset-item id="modelo3" src="modelo3d/modelo3.glb"></a-asset-item>
       </a-assets>
 
-      <a-camera position="0 1.6 4" look-controls="enabled: false" cursor="rayOrigin: mouse; fuse: false;" raycaster="objects: .clickable; far: 10000; interval: 100"></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="rayOrigin: mouse; fuse: false;" raycaster="objects: .clickable; far: 10000; interval: 100"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-entity class="model-container clickable" 
                   id="modelo3d-1" 
                   model-handler 
                   gltf-model="#modelo"
-                  position="0 0 0.3" 
+                  position="0.65 0 0" 
                   rotation="0 0 0" 
                   scale="90 90 90" 
                   visible="true" 
@@ -97,7 +97,7 @@
                   id="modelo3d-2" 
                   model-handler 
                   gltf-model="#modelo2" 
-                  position="0 0 0"
+                  position="0.005658 0.022915 -0.050632"
                   rotation="0 0 0" 
                   scale="90 90 90" 
                   visible="true" 
@@ -109,7 +109,7 @@
                   gltf-model="#modelo3" 
                   position="0.015 0 0" 
                   rotation="0 0 0" 
-                  scale="90 90 90" 
+                  scale="16 16 16" 
                   visible="true" 
                   event-set__mouseenter="scale: 9 9 9" 
                   event-set__mouseleave="scale: 6 6 6"></a-entity>
