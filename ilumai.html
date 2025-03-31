@@ -9,6 +9,7 @@
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-physics-system@1.4.0/dist/aframe-physics-system.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
     <style>
       .overlay-gradient {
@@ -222,7 +223,8 @@
       renderer="colorManagement: true, physicallyCorrectLights" 
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
-      loading-screen="enabled: false">
+      loading-screen="enabled: false"
+      physics="debug: false; gravity: 0">
       <a-assets>
         <a-asset-item id="modelo" src="modelo3d/modelo2/navy-blazer.glb"></a-asset-item>
       </a-assets>
@@ -237,6 +239,8 @@
           rotation="0 0 0" 
           scale="8 8 8" 
           class="clickable"
+          static-body
+          shape="box"
           animation-mixer="loop: repeat"
           animation="property: position; dur: 300; easing: easeOutQuad"
           gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08">
