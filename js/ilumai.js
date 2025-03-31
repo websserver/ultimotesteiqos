@@ -32,9 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Esconder loading após 5 segundos (fallback)
   setTimeout(hideLoading, 5000);
 
-  $(".back-button").click(function(){
-    alert("The paragraph was clicked.");
-  });
   
 
 
