@@ -203,6 +203,28 @@
       .back-button:hover {
         background: rgba(0, 0, 0, 0.8);
       }
+
+      .marker-lost-message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-family: 'IQOSSans-Regular', sans-serif;
+        font-size: 16px;
+        text-align: center;
+        z-index: 1000;
+        display: none;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
     </style>
   </head>
   <body>
@@ -273,6 +295,9 @@
     </a-scene>
 
     <div class="overlay-gradient"></div>
+    <div class="marker-lost-message">
+      Por favor, mantenha o marcador Hiro visível na câmera
+    </div>
 
     <button class="toggle-features" onclick="toggleFeatures()">
       <img src="icons/iqosicon_branco.png" alt="IQOS Icon">
@@ -373,6 +398,7 @@
       target.addEventListener('targetFound', function() {
         console.log('Marcador encontrado');
         modeloEl.object3D.visible = true;
+        document.querySelector('.marker-lost-message').style.display = 'none';
         
         // Forçar atualização das matrizes
         modeloEl.object3D.updateMatrix();
@@ -390,6 +416,7 @@
       target.addEventListener('targetLost', function() {
         console.log('Marcador perdido');
         modeloEl.object3D.visible = false;
+        document.querySelector('.marker-lost-message').style.display = 'block';
       });
 
       AFRAME.registerComponent('gesture-handler-custom', {
