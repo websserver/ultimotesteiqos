@@ -38,32 +38,42 @@
         background: rgba(255, 255, 255, 0.95);
         border-radius: 15px;
         padding: 15px;
-        z-index: 1000;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
         font-family: 'IQOSSans-Bold', sans-serif;
-        position: relative;
       }
 
-      .close-button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 24px;
-        height: 24px;
-        background: none;
-        border: none;
-        color: #333;
-        font-size: 20px;
-        cursor: pointer;
+      .features-dropdown h2 {
+        color: #00A0DC;
+        margin: 0 0 15px 0;
+        font-size: 18px;
+        text-align: center;
+        font-family: 'IQOSSans-Bold', sans-serif;
+      }
+
+      .feature-item {
+        margin-bottom: 15px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding-bottom: 15px;
+      }
+
+      .feature-item:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .feature-header {
         display: flex;
         align-items: center;
-        justify-content: center;
-        padding: 0;
-        line-height: 1;
+        margin-bottom: 8px;
       }
 
-      .close-button:hover {
-        opacity: 0.8;
+      .feature-icon {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 10px;
+        object-fit: contain;
       }
 
       .feature-title {
@@ -249,7 +259,6 @@
     </button>
 
     <div class="features-dropdown" style="display: none;">
-      <button class="close-button" onclick="toggleFeatures()">×</button>
       <div class="feature-item">
         <div class="feature-header">
           <img src="icons/touch.webp" alt="Ecrã Tátil" class="feature-icon">
