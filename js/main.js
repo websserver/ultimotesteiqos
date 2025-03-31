@@ -96,7 +96,7 @@ function handleModelClick(index) {
       showModelInfo(i);
     } else {
       model.setAttribute('visible', 'true');
-      model.setAttribute('scale', '4 4 4');
+      model.setAttribute('scale', '6 6 6');
       model.classList.add('blurred');
       // Restaurar posição original quando não estiver selecionado
       switch(i) {
