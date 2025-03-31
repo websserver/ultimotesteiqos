@@ -599,6 +599,45 @@
         // Aqui você pode adicionar lógica adicional para mudar a cor do modelo 3D
         console.log('Cor selecionada:', color);
       }
+
+      AFRAME.registerComponent('advanced-material-fix', {
+        init: function() {
+          this.el.addEventListener('model-loaded', () => {
+            const mesh = this.el.getObject3D('mesh');
+            if (!mesh) return;
+            
+            mesh.traverse((node) => {
+              if (node.material) {
+                // Preservar texturas e cores originais
+                const originalMap = node.material.map;
+                const originalColor = node.material.color;
+                
+                // Criar novo material
+                const newMaterial = new THREE.MeshStandardMaterial({
+                  map: originalMap,
+                  color: originalColor,
+                  transparent: false,
+                  opacity: 1,
+                  alphaTest: 0,
+                  depthWrite: true,
+                  depthTest: true,
+                  side: THREE.FrontSide,
+                  metalness: 0.5,
+                  roughness: 0.5
+                });
+                
+                // Aplicar novo material
+                node.material = newMaterial;
+                node.renderOrder = 1000;
+              }
+            });
+            
+            // Forçar atualização do renderer
+            this.el.sceneEl.renderer.sortObjects = true;
+            this.el.sceneEl.renderer.physicallyCorrectLights = true;
+          });
+        }
+      });
     </script>
 
     <script src="js/color-switcher-one.js"></script>
