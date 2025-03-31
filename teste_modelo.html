@@ -51,8 +51,8 @@
     </div>
     <div class="camera-error" id="cameraError">
         <p>Erro ao acessar a câmera!</p>
-        <p>Por favor, permita o acesso à câmera e recarregue a página.</p>
-        <button onclick="checkCamera()">Tentar Novamente</button>
+        <p>Por favor, permita o acesso à câmera nas configurações do navegador.</p>
+        <button onclick="window.location.reload()">Recarregar Página</button>
     </div>
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: true; videoTexture: true;">
         <a-marker preset="hiro">
@@ -68,21 +68,23 @@
     </a-scene>
 
     <script>
+        let cameraChecked = false;
+
         function checkCamera() {
+            if (cameraChecked) return;
+            cameraChecked = true;
+
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(function(stream) {
                     document.getElementById('cameraError').style.display = 'none';
-                    location.reload();
                 })
                 .catch(function(err) {
                     document.getElementById('cameraError').style.display = 'block';
                 });
         }
 
-        // Verificar permissão da câmera ao carregar a página
-        window.addEventListener('load', function() {
-            checkCamera();
-        });
+        // Verificar permissão da câmera apenas uma vez ao carregar a página
+        window.addEventListener('load', checkCamera);
     </script>
 </body>
 </html> 
