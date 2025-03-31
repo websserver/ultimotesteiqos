@@ -20,7 +20,7 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 8;
+const BASE_SCALE = 90;
 const SELECTED_SCALE = 10;
 const CLICK_SCALE = 12;
 const MODEL_NAMES = {
