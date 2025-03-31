@@ -373,6 +373,14 @@
                   node.material.blending = THREE.NoBlending;
                   node.material.alphaTest = 1;
                   node.material.side = THREE.DoubleSide;
+                  node.material.needsUpdate = true;
+                  node.material.premultipliedAlpha = false;
+                  node.material.roughness = 0.5;
+                  node.material.metalness = 0.5;
+                  node.material.envMapIntensity = 1;
+                  node.material.aoMapIntensity = 1;
+                  node.material.emissive.set(0x000000);
+                  node.material.emissiveIntensity = 0;
                   
                   // Se for um array de materiais
                   if (Array.isArray(node.material)) {
@@ -384,6 +392,14 @@
                       material.blending = THREE.NoBlending;
                       material.alphaTest = 1;
                       material.side = THREE.DoubleSide;
+                      material.needsUpdate = true;
+                      material.premultipliedAlpha = false;
+                      material.roughness = 0.5;
+                      material.metalness = 0.5;
+                      material.envMapIntensity = 1;
+                      material.aoMapIntensity = 1;
+                      material.emissive.set(0x000000);
+                      material.emissiveIntensity = 0;
                     });
                   }
                 }
