@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const element = document.getElementsByClassName("back-button");
 element.addEventListener("click", function() {
-  window.location.href = "https://websserver.github.io/iqosteste/";
+  alert("teste");
 });
 
 
