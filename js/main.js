@@ -133,14 +133,14 @@ function showModelInfo(index) {
   // Atualizar informações baseado no modelo
   switch(index) {
     case 0:
-      modelName.textContent = 'ILUMA i ONE';
-      modelButton.textContent = 'Personalizar ILUMA i ONE';
-      modelButton.onclick = () => window.open('ilumaone.html','_self');
-      break;
-    case 1:
       modelName.textContent = 'ILUMA i';
       modelButton.textContent = 'Personalizar  ILUMA i';
       modelButton.onclick = () => window.open('ilumai.html','_self');
+      break;
+    case 1:
+      modelName.textContent = 'ILUMA i ONE';
+      modelButton.textContent = 'Personalizar ILUMA i ONE';
+      modelButton.onclick = () => window.open('ilumaone.html','_self');
       break;
     case 2:
       modelName.textContent = 'ILUMA i PRIME';
