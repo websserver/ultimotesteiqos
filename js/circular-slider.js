@@ -1,12 +1,13 @@
 AFRAME.registerComponent('circular-slider', {
   init: function() {
+    // Reordenar os modelos para que modelo2 seja o primeiro (central)
     this.models = [
-      this.el.querySelector('#modelo3d-1'),
       this.el.querySelector('#modelo3d-2'),
-      this.el.querySelector('#modelo3d-3')
+      this.el.querySelector('#modelo3d-3'),
+      this.el.querySelector('#modelo3d-1')
     ];
     
-    this.radius = 1.2; // Aumentado o raio do círculo
+    this.radius = 1.2;
     this.currentAngle = 0;
     this.angleStep = (2 * Math.PI) / this.models.length;
     
@@ -20,19 +21,23 @@ AFRAME.registerComponent('circular-slider', {
   
   updatePositions: function() {
     this.models.forEach((model, index) => {
-      const angle = this.currentAngle + (index * this.angleStep);
-      const x = this.radius * Math.cos(angle);
-      const z = this.radius * Math.sin(angle);
-      model.setAttribute('position', `${x} 0 ${z}`);
-      
-      // Rotacionar o modelo para olhar para o centro
-      const rotationY = (angle * 180 / Math.PI) + 90;
-      model.setAttribute('rotation', `0 ${rotationY} 0`);
-
-      // Ajustar a escala baseado na posição
-      const isCenter = index === 0; // O modelo atual (índice 0) é o central
-      const scale = isCenter ? 8 : 4; // Modelo central maior, outros menores
-      model.setAttribute('scale', `${scale} ${scale} ${scale}`);
+      if (index === 0) {
+        // Modelo central (primeiro do array)
+        model.setAttribute('position', '0 0 0');
+        model.setAttribute('rotation', '0 0 0');
+        model.setAttribute('scale', '8 8 8');
+      } else {
+        // Modelos laterais
+        const angle = this.currentAngle + ((index - 1) * this.angleStep);
+        const x = this.radius * Math.cos(angle);
+        const z = this.radius * Math.sin(angle);
+        model.setAttribute('position', `${x} 0 ${z}`);
+        
+        // Rotacionar o modelo para olhar para o centro
+        const rotationY = (angle * 180 / Math.PI) + 90;
+        model.setAttribute('rotation', `0 ${rotationY} 0`);
+        model.setAttribute('scale', '4 4 4');
+      }
     });
   },
   
