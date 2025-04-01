@@ -68,11 +68,6 @@ const positions = {
     right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: 4, opacity: 0.7 }
 };
 
-// Variáveis para controle de gestos
-let touchStartX = 0;
-let touchEndX = 0;
-const SWIPE_THRESHOLD = 50;
-
 // Função para obter os índices dos modelos visíveis
 function getVisibleModels() {
     const prev = (currentIndex - 1 + models.length) % models.length;
@@ -91,19 +86,27 @@ function getSlidePosition(index) {
     return 'center';
 }
 
-// Função para atualizar posições do carrossel
-function updateCarousel() {
-  const containers = document.querySelectorAll('.model-container');
-  containers.forEach((container, index) => {
-    container.classList.remove('active', 'inactive', 'left', 'right');
-    if (index === currentIndex) {
-      container.classList.add('active');
-    } else if (index === (currentIndex - 1 + containers.length) % containers.length) {
-      container.classList.add('inactive', 'left');
-    } else {
-      container.classList.add('inactive', 'right');
-    }
-  });
+// Atualizar posições do carrossel
+function updateCarousel(newIndex) {
+    const { prev, current, next } = getVisibleModels();
+    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
+    
+    // Atualizar rotação do carrossel
+    carousel.setAttribute('rotation', `0 ${rotation} 0`);
+    
+    // Atualizar posições dos modelos
+    models.forEach((model, index) => {
+        const position = getSlidePosition(index);
+        const targetPos = positions[position];
+        
+        model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
+        model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
+        model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
+        model.setAttribute('opacity', targetPos.opacity);
+    });
+    
+    // Atualizar índice atual
+    currentIndex = newIndex;
 }
 
 // Função para mover para o próximo modelo
@@ -290,55 +293,11 @@ zoomOutBtn.addEventListener('click', () => {
   updateZoom();
 });
 
-// Event Listeners para gestos touch
-document.addEventListener('touchstart', (e) => {
-  touchStartX = e.touches[0].clientX;
-});
-
-document.addEventListener('touchmove', (e) => {
-  touchEndX = e.touches[0].clientX;
-});
-
-document.addEventListener('touchend', () => {
-  const swipeDistance = touchEndX - touchStartX;
-  
-  if (Math.abs(swipeDistance) > SWIPE_THRESHOLD) {
-    if (swipeDistance > 0) {
-      // Swipe para direita - modelo anterior
-      currentIndex = (currentIndex - 1 + models.length) % models.length;
-    } else {
-      // Swipe para esquerda - próximo modelo
-      currentIndex = (currentIndex + 1) % models.length;
-    }
-    updateCarousel();
-  }
-});
-
-// Event Listeners para botões de navegação
-document.getElementById('prevBtn').addEventListener('click', () => {
-  currentIndex = (currentIndex - 1 + models.length) % models.length;
-  updateCarousel();
-});
-
-document.getElementById('nextBtn').addEventListener('click', () => {
-  currentIndex = (currentIndex + 1) % models.length;
-  updateCarousel();
-});
-
-// Inicialização
-updateCarousel();
-
-// Remover eventos de clique antigos
-models.forEach(model => {
-  model.removeEventListener('click', handleModelClick);
-});
-
 // Adicionar eventos de clique
 models.forEach((model, index) => {
-  model.addEventListener('click', () => {
-    currentIndex = index;
-    updateCarousel();
-  });
+    model.addEventListener('click', () => {
+        updateCarousel(index);
+    });
 });
 
 // Adicionar eventos de teclado
