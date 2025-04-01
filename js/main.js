@@ -88,29 +88,26 @@ function getSlidePosition(index) {
 
 // Atualizar posições do carrossel
 function updateCarousel() {
-  const carousel = document.querySelector('.carousel-container');
-  const models = document.querySelectorAll('.model-container');
-  
-  // Atualizar posições dos modelos
-  models.forEach((model, index) => {
+  const containers = document.querySelectorAll('.model-container');
+  containers.forEach((container, index) => {
     const position = getSlidePosition(index);
-    model.className = `model-container ${position}`;
+    container.className = `model-container ${position}`;
+    if (position === 'active') {
+      showModelInfo(index);
+    }
   });
-
-  // Atualizar informações do modelo selecionado
-  showModelInfo(currentIndex);
 }
 
 // Função para mover para o próximo modelo
 function nextModel() {
-    const nextIndex = (currentIndex + 1) % models.length;
-    updateCarousel(nextIndex);
+  currentIndex = (currentIndex + 1) % models.length;
+  updateCarousel();
 }
 
 // Função para mover para o modelo anterior
 function prevModel() {
-    const prevIndex = (currentIndex - 1 + models.length) % models.length;
-    updateCarousel(prevIndex);
+  currentIndex = (currentIndex - 1 + models.length) % models.length;
+  updateCarousel();
 }
 
 // Functions
@@ -144,36 +141,6 @@ function showModelInfo(index) {
 function hideModelInfo() {
   const modelInfo = document.getElementById('model-info');
   modelInfo.style.display = 'none';
-}
-
-function handleModelClick(index) {
-  console.log('Clique detectado no modelo:', index);
-  const models = document.querySelectorAll('.model-container');
-  models.forEach((model, i) => {
-    if (i === index) {
-      model.setAttribute('visible', 'true');
-      model.setAttribute('scale', '12 12 12');
-      model.setAttribute('position', '0 0 0');
-      model.classList.remove('blurred');
-      showModelInfo(i);
-    } else {
-      model.setAttribute('visible', 'true');
-      model.setAttribute('scale', '6 6 6');
-      model.classList.add('blurred');
-      // Restaurar posição original quando não estiver selecionado
-      switch(i) {
-        case 0:
-          model.setAttribute('position', '-0.1 0 0');
-          break;
-        case 1:
-          model.setAttribute('position', '0 0 0');
-          break;
-        case 2:
-          model.setAttribute('position', '0.1 0 0');
-          break;
-      }
-    }
-  });
 }
 
 function updateModelPositions() {
@@ -285,13 +252,6 @@ zoomOutBtn.addEventListener('click', () => {
   updateZoom();
 });
 
-// Adicionar eventos de clique
-models.forEach((model, index) => {
-    model.addEventListener('click', () => {
-        updateCarousel(index);
-    });
-});
-
 // Adicionar eventos de teclado
 document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft') {
@@ -321,49 +281,4 @@ initializePositions();
 models.forEach(model => {
     model.removeAttribute('event-set__mouseenter');
     model.removeAttribute('event-set__mouseleave');
-});
-
-// Inicializar o carrossel
-function initCarousel() {
-  const carousel = document.querySelector('.carousel-container');
-  const models = document.querySelectorAll('.model-container');
-  
-  // Posicionar os modelos inicialmente
-  models.forEach((model, index) => {
-    const position = getSlidePosition(index);
-    model.className = `model-container ${position}`;
-  });
-
-  // Mostrar informações do modelo inicial
-  showModelInfo(currentIndex);
-}
-
-// Adicionar event listeners
-document.addEventListener('DOMContentLoaded', () => {
-  initCarousel();
-  
-  // Event listeners para os botões de navegação
-  document.querySelectorAll('#controls button').forEach(button => {
-    button.addEventListener('click', () => {
-      if (button.textContent === '←') {
-        prevModel();
-      } else {
-        nextModel();
-      }
-    });
-  });
-
-  // Event listeners para os modelos
-  document.querySelectorAll('.model-container').forEach((model, index) => {
-    model.addEventListener('click', () => {
-      if (index !== currentIndex) {
-        const diff = index - currentIndex;
-        if (diff > 0) {
-          nextModel();
-        } else {
-          prevModel();
-        }
-      }
-    });
-  });
 }); 
