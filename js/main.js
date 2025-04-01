@@ -254,14 +254,15 @@ target.addEventListener("targetFound", event => {
 });
 
 target.addEventListener("targetLost", event => {
-    // Manter os modelos visíveis e na posição correta
+    // Manter os modelos visíveis
     modelos.forEach((modelo, i) => {
         modelo.setAttribute('visible', 'true');
         modelo.setAttribute('scale', '6 6 6');
         modelo.classList.remove('blurred');
     });
     
-    // Manter a posição do modelo selecionado
+    // Selecionar o modelo 2 por padrão
+    currentIndex = 1;
     updateCarousel(currentIndex);
 });
 
