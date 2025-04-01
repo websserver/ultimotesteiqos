@@ -63,10 +63,17 @@ const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
 const positions = {
-    left: { x: -3, y: 0, z: -1.5, rotation: { x: 0, y: 45, z: 0 }, scale: 4, opacity: 0.7 },
-    center: { x: 0, y: 0, z: 0, rotation: { x: 0, y: 0, z: 0 }, scale: 8, opacity: 1 },
-    right: { x: 3, y: 0, z: -1.5, rotation: { x: 0, y: -45, z: 0 }, scale: 4, opacity: 0.7 }
+    left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: 4, opacity: 0.7 },
+    center: { x: 0, y: 0, z: 0, rotation: 0, scale: 8, opacity: 1 },
+    right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: 4, opacity: 0.7 }
 };
+
+// Função para obter os índices dos modelos visíveis
+function getVisibleModels() {
+    const prev = (currentIndex - 1 + models.length) % models.length;
+    const next = (currentIndex + 1) % models.length;
+    return { prev, current: currentIndex, next };
+}
 
 // Função para obter a posição do slide
 function getSlidePosition(index) {
@@ -81,45 +88,37 @@ function getSlidePosition(index) {
 
 // Atualizar posições do carrossel
 function updateCarousel(newIndex) {
-    const carousel = document.querySelector('.carousel-container');
-    const slides = document.querySelectorAll('.model-container');
+    const { prev, current, next } = getVisibleModels();
+    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
     
     // Atualizar rotação do carrossel
-    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
     carousel.setAttribute('rotation', `0 ${rotation} 0`);
     
     // Atualizar posições dos modelos
-    slides.forEach((slide, index) => {
+    models.forEach((model, index) => {
         const position = getSlidePosition(index);
         const targetPos = positions[position];
         
-        slide.style.transform = `translate3d(${targetPos.x}px, ${targetPos.y}px, ${targetPos.z}px) rotateY(${targetPos.rotation.y}deg)`;
-        slide.style.scale = `${targetPos.scale}`;
-        slide.style.opacity = targetPos.opacity;
+        model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
+        model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
+        model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
+        model.setAttribute('opacity', targetPos.opacity);
     });
     
     // Atualizar índice atual
     currentIndex = newIndex;
 }
 
-// Função para obter os modelos visíveis
-function getVisibleModels() {
-    const prev = (currentIndex - 1 + models.length) % models.length;
-    const current = currentIndex;
-    const next = (currentIndex + 1) % models.length;
-    return { prev, current, next };
-}
-
-// Função para navegar para o próximo modelo
+// Função para mover para o próximo modelo
 function nextModel() {
-    const newIndex = (currentIndex + 1) % models.length;
-    updateCarousel(newIndex);
+    const nextIndex = (currentIndex + 1) % models.length;
+    updateCarousel(nextIndex);
 }
 
-// Função para navegar para o modelo anterior
+// Função para mover para o modelo anterior
 function prevModel() {
-    const newIndex = (currentIndex - 1 + models.length) % models.length;
-    updateCarousel(newIndex);
+    const prevIndex = (currentIndex - 1 + models.length) % models.length;
+    updateCarousel(prevIndex);
 }
 
 // Functions
@@ -317,7 +316,7 @@ function initializePositions() {
         const targetPos = positions[position];
         
         model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
-        model.setAttribute('rotation', `0 ${targetPos.rotation.y}deg`);
+        model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
         model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
         model.setAttribute('opacity', targetPos.opacity);
     });

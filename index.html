@@ -56,8 +56,7 @@
       .carousel-container {
         position: relative;
         transform-style: preserve-3d;
-        transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
-        perspective: 1000px;
+        transition: transform 0.5s ease-in-out;
       }
 
       .model-container {
@@ -66,20 +65,29 @@
         transform-origin: center center;
         cursor: pointer;
         transform-style: preserve-3d;
-        backface-visibility: hidden;
-        will-change: transform, opacity, scale;
+        backface-visibility: visible;
       }
 
       .model-container.active {
         scale: 8 8 8;
         z-index: 3;
         opacity: 1;
+        transform: translateZ(50px);
       }
 
       .model-container.inactive {
         scale: 4 4 4;
         opacity: 0.7;
         z-index: 1;
+        transform: translateZ(-50px);
+      }
+
+      .model-container.inactive.left {
+        transform: translateX(-100px) translateZ(-50px);
+      }
+
+      .model-container.inactive.right {
+        transform: translateX(100px) translateZ(-50px);
       }
 
       #controls {
