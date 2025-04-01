@@ -115,7 +115,7 @@ function showModelInfo(modelId) {
 
     modelInfo.innerHTML = `
         <h2>${modelConfig.name}</h2>
-        <button onclick="window.location.href='${modelConfig.link}'">${modelConfig.buttonText}</button>
+        <button onclick="window.location.href='${modelConfig.link}'">Personalizar</button>
     `;
     modelInfo.style.display = 'flex';
 }
