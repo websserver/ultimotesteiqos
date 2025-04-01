@@ -52,14 +52,13 @@ const zoomInBtn = document.querySelector('#zoom-in');
 const zoomOutBtn = document.querySelector('#zoom-out');
 
 // Variables
-let currentIndex = 0;
-const models = document.querySelectorAll('.model-container');
-const carousel = document.querySelector('.carousel-container');
+let currentModelIndex = 0;
+const models = document.querySelectorAll('a-entity[model-handler]');
+const TRANSITION_DURATION = 2000;
 
 // Configuração do carrossel
 const RADIUS = 0.5; // Raio do círculo
 const ANGLE_STEP = 120; // Ângulo entre cada modelo
-const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
 const positions = {
@@ -70,45 +69,54 @@ const positions = {
 
 // Função para obter os índices dos modelos visíveis
 function getVisibleModels() {
-    const prev = (currentIndex - 1 + models.length) % models.length;
-    const next = (currentIndex + 1) % models.length;
-    return { prev, current: currentIndex, next };
+    const prev = (currentModelIndex - 1 + models.length) % models.length;
+    const next = (currentModelIndex + 1) % models.length;
+    return { prev, current: currentModelIndex, next };
 }
 
 // Função para obter a posição do slide
 function getSlidePosition(index) {
-    const positions = ['left', 'center', 'right'];
-    const currentIndex = currentModel;
-    const relativeIndex = (index - currentIndex + 3) % 3;
-    return positions[relativeIndex];
+    const totalModels = models.length;
+    const diff = (index - currentModelIndex + totalModels) % totalModels;
+    
+    if (diff === 0) return 'center';
+    if (diff === 1 || diff === totalModels - 1) {
+        return diff === 1 ? 'right' : 'left';
+    }
+    return diff === 2 ? 'right' : 'left';
 }
 
 // Atualizar posições do carrossel
 function updateCarousel() {
-    // Atualiza posições dos modelos
     models.forEach((model, index) => {
         const position = getSlidePosition(index);
         const container = model.parentElement;
         
+        // Remove todas as classes anteriores
         container.className = 'model-container';
+        
+        // Adiciona as novas classes
         if (position === 'center') {
             container.classList.add('active');
         } else {
             container.classList.add('inactive');
             container.classList.add(position);
         }
+        
+        // Força um reflow para garantir que a transição seja aplicada
+        void container.offsetWidth;
     });
 }
 
 // Função para mover para o próximo modelo
 function nextModel() {
-    currentModel = (currentModel + 1) % models.length;
+    currentModelIndex = (currentModelIndex + 1) % models.length;
     updateCarousel();
 }
 
 // Função para mover para o modelo anterior
 function prevModel() {
-    currentModel = (currentModel - 1 + models.length) % models.length;
+    currentModelIndex = (currentModelIndex - 1 + models.length) % models.length;
     updateCarousel();
 }
 
@@ -284,18 +292,12 @@ zoomOutBtn.addEventListener('click', () => {
   updateZoom();
 });
 
-// Adicionar eventos de clique
+// Event listeners para os modelos
 models.forEach((model, index) => {
     model.addEventListener('click', () => {
-        if (index !== currentModel) {
-            const diff = index - currentModel;
-            if (diff > 0) {
-                currentModel = index;
-                updateCarousel();
-            } else {
-                currentModel = index;
-                updateCarousel();
-            }
+        if (index !== currentModelIndex) {
+            currentModelIndex = index;
+            updateCarousel();
         }
     });
 });
