@@ -87,26 +87,18 @@ function getSlidePosition(index) {
 }
 
 // Atualizar posições do carrossel
-function updateCarousel(newIndex) {
-    const { prev, current, next } = getVisibleModels();
-    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
-    
-    // Atualizar rotação do carrossel
-    carousel.setAttribute('rotation', `0 ${rotation} 0`);
-    
-    // Atualizar posições dos modelos
-    models.forEach((model, index) => {
-        const position = getSlidePosition(index);
-        const targetPos = positions[position];
-        
-        model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
-        model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
-        model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
-        model.setAttribute('opacity', targetPos.opacity);
-    });
-    
-    // Atualizar índice atual
-    currentIndex = newIndex;
+function updateCarousel() {
+  const carousel = document.querySelector('.carousel-container');
+  const models = document.querySelectorAll('.model-container');
+  
+  // Atualizar posições dos modelos
+  models.forEach((model, index) => {
+    const position = getSlidePosition(index);
+    model.className = `model-container ${position}`;
+  });
+
+  // Atualizar informações do modelo selecionado
+  showModelInfo(currentIndex);
 }
 
 // Função para mover para o próximo modelo

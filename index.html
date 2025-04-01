@@ -150,6 +150,41 @@
         transform: scale(0.95);
       }
 
+      .model-info {
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        transition: opacity 0.3s ease;
+      }
+
+      .model-info h2 {
+        margin: 0 0 15px 0;
+        font-size: 24px;
+        font-family: 'IQOSSans-Bold', sans-serif;
+      }
+
+      .model-info button {
+        background: #00A0DC;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s ease;
+      }
+
+      .model-info button:hover {
+        background: #0088c0;
+      }
+
       @media (max-width: 768px) {
         #controls button {
           padding: 12px 24px;
@@ -180,9 +215,19 @@
     <img style="margin-top: 18%; width: 80px; padding-bottom: 5%;" id="logo" src="logo iluma.svg" alt="Logo Iluma">
     <h1 class="title-container" style="text-align: center;">SELECIONE O SEU <b style="font-size: 25px; background-color: #16becf; color:white; border-radius: 5px; padding: 0 5px;">i</b></h1>
 
-    <div class="model-info" id="model-info">
+    <div id="controls">
+      <button onclick="prevModel()">←</button>
+      <button onclick="nextModel()">→</button>
+    </div>
+
+    <div id="model-info" class="model-info">
       <h2 id="model-name"></h2>
-      <button class="model-info button">Personalize</button>
+      <button>Personalizar</button>
+    </div>
+
+    <div id="zoom-controls">
+      <button class="zoom-button" id="zoom-in">+</button>
+      <button class="zoom-button" id="zoom-out">-</button>
     </div>
 
     <a-scene mindar-image="imageTargetSrc: ./markers/targets.mind;
@@ -240,16 +285,6 @@
         </a-entity>
       </a-entity>
     </a-scene>
-
-    <div id="controls">
-      <button id="prev-button">⬅️</button>
-      <button id="next-button">➡️</button>
-    </div>
-
-    <div id="zoom-controls">
-      <button class="zoom-button" id="zoom-in">+</button>
-      <button class="zoom-button" id="zoom-out">-</button>
-    </div>
 
     <script src="js/main.js"></script>
   </body>
