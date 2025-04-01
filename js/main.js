@@ -278,19 +278,6 @@ zoomOutBtn.addEventListener('click', () => {
   updateZoom();
 });
 
-// Event Listeners para os botões de navegação
-document.getElementById('leftArrow').addEventListener('click', () => {
-    if (isTransitioning) return;
-    currentIndex = (currentIndex - 1 + modelos.length) % modelos.length;
-    updateCarousel(currentIndex);
-});
-
-document.getElementById('rightArrow').addEventListener('click', () => {
-    if (isTransitioning) return;
-    currentIndex = (currentIndex + 1) % modelos.length;
-    updateCarousel(currentIndex);
-});
-
 // Adicionar eventos de teclado
 document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowLeft') {

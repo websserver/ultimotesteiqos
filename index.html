@@ -183,38 +183,38 @@
       }
 
       .navigation-buttons {
-        display: none;
-      }
-
-      .side-arrows {
         position: fixed;
-        top: 50%;
-        width: 100%;
+        bottom: 5%;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
-        justify-content: space-between;
-        padding: 0 40px;
-        transform: translateY(-50%);
+        gap: 20px;
         z-index: 1000;
-        pointer-events: none;
       }
 
-      .side-arrow {
-        background: none;
-        border: none;
+      .nav-button {
+        background-color: #1dbed0;
         color: white;
-        font-size: 2.5em;
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        font-size: 1.5em;
         cursor: pointer;
-        padding: 15px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        transition: transform 0.2s ease;
-        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       }
 
-      .side-arrow:hover {
-        transform: scale(1.2);
+      .nav-button:hover {
+        background-color: #1aabb9;
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       }
 
-      .side-arrow:active {
+      .nav-button:active {
         transform: scale(0.95);
       }
     </style>
@@ -240,9 +240,9 @@
       <button></button>
     </div>
 
-    <div class="side-arrows">
-      <button id="leftArrow" class="side-arrow">◀</button>
-      <button id="rightArrow" class="side-arrow">▶</button>
+    <div class="navigation-buttons">
+      <button id="prevButton" class="nav-button">‹</button>
+      <button id="nextButton" class="nav-button">›</button>
     </div>
 
     <a-scene mindar-image="imageTargetSrc: ./markers/targets.mind;
