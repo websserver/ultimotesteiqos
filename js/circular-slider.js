@@ -8,7 +8,7 @@ AFRAME.registerComponent('circular-slider', {
     
     this.totalModels = this.models.length;
     this.currentIndex = 0;
-    this.radius = 1;
+    this.radius = 2;
     this.rotationY = 0;
     this.rotationStep = 360 / this.totalModels;
     
@@ -71,8 +71,8 @@ AFRAME.registerComponent('circular-slider', {
       } else {
         // Calcular escala e opacidade baseado na distância do centro
         const distanceFromCenter = Math.abs((angle % 360) - 180) / 180;
-        const scale = 2 + (distanceFromCenter * 1);
-        const opacity = 0.3 + (distanceFromCenter * 0.2);
+        const scale = 3 + (distanceFromCenter * 1.5);
+        const opacity = 0.5 + (distanceFromCenter * 0.3);
         
         model.setAttribute('scale', `${scale} ${scale} ${scale}`);
         const obj = model.getObject3D('mesh');
