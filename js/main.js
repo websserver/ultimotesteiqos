@@ -59,9 +59,7 @@ const carousel = document.querySelector('.carousel-container');
 // Configuração do carrossel
 const RADIUS = 0.5; // Raio do círculo
 const ANGLE_STEP = 120; // Ângulo entre cada modelo
-const TRANSITION_DURATION = 1500; // Duração da transição em ms
-let isTransitioning = false;
-let direction = null;
+const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
 const positions = {
@@ -81,18 +79,6 @@ function getVisibleModels() {
 function getSlidePosition(index) {
     const { prev, current, next } = getVisibleModels();
     
-    if (isTransitioning) {
-        if (direction === 'next') {
-            if (index === prev) return 'toRight';
-            if (index === current) return 'toLeft';
-            if (index === next) return 'toCenter';
-        } else if (direction === 'prev') {
-            if (index === prev) return 'toCenter';
-            if (index === current) return 'toRight';
-            if (index === next) return 'toLeft';
-        }
-    }
-    
     if (index === prev) return 'left';
     if (index === current) return 'center';
     if (index === next) return 'right';
@@ -102,14 +88,8 @@ function getSlidePosition(index) {
 
 // Atualizar posições do carrossel
 function updateCarousel(newIndex) {
-    if (isTransitioning) return;
-    
     const { prev, current, next } = getVisibleModels();
     const rotation = (newIndex - currentIndex) * ANGLE_STEP;
-    
-    // Definir direção
-    direction = newIndex > currentIndex ? 'next' : 'prev';
-    isTransitioning = true;
     
     // Atualizar rotação do carrossel
     carousel.setAttribute('rotation', `0 ${rotation} 0`);
@@ -127,12 +107,6 @@ function updateCarousel(newIndex) {
     
     // Atualizar índice atual
     currentIndex = newIndex;
-    
-    // Resetar estado de transição após a animação
-    setTimeout(() => {
-        isTransitioning = false;
-        direction = null;
-    }, TRANSITION_DURATION);
 }
 
 // Função para mover para o próximo modelo
@@ -251,8 +225,8 @@ function changeModel(direction) {
 
 function updateZoom() {
   models.forEach(model => {
-    const baseScale = model.classList.contains('active') ? 8 : 4;
-    model.setAttribute('scale', `${baseScale * currentScale/6} ${baseScale * currentScale/6} ${baseScale * currentScale/6}`);
+    const baseScale = model.getAttribute('position').x === '0' ? 8 : 4;
+    model.setAttribute('scale', `${baseScale * currentZoom/6} ${baseScale * currentZoom/6} ${baseScale * currentZoom/6}`);
   });
 }
 
@@ -322,9 +296,7 @@ zoomOutBtn.addEventListener('click', () => {
 // Adicionar eventos de clique
 models.forEach((model, index) => {
     model.addEventListener('click', () => {
-        if (!isTransitioning) {
-            updateCarousel(index);
-        }
+        updateCarousel(index);
     });
 });
 

@@ -63,6 +63,7 @@
         position: absolute;
         transition: all 0.5s ease-in-out;
         transform-origin: center center;
+        cursor: pointer;
       }
 
       .model-container.active {
@@ -91,15 +92,20 @@
         background: rgba(0, 0, 0, 0.5);
         border: none;
         color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
+        padding: 15px 30px;
+        border-radius: 50px;
         cursor: pointer;
-        font-size: 20px;
+        font-size: 24px;
         transition: background 0.3s ease;
+        touch-action: manipulation;
       }
 
       #controls button:hover {
         background: rgba(0, 0, 0, 0.8);
+      }
+
+      #controls button:active {
+        transform: scale(0.95);
       }
 
       #zoom-controls {
@@ -115,16 +121,34 @@
         background: rgba(0, 0, 0, 0.5);
         border: none;
         color: white;
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
         cursor: pointer;
-        font-size: 20px;
+        font-size: 24px;
         transition: background 0.3s ease;
+        touch-action: manipulation;
       }
 
       .zoom-button:hover {
         background: rgba(0, 0, 0, 0.8);
+      }
+
+      .zoom-button:active {
+        transform: scale(0.95);
+      }
+
+      @media (max-width: 768px) {
+        #controls button {
+          padding: 12px 24px;
+          font-size: 20px;
+        }
+
+        .zoom-button {
+          width: 45px;
+          height: 45px;
+          font-size: 20px;
+        }
       }
     </style>
   </head>
