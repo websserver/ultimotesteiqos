@@ -120,34 +120,12 @@
         transform: scale(0.95);
       }
 
-      #zoom-controls {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
-        display: flex;
-        gap: 10px;
+      #zoomControls {
+        display: none !important;
       }
 
       .zoom-button {
-        background: rgba(0, 0, 0, 0.5);
-        border: none;
-        color: white;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 24px;
-        transition: background 0.3s ease;
-        touch-action: manipulation;
-      }
-
-      .zoom-button:hover {
-        background: rgba(0, 0, 0, 0.8);
-      }
-
-      .zoom-button:active {
-        transform: scale(0.95);
+        display: none !important;
       }
 
       @media (max-width: 768px) {
@@ -203,10 +181,6 @@
       .model-info button:hover {
         background-color: #1aabb9;
       }
-
-      #zoomControls {
-        display: none;
-      }
     </style>
   </head>
   <body>
@@ -228,6 +202,11 @@
     <div class="model-info" style="display: none;">
       <h2></h2>
       <button></button>
+    </div>
+
+    <div class="navigation-buttons">
+      <button id="prevButton" class="nav-button">←</button>
+      <button id="nextButton" class="nav-button">→</button>
     </div>
 
     <a-scene mindar-image="imageTargetSrc: ./markers/targets.mind;
@@ -289,11 +268,6 @@
     <div id="controls">
       <button id="prev-button">⬅️</button>
       <button id="next-button">➡️</button>
-    </div>
-
-    <div id="zoom-controls">
-      <button class="zoom-button" id="zoom-in">+</button>
-      <button class="zoom-button" id="zoom-out">-</button>
     </div>
 
     <script src="js/main.js"></script>
