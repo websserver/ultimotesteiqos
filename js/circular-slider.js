@@ -36,6 +36,8 @@ AFRAME.registerComponent('circular-slider', {
   },
   
   updatePositions: function() {
+    const baseAngle = Math.PI * 2 / this.models.length;
+    
     this.models.forEach((model, index) => {
       if (index === 0) {
         // Modelo central
@@ -60,13 +62,12 @@ AFRAME.registerComponent('circular-slider', {
         }
       } else {
         // Modelos laterais em círculo
-        const angle = this.currentAngle + ((index - 1) * this.angleStep);
+        const angle = this.currentAngle + (index * baseAngle);
         const x = this.radius * Math.cos(angle);
         const z = this.radius * Math.sin(angle) - 0.3;
-        model.setAttribute('position', `${x} 0 ${z}`);
         
-        const rotationY = (angle * 180 / Math.PI) + 90;
-        model.setAttribute('rotation', `0 ${rotationY} 0`);
+        model.setAttribute('position', `${x} 0 ${z}`);
+        model.setAttribute('rotation', `0 ${(angle * 180 / Math.PI) + 90} 0`);
         model.setAttribute('scale', '3 3 3');
         
         const obj = model.getObject3D('mesh');
@@ -90,12 +91,15 @@ AFRAME.registerComponent('circular-slider', {
   },
   
   rotate: function(direction) {
-    const step = direction === 'next' ? -this.angleStep : this.angleStep;
-    this.currentAngle += step;
-    
+    // Normalizar o ângulo para manter entre 0 e 2π
     if (direction === 'next') {
+      this.currentAngle = (this.currentAngle + this.angleStep) % (Math.PI * 2);
       this.models.push(this.models.shift());
     } else {
+      this.currentAngle = (this.currentAngle - this.angleStep);
+      if (this.currentAngle < 0) {
+        this.currentAngle += Math.PI * 2;
+      }
       this.models.unshift(this.models.pop());
     }
     
