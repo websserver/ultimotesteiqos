@@ -3,18 +3,19 @@ AFRAME.registerComponent('model-handler', {
     const el = this.el;
     const index = parseInt(el.id.split('-')[1]) - 1;
     
-    // Adicionar todos os tipos de eventos de interação
-    const events = ['click', 'touchstart', 'mousedown'];
-    
-    events.forEach(eventName => {
-      el.addEventListener(eventName, (evt) => {
-        evt.preventDefault();
-        evt.stopPropagation();
-        console.log(`Evento ${eventName} detectado no modelo ${index}`);
-        console.log('Elemento clicado:', el.id);
-        console.log('Posição do clique:', evt.detail.intersection ? evt.detail.intersection.point : 'N/A');
-        handleModelClick(index);
-      });
+    el.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      evt.stopPropagation();
+      
+      // Determinar a direção da rotação baseado na posição do modelo clicado
+      const modelPosition = modelos.indexOf(el);
+      if (modelPosition === 0) {
+        rotateModels('left');
+      } else if (modelPosition === 2) {
+        rotateModels('right');
+      } else {
+        handleModelClick(modelOrder[1]); // Modelo central
+      }
     });
   }
 });
@@ -23,7 +24,11 @@ AFRAME.registerComponent('model-handler', {
 const BASE_SCALE = 6;
 const SELECTED_SCALE = 8;
 const CLICK_SCALE = 10;
-const CIRCLE_RADIUS = 0.5; // Raio do círculo
+const MODEL_POSITIONS = {
+  LEFT: { x: -0.5, z: 0 },
+  CENTER: { x: 0, z: 0 },
+  RIGHT: { x: 0.5, z: 0 }
+};
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -33,6 +38,7 @@ const MODEL_NAMES = {
 let currentModel = 1;
 let isModelClicked = false;
 let currentScale = BASE_SCALE;
+let modelOrder = [0, 1, 2]; // Array que mantém a ordem atual dos modelos
 let currentRotation = 0;
 let touchStartX = 0;
 let isDragging = false;
@@ -121,18 +127,39 @@ function handleModelClick(index) {
 function updateModelPositions() {
   if (!isModelClicked) {
     modelos.forEach((modelo, index) => {
-      const angle = (index * (360 / 3) + currentRotation) * (Math.PI / 180);
-      const x = CIRCLE_RADIUS * Math.cos(angle);
-      const z = CIRCLE_RADIUS * Math.sin(angle);
+      const position = MODEL_POSITIONS[Object.keys(MODEL_POSITIONS)[index]];
+      modelo.setAttribute('position', `${position.x} 0 ${position.z}`);
       
-      modelo.setAttribute('position', `${x} 0 ${z}`);
-      if (index === currentModel) {
+      if (index === 1) { // Modelo central
         modelo.setAttribute('scale', `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`);
       } else {
         modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
       }
     });
   }
+}
+
+function rotateModels(direction) {
+  hideModelInfo();
+  isModelClicked = false;
+  
+  if (direction === 'right') {
+    // Rotação para a direita
+    const lastModel = modelOrder.pop();
+    modelOrder.unshift(lastModel);
+  } else {
+    // Rotação para a esquerda
+    const firstModel = modelOrder.shift();
+    modelOrder.push(firstModel);
+  }
+  
+  // Atualizar os modelos visíveis
+  modelos.forEach((modelo, index) => {
+    const modelIndex = modelOrder[index];
+    modelo.setAttribute('gltf-model', `#modelo${modelIndex + 1}`);
+  });
+  
+  updateModelPositions();
 }
 
 function changeModel(direction) {
