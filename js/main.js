@@ -143,6 +143,8 @@ function updateCarousel(newIndex) {
         if (position === 'center') {
             const modelId = model.getAttribute('id');
             showModelInfo(modelId);
+            // Salvar o índice do modelo selecionado
+            localStorage.setItem('selectedModelIndex', index.toString());
         }
     });
     
@@ -287,8 +289,9 @@ document.addEventListener('keydown', (event) => {
 
 // Inicializar posições do carrossel
 function initializeCarousel() {
-    // Definir modelo inicial (modelo2 - ILUMA i)
-    currentIndex = 1;
+    // Tentar recuperar o índice salvo, se não existir usar o modelo2 (ILUMA i) como padrão
+    const savedIndex = localStorage.getItem('selectedModelIndex');
+    currentIndex = savedIndex !== null ? parseInt(savedIndex) : 1;
     updateCarousel(currentIndex);
 }
 
