@@ -240,29 +240,29 @@ nextButton.addEventListener('click', nextModel);
 
 // Target detection events
 const target = document.querySelector('a-entity[mindar-image-target]');
+
 target.addEventListener("targetFound", event => {
     // Mostrar todos os modelos
     modelos.forEach((modelo, i) => {
         modelo.setAttribute('visible', 'true');
         modelo.setAttribute('scale', '6 6 6');
         modelo.classList.remove('blurred');
-        // Posicionar cada modelo
-        switch(i) {
-            case 0:
-                modelo.setAttribute('position', '-0.3 0 0');
-                break;
-            case 1:
-                modelo.setAttribute('position', '0 0 0');
-                break;
-            case 2:
-                modelo.setAttribute('position', '0.3 0 0');
-                break;
-        }
     });
+    
+    // Restaurar a posição correta do modelo selecionado
+    updateCarousel(currentIndex);
 });
 
 target.addEventListener("targetLost", event => {
-  hideModelInfo();
+    // Manter os modelos visíveis e na posição correta
+    modelos.forEach((modelo, i) => {
+        modelo.setAttribute('visible', 'true');
+        modelo.setAttribute('scale', '6 6 6');
+        modelo.classList.remove('blurred');
+    });
+    
+    // Manter a posição do modelo selecionado
+    updateCarousel(currentIndex);
 });
 
 // Zoom controls
