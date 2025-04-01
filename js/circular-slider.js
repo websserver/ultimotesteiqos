@@ -1,29 +1,40 @@
 AFRAME.registerComponent('circular-slider', {
   init: function() {
-    // Reordenar os modelos para que modelo2 seja o primeiro (central)
     this.models = [
       this.el.querySelector('#modelo3d-2'),
       this.el.querySelector('#modelo3d-3'),
       this.el.querySelector('#modelo3d-1')
     ];
     
-    this.radius = 1.2;
+    this.radius = 1.5;
     this.currentAngle = 0;
     this.angleStep = (2 * Math.PI) / this.models.length;
     
-    // Adicionar material de blur para os modelos laterais
+    // Configurar materiais iniciais e filtros
     this.models.forEach(model => {
-      model.setAttribute('material', {
-        shader: 'standard',
-        opacity: 1,
-        transparent: true
+      model.addEventListener('model-loaded', () => {
+        const obj = model.getObject3D('mesh');
+        if (obj) {
+          obj.traverse((node) => {
+            if (node.isMesh) {
+              // Criar um material clone para evitar compartilhamento
+              node.material = node.material.clone();
+              node.material.transparent = true;
+              node.material.opacity = 0.5;
+              node.material.depthWrite = false;
+              node.material.depthTest = true;
+              // Adicionar filtro de blur
+              node.material.defines = node.material.defines || {};
+              node.material.defines.USE_BLUR = "";
+              node.material.needsUpdate = true;
+            }
+          });
+        }
       });
     });
     
-    // Posicionar os modelos inicialmente
     this.updatePositions();
     
-    // Adicionar listeners para os botões
     document.getElementById('prev-button').addEventListener('click', () => this.rotate('prev'));
     document.getElementById('next-button').addEventListener('click', () => this.rotate('next'));
   },
@@ -31,40 +42,57 @@ AFRAME.registerComponent('circular-slider', {
   updatePositions: function() {
     this.models.forEach((model, index) => {
       if (index === 0) {
-        // Modelo central (primeiro do array)
+        // Modelo central
         model.setAttribute('position', '0 0 0');
         model.setAttribute('rotation', '0 0 0');
-        model.setAttribute('scale', '8 8 8');
-        // Remover blur do modelo central
-        model.setAttribute('material', {
-          shader: 'standard',
-          opacity: 1,
-          transparent: false,
-          metalness: 0.5,
-          roughness: 0.5
-        });
+        model.setAttribute('scale', '6 6 6');
+        
+        const obj = model.getObject3D('mesh');
+        if (obj) {
+          obj.traverse((node) => {
+            if (node.isMesh) {
+              node.material.transparent = false;
+              node.material.opacity = 1;
+              node.material.depthWrite = true;
+              node.material.depthTest = true;
+              node.material.roughness = 0.5;
+              node.material.metalness = 0.5;
+              node.renderOrder = 2;
+              node.material.needsUpdate = true;
+              // Remover filtro de blur
+              if (node.material.defines) {
+                delete node.material.defines.USE_BLUR;
+              }
+            }
+          });
+        }
       } else {
         // Modelos laterais
         const angle = this.currentAngle + ((index - 1) * this.angleStep);
         const x = this.radius * Math.cos(angle);
-        // Posicionar modelos laterais mais atrás (z negativo)
-        const z = this.radius * Math.sin(angle) - 0.5;
+        const z = this.radius * Math.sin(angle) - 1.5;
         model.setAttribute('position', `${x} 0 ${z}`);
         
-        // Rotacionar o modelo para olhar para o centro
         const rotationY = (angle * 180 / Math.PI) + 90;
         model.setAttribute('rotation', `0 ${rotationY} 0`);
-        model.setAttribute('scale', '4 4 4');
+        model.setAttribute('scale', '1.5 1.5 1.5');
         
-        // Adicionar efeito de blur nos modelos laterais
-        model.setAttribute('material', {
-          shader: 'standard',
-          opacity: 0.7,
-          transparent: true,
-          metalness: 0.3,
-          roughness: 0.8,
-          blending: 'additive'
-        });
+        const obj = model.getObject3D('mesh');
+        if (obj) {
+          obj.traverse((node) => {
+            if (node.isMesh) {
+              node.material.transparent = true;
+              node.material.opacity = 0.3;
+              node.material.depthWrite = false;
+              node.material.depthTest = true;
+              node.material.roughness = 1;
+              node.material.metalness = 0;
+              node.material.fog = true;
+              node.renderOrder = 0;
+              node.material.needsUpdate = true;
+            }
+          });
+        }
       }
     });
   },
@@ -73,7 +101,6 @@ AFRAME.registerComponent('circular-slider', {
     const step = direction === 'next' ? -this.angleStep : this.angleStep;
     this.currentAngle += step;
     
-    // Rotacionar o array de modelos
     if (direction === 'next') {
       this.models.push(this.models.shift());
     } else {
