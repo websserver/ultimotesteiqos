@@ -63,26 +63,20 @@ const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
 const positions = {
-    left: { x: -2, y: 0, z: -2, rotation: { x: 0, y: 45, z: 0 } },
-    center: { x: 0, y: 0, z: 0, rotation: { x: 0, y: 0, z: 0 } },
-    right: { x: 2, y: 0, z: -2, rotation: { x: 0, y: -45, z: 0 } }
+    left: { x: -3, y: 0, z: -1.5, rotation: { x: 0, y: 45, z: 0 }, scale: 4, opacity: 0.7 },
+    center: { x: 0, y: 0, z: 0, rotation: { x: 0, y: 0, z: 0 }, scale: 8, opacity: 1 },
+    right: { x: 3, y: 0, z: -1.5, rotation: { x: 0, y: -45, z: 0 }, scale: 4, opacity: 0.7 }
 };
-
-// Função para obter os índices dos modelos visíveis
-function getVisibleModels() {
-    const prev = (currentIndex - 1 + models.length) % models.length;
-    const next = (currentIndex + 1) % models.length;
-    return { prev, current: currentIndex, next };
-}
 
 // Função para obter a posição do slide
 function getSlidePosition(index) {
-    const positions = {
-        left: { x: -2, y: 0, z: -2, rotation: { x: 0, y: 45, z: 0 } },
-        center: { x: 0, y: 0, z: 0, rotation: { x: 0, y: 0, z: 0 } },
-        right: { x: 2, y: 0, z: -2, rotation: { x: 0, y: -45, z: 0 } }
-    };
-    return positions[getPositionName(index)];
+    const { prev, current, next } = getVisibleModels();
+    
+    if (index === prev) return 'left';
+    if (index === current) return 'center';
+    if (index === next) return 'right';
+    
+    return 'center';
 }
 
 // Atualizar posições do carrossel
@@ -97,11 +91,23 @@ function updateCarousel(newIndex) {
     // Atualizar posições dos modelos
     slides.forEach((slide, index) => {
         const position = getSlidePosition(index);
-        slide.style.transform = `translate3d(${position.x}px, ${position.y}px, ${position.z}px) rotateY(${position.rotation.y}deg)`;
+        const targetPos = positions[position];
+        
+        slide.style.transform = `translate3d(${targetPos.x}px, ${targetPos.y}px, ${targetPos.z}px) rotateY(${targetPos.rotation.y}deg)`;
+        slide.style.scale = `${targetPos.scale}`;
+        slide.style.opacity = targetPos.opacity;
     });
     
     // Atualizar índice atual
     currentIndex = newIndex;
+}
+
+// Função para obter os modelos visíveis
+function getVisibleModels() {
+    const prev = (currentIndex - 1 + models.length) % models.length;
+    const current = currentIndex;
+    const next = (currentIndex + 1) % models.length;
+    return { prev, current, next };
 }
 
 // Função para navegar para o próximo modelo
@@ -313,7 +319,7 @@ function initializePositions() {
         model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
         model.setAttribute('rotation', `0 ${targetPos.rotation.y}deg`);
         model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
-        model.setAttribute('opacity', 1);
+        model.setAttribute('opacity', targetPos.opacity);
     });
 }
 
