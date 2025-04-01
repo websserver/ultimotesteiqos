@@ -68,6 +68,25 @@ const positions = {
     right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: 4, opacity: 0.7 }
 };
 
+// Configuração dos modelos com suas informações
+const modelConfigs = [
+    {
+        name: 'ILUMA i ONE',
+        buttonText: 'Personalizar ILUMA i ONE',
+        link: 'ilumaone.html'
+    },
+    {
+        name: 'ILUMA i',
+        buttonText: 'Personalizar ILUMA i',
+        link: 'ilumai.html'
+    },
+    {
+        name: 'ILUMA i PRIME',
+        buttonText: 'Personalizar ILUMA i PRIME',
+        link: 'ilumaprime.html'
+    }
+];
+
 // Função para obter os índices dos modelos visíveis
 function getVisibleModels() {
     const prev = (currentIndex - 1 + models.length) % models.length;
@@ -84,6 +103,21 @@ function getSlidePosition(index) {
     if (index === next) return 'right';
     
     return 'center';
+}
+
+// Função para mostrar informações do modelo
+function showModelInfo(index) {
+    const modelInfo = document.getElementById('model-info');
+    const modelName = document.getElementById('model-name');
+    const modelButton = document.querySelector('.model-info button');
+    
+    // Atualizar informações baseado no modelo atual
+    const config = modelConfigs[index];
+    modelName.textContent = config.name;
+    modelButton.textContent = config.buttonText;
+    modelButton.onclick = () => window.open(config.link, '_self');
+    
+    modelInfo.style.display = 'block';
 }
 
 // Atualizar posições do carrossel
@@ -122,34 +156,6 @@ function nextModel() {
 function prevModel() {
     const prevIndex = (currentIndex - 1 + models.length) % models.length;
     updateCarousel(prevIndex);
-}
-
-// Functions
-function showModelInfo(index) {
-  const modelInfo = document.getElementById('model-info');
-  const modelName = document.getElementById('model-name');
-  const modelButton = document.querySelector('.model-info button');
-  
-  // Atualizar informações baseado no modelo
-  switch(index) {
-    case 0:
-      modelName.textContent = 'ILUMA i ONE';
-      modelButton.textContent = 'Personalizar ILUMA i ONE';
-      modelButton.onclick = () => window.open('ilumaone.html','_self');
-      break;
-    case 1:
-      modelName.textContent = 'ILUMA i';
-      modelButton.textContent = 'Personalizar  ILUMA i';
-      modelButton.onclick = () => window.open('ilumai.html','_self');
-      break;
-    case 2:
-      modelName.textContent = 'ILUMA i PRIME';
-      modelButton.textContent = 'Personalizar ILUMA i PRIME';
-      modelButton.onclick = () => window.open('ilumaprime.html','_self');
-      break;
-  }
-  
-  modelInfo.style.display = 'block';
 }
 
 function hideModelInfo() {
