@@ -8,7 +8,7 @@ AFRAME.registerComponent('circular-slider', {
     
     this.totalModels = this.models.length;
     this.currentIndex = 0;
-    this.radius = 2;
+    this.radius = 2.5;
     this.rotationY = 0;
     this.rotationStep = 360 / this.totalModels;
     
@@ -37,7 +37,10 @@ AFRAME.registerComponent('circular-slider', {
       const x = this.radius * Math.sin(angle);
       const z = this.radius * Math.cos(angle);
       model.setAttribute('position', `${x} 0 ${z}`);
-      model.setAttribute('rotation', `0 ${-angle * 180 / Math.PI} 0`);
+      
+      // Sempre apontar para fora do círculo
+      const rotationY = (angle * 180 / Math.PI) + 180;
+      model.setAttribute('rotation', `0 ${rotationY} 0`);
     });
     
     this.updatePositions();
@@ -52,11 +55,14 @@ AFRAME.registerComponent('circular-slider', {
     
     // Atualizar aparência dos modelos baseado em suas posições
     this.models.forEach((model, index) => {
-      const angle = ((index * 360) / this.totalModels + this.rotationY) % 360;
-      const isCenter = Math.abs(angle % 360) < this.rotationStep / 2 || 
-                      Math.abs(angle % 360 - 360) < this.rotationStep / 2;
+      const baseAngle = (index * 360) / this.totalModels;
+      const currentAngle = (baseAngle + this.rotationY) % 360;
       
-      if (isCenter) {
+      // Calcular a distância angular do centro (180 graus é a frente)
+      const angleFromCenter = Math.abs(((currentAngle - 180 + 540) % 360) - 180);
+      const normalizedDistance = angleFromCenter / 180;
+      
+      if (angleFromCenter < 30) { // Modelo na frente
         model.setAttribute('scale', '6 6 6');
         const obj = model.getObject3D('mesh');
         if (obj) {
@@ -69,10 +75,9 @@ AFRAME.registerComponent('circular-slider', {
           });
         }
       } else {
-        // Calcular escala e opacidade baseado na distância do centro
-        const distanceFromCenter = Math.abs((angle % 360) - 180) / 180;
-        const scale = 3 + (distanceFromCenter * 1.5);
-        const opacity = 0.5 + (distanceFromCenter * 0.3);
+        // Escala e opacidade suaves baseadas na posição
+        const scale = 3 + (1 - normalizedDistance) * 2;
+        const opacity = 0.6 + (1 - normalizedDistance) * 0.4;
         
         model.setAttribute('scale', `${scale} ${scale} ${scale}`);
         const obj = model.getObject3D('mesh');
@@ -86,6 +91,10 @@ AFRAME.registerComponent('circular-slider', {
           });
         }
       }
+      
+      // Manter a orientação correta durante a rotação
+      const worldRotation = model.getAttribute('rotation').y;
+      model.setAttribute('rotation', `0 ${worldRotation} 0`);
     });
   },
   
@@ -103,8 +112,8 @@ AFRAME.registerComponent('circular-slider', {
       property: 'rotation.y',
       from: startRotation,
       to: endRotation,
-      dur: 500,
-      easing: 'easeOutQuad'
+      dur: 800,
+      easing: 'easeInOutQuad'
     });
     
     // Atualizar índice atual
@@ -119,6 +128,6 @@ AFRAME.registerComponent('circular-slider', {
     setTimeout(() => {
       clearInterval(animation);
       this.updatePositions();
-    }, 500);
+    }, 800);
   }
 }); 
