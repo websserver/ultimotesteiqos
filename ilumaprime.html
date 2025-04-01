@@ -240,37 +240,35 @@
         z-index: 1000;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         font-family: 'IQOSSans-Regular', sans-serif;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
       .feature-item {
-        margin-bottom: 10px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        padding-bottom: 10px;
-      }
-
-      .feature-item:last-child {
-        margin-bottom: 0;
-        border-bottom: none;
-        padding-bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
       }
 
       .feature-header {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        margin-bottom: 5px;
+        gap: 5px;
       }
 
       .feature-icon {
-        width: 24px;
-        height: 24px;
-        margin-right: 10px;
+        width: 30px;
+        height: 30px;
         object-fit: contain;
       }
 
       .feature-title {
         color: #333;
         font-weight: bold;
-        font-size: 16px;
+        font-size: 14px;
         font-family: 'IQOSSans-Bold', sans-serif;
       }
 
@@ -290,6 +288,58 @@
         max-width: 600px;
         height: 100%;
         z-index: 1000;
+      }
+
+      .color-switcher {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 600px;
+        background: rgba(206, 206, 206, 0.9);
+        border-radius: 30px;
+        padding: 15px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .color-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .color-button.active {
+        border-color: #333;
+        transform: scale(1.1);
+      }
+
+      .color-button:hover {
+        transform: scale(1.1);
+      }
+
+      .color-button::after {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .color-button.active::after {
+        border-color: #333;
       }
 
       @media (max-width: 768px) {
@@ -327,28 +377,24 @@
           <img src="images/ecra.png" alt="Ecrã Tátil" class="feature-icon">
           <span class="feature-title">Ecrã Tátil</span>
         </div>
-        <p class="feature-description">Ecrã tátil de 1.8" com interface intuitiva</p>
       </div>
       <div class="feature-item">
         <div class="feature-header">
           <img src="images/pausa.png" alt="Modo Pausa" class="feature-icon">
           <span class="feature-title">Modo Pausa</span>
         </div>
-        <p class="feature-description">Função de pausa para controlo total</p>
       </div>
       <div class="feature-item">
         <div class="feature-header">
           <img src="images/flexpuff.png" alt="FlexPuff" class="feature-icon">
           <span class="feature-title">FlexPuff</span>
         </div>
-        <p class="feature-description">Sistema de controlo de pressão</p>
       </div>
       <div class="feature-item">
         <div class="feature-header">
           <img src="images/flexbattery.png" alt="FlexBattery" class="feature-icon">
           <span class="feature-title">FlexBattery</span>
         </div>
-        <p class="feature-description">Bateria de alta capacidade</p>
       </div>
     </div>
 
