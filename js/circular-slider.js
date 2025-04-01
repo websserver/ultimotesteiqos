@@ -6,9 +6,18 @@ AFRAME.registerComponent('circular-slider', {
       this.el.querySelector('#modelo3d-1')
     ];
     
-    this.radius = 1.2;
-    this.currentAngle = 0;
-    this.angleStep = (2 * Math.PI) / this.models.length;
+    this.radius = 0.8; // Reduzido para manter o círculo mais compacto
+    this.positions = []; // Array para armazenar posições fixas
+    this.currentIndex = 0;
+    
+    // Calcular posições fixas do círculo
+    for (let i = 0; i < this.models.length; i++) {
+      const angle = (i * 2 * Math.PI) / this.models.length;
+      this.positions.push({
+        x: this.radius * Math.cos(angle),
+        z: this.radius * Math.sin(angle) - 0.2
+      });
+    }
     
     // Configurar materiais iniciais
     this.models.forEach(model => {
@@ -36,8 +45,6 @@ AFRAME.registerComponent('circular-slider', {
   },
   
   updatePositions: function() {
-    const baseAngle = Math.PI * 2 / this.models.length;
-    
     this.models.forEach((model, index) => {
       if (index === 0) {
         // Modelo central
@@ -62,13 +69,13 @@ AFRAME.registerComponent('circular-slider', {
         }
       } else {
         // Modelos laterais em círculo
-        const angle = this.currentAngle + (index * baseAngle);
-        const x = this.radius * Math.cos(angle);
-        const z = this.radius * Math.sin(angle) - 0.3;
+        const posIndex = (index + this.currentIndex) % this.positions.length;
+        const pos = this.positions[posIndex];
         
-        model.setAttribute('position', `${x} 0 ${z}`);
+        model.setAttribute('position', `${pos.x} 0 ${pos.z}`);
+        const angle = Math.atan2(pos.z, pos.x);
         model.setAttribute('rotation', `0 ${(angle * 180 / Math.PI) + 90} 0`);
-        model.setAttribute('scale', '3 3 3');
+        model.setAttribute('scale', '2 2 2'); // Reduzido de 3 para 2
         
         const obj = model.getObject3D('mesh');
         if (obj) {
@@ -91,15 +98,11 @@ AFRAME.registerComponent('circular-slider', {
   },
   
   rotate: function(direction) {
-    // Normalizar o ângulo para manter entre 0 e 2π
     if (direction === 'next') {
-      this.currentAngle = (this.currentAngle + this.angleStep) % (Math.PI * 2);
+      this.currentIndex = (this.currentIndex + 1) % this.models.length;
       this.models.push(this.models.shift());
     } else {
-      this.currentAngle = (this.currentAngle - this.angleStep);
-      if (this.currentAngle < 0) {
-        this.currentAngle += Math.PI * 2;
-      }
+      this.currentIndex = (this.currentIndex - 1 + this.models.length) % this.models.length;
       this.models.unshift(this.models.pop());
     }
     
