@@ -63,9 +63,9 @@ const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
 const positions = {
-    left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: 4, opacity: 0.7 },
-    center: { x: 0, y: 0, z: 0, rotation: 0, scale: 8, opacity: 1 },
-    right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: 4, opacity: 0.7 }
+    left: { x: -2, y: 0, z: -2, rotation: { x: 0, y: 45, z: 0 } },
+    center: { x: 0, y: 0, z: 0, rotation: { x: 0, y: 0, z: 0 } },
+    right: { x: 2, y: 0, z: -2, rotation: { x: 0, y: -45, z: 0 } }
 };
 
 // Função para obter os índices dos modelos visíveis
@@ -77,36 +77,23 @@ function getVisibleModels() {
 
 // Função para obter a posição do slide
 function getSlidePosition(index) {
-    const { prev, current, next } = getVisibleModels();
-    
-    if (index === prev) return 'left';
-    if (index === current) return 'center';
-    if (index === next) return 'right';
-    
-    return 'center';
+    const positions = {
+        left: { x: -2, y: 0, z: -2, rotation: { x: 0, y: 45, z: 0 } },
+        center: { x: 0, y: 0, z: 0, rotation: { x: 0, y: 0, z: 0 } },
+        right: { x: 2, y: 0, z: -2, rotation: { x: 0, y: -45, z: 0 } }
+    };
+    return positions[getPositionName(index)];
 }
 
 // Atualizar posições do carrossel
-function updateCarousel(newIndex) {
-    const { prev, current, next } = getVisibleModels();
-    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
+function updateCarousel() {
+    const carousel = document.querySelector('.carousel-container');
+    const slides = document.querySelectorAll('.model-container');
     
-    // Atualizar rotação do carrossel
-    carousel.setAttribute('rotation', `0 ${rotation} 0`);
-    
-    // Atualizar posições dos modelos
-    models.forEach((model, index) => {
+    slides.forEach((slide, index) => {
         const position = getSlidePosition(index);
-        const targetPos = positions[position];
-        
-        model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
-        model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
-        model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
-        model.setAttribute('opacity', targetPos.opacity);
+        slide.style.transform = `translate3d(${position.x}px, ${position.y}px, ${position.z}px) rotateY(${position.rotation.y}deg)`;
     });
-    
-    // Atualizar índice atual
-    currentIndex = newIndex;
 }
 
 // Função para mover para o próximo modelo
@@ -316,9 +303,9 @@ function initializePositions() {
         const targetPos = positions[position];
         
         model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
-        model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
+        model.setAttribute('rotation', `0 ${targetPos.rotation.y}deg`);
         model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
-        model.setAttribute('opacity', targetPos.opacity);
+        model.setAttribute('opacity', 1);
     });
 }
 
