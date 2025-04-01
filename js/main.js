@@ -321,4 +321,49 @@ initializePositions();
 models.forEach(model => {
     model.removeAttribute('event-set__mouseenter');
     model.removeAttribute('event-set__mouseleave');
+});
+
+// Inicializar o carrossel
+function initCarousel() {
+  const carousel = document.querySelector('.carousel-container');
+  const models = document.querySelectorAll('.model-container');
+  
+  // Posicionar os modelos inicialmente
+  models.forEach((model, index) => {
+    const position = getSlidePosition(index);
+    model.className = `model-container ${position}`;
+  });
+
+  // Mostrar informações do modelo inicial
+  showModelInfo(currentIndex);
+}
+
+// Adicionar event listeners
+document.addEventListener('DOMContentLoaded', () => {
+  initCarousel();
+  
+  // Event listeners para os botões de navegação
+  document.querySelectorAll('#controls button').forEach(button => {
+    button.addEventListener('click', () => {
+      if (button.textContent === '←') {
+        prevModel();
+      } else {
+        nextModel();
+      }
+    });
+  });
+
+  // Event listeners para os modelos
+  document.querySelectorAll('.model-container').forEach((model, index) => {
+    model.addEventListener('click', () => {
+      if (index !== currentIndex) {
+        const diff = index - currentIndex;
+        if (diff > 0) {
+          nextModel();
+        } else {
+          prevModel();
+        }
+      }
+    });
+  });
 }); 
