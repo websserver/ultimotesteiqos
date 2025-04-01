@@ -130,7 +130,6 @@
         font-family: 'IQOSSans-Bold', sans-serif;
       }
 
-
       .toggle-features img {
         width: 20px;
         height: 20px;
@@ -226,6 +225,78 @@
         from { opacity: 0; }
         to { opacity: 1; }
       }
+
+      .features-container {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 400px;
+        background: rgba(206, 206, 206, 0.9);
+        border-radius: 20px;
+        padding: 15px;
+        color: black;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        font-family: 'IQOSSans-Regular', sans-serif;
+      }
+
+      .feature-item {
+        margin-bottom: 10px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding-bottom: 10px;
+      }
+
+      .feature-item:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .feature-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+      }
+
+      .feature-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        object-fit: contain;
+      }
+
+      .feature-title {
+        color: #333;
+        font-weight: bold;
+        font-size: 16px;
+        font-family: 'IQOSSans-Bold', sans-serif;
+      }
+
+      .feature-description {
+        color: #666;
+        font-size: 14px;
+        margin-left: 34px;
+        line-height: 1.4;
+      }
+
+      .model-container {
+        position: fixed;
+        top: 15%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 600px;
+        height: 100%;
+        z-index: 1000;
+      }
+
+      @media (max-width: 768px) {
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
   </head>
   <body>
@@ -247,6 +318,37 @@
         <div class="color-option" style="background-color: #8B90C5;" data-color="jacaranda" onclick="changeColor('jacaranda')"></div>
         <div class="color-option" style="background-color: #B84C39;" data-color="rooibos" onclick="changeColor('rooibos')"></div>
         <div class="color-option" style="background-color: #7EC4BC;" data-color="turquoise" onclick="changeColor('turquoise')"></div>
+      </div>
+    </div>
+
+    <div class="features-container">
+      <div class="feature-item">
+        <div class="feature-header">
+          <img src="images/ecra.png" alt="Ecrã Tátil" class="feature-icon">
+          <span class="feature-title">Ecrã Tátil</span>
+        </div>
+        <p class="feature-description">Ecrã tátil de 1.8" com interface intuitiva</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-header">
+          <img src="images/pausa.png" alt="Modo Pausa" class="feature-icon">
+          <span class="feature-title">Modo Pausa</span>
+        </div>
+        <p class="feature-description">Função de pausa para controlo total</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-header">
+          <img src="images/flexpuff.png" alt="FlexPuff" class="feature-icon">
+          <span class="feature-title">FlexPuff</span>
+        </div>
+        <p class="feature-description">Sistema de controlo de pressão</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-header">
+          <img src="images/flexbattery.png" alt="FlexBattery" class="feature-icon">
+          <span class="feature-title">FlexBattery</span>
+        </div>
+        <p class="feature-description">Bateria de alta capacidade</p>
       </div>
     </div>
 
@@ -298,57 +400,6 @@
     <div class="overlay-gradient"></div>
     <div class="marker-lost-message">
       Por favor, mantenha a câmara apontada para a imagem.
-    </div>
-
-    <button class="toggle-features" onclick="toggleFeatures()">
-      <img src="icons/iqosicon_branco.png" alt="IQOS Icon">
-      Características
-    </button>
-
-    <div class="features-dropdown" style="display: none;">
-      <h3>
-        Características
-        <button class="close-button" onclick="toggleFeatures()">×</button>
-      </h3>
-      <div class="feature-item">
-        <div class="feature-header">
-          <img src="icons/touch.webp" alt="Ecrã Tátil" class="feature-icon">
-          <div class="feature-title">Ecrã Tátil</div>
-        </div>
-        <div class="feature-description">
-          Verifique o estado do equipamento e personalize a sua experiência.
-        </div>
-      </div>
-
-      <div class="feature-item">
-        <div class="feature-header">
-          <img src="icons/pause.webp" alt="Modo Pausa" class="feature-icon">
-          <div class="feature-title">Modo Pausa</div>
-        </div>
-        <div class="feature-description">
-          Pausar e retomar a utilização, em qualquer momento.
-        </div>
-      </div>
-
-      <div class="feature-item">
-        <div class="feature-header">
-          <img src="icons/puff.webp" alt="FlexPuff" class="feature-icon">
-          <div class="feature-title">FlexPuff</div>
-        </div>
-        <div class="feature-description">
-          Permite até 4 aspirações extra**.
-        </div>
-      </div>
-
-      <div class="feature-item" style="padding-bottom: 50px;">
-        <div class="feature-header">
-          <img src="icons/battery.webp" alt="FlexBattery" class="feature-icon">
-          <div class="feature-title">FlexBattery</div>
-        </div>
-        <div class="feature-description">
-          Prolongue o tempo de vida útil da bateria do equipamento até um ano*** ou obtenha até 3 utilizações consecutivas****.
-        </div>
-      </div>
     </div>
 
     <script>
@@ -585,27 +636,48 @@
     <script src="js/ilumaprime.js"></script>
     <script src="js/color-switcher.js"></script>
     <script>
-      // Inicializa a cor padrão como navy
-      window.addEventListener('load', function() {
-        console.log('Inicializando cor padrão...');
-        // Pequeno delay para garantir que a cena A-Frame esteja pronta
-        setTimeout(() => {
-          changeColor('navy');
-        }, 1000);
-      });
+      // Inicializar o modelo 3D
+      const modelContainer = document.querySelector('.model-container');
+      const modelViewer = document.querySelector('model-viewer');
+      const backButton = document.querySelector('.back-button');
+      const markerLostMessage = document.querySelector('.marker-lost-message');
+      const titleContainer = document.querySelector('.title-container');
+      const featuresContainer = document.querySelector('.features-container');
 
-      // Adiciona listener para erros de carregamento
-      window.addEventListener('error', function(e) {
-        console.error('Erro global:', e.message);
-        if (e.filename) {
-          console.error('Arquivo:', e.filename);
+      // Função para mostrar/esconder elementos baseado no estado do marcador
+      function updateUIForMarker(isVisible) {
+        if (isVisible) {
+          backButton.style.display = 'none';
+          markerLostMessage.style.display = 'none';
+          titleContainer.style.display = 'block';
+          featuresContainer.style.display = 'block';
+        } else {
+          backButton.style.display = 'block';
+          markerLostMessage.style.display = 'block';
+          titleContainer.style.display = 'none';
+          featuresContainer.style.display = 'none';
         }
+      }
+
+      // Configurar o model-viewer
+      modelViewer.addEventListener('ar-status', (event) => {
+        const isMarkerVisible = event.detail.status === 'session-started';
+        updateUIForMarker(isMarkerVisible);
       });
 
-      // Monitora o estado da cena
-      document.querySelector('a-scene').addEventListener('loaded', function () {
-        console.log('A-Frame scene loaded');
-        document.querySelector('#modelo3d-1').object3D.visible = true;
+      // Configurar o botão de voltar
+      backButton.addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+
+      // Configurar o model-viewer para carregar o modelo 3D
+      modelViewer.addEventListener('load', () => {
+        console.log('Modelo 3D carregado com sucesso');
+      });
+
+      // Configurar o model-viewer para erros
+      modelViewer.addEventListener('error', (error) => {
+        console.error('Erro ao carregar o modelo 3D:', error);
       });
     </script>
   </body>
