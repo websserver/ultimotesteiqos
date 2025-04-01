@@ -87,27 +87,41 @@ function getSlidePosition(index) {
 }
 
 // Atualizar posições do carrossel
-function updateCarousel() {
-  const containers = document.querySelectorAll('.model-container');
-  containers.forEach((container, index) => {
-    const position = getSlidePosition(index);
-    container.className = `model-container ${position}`;
-    if (position === 'active') {
-      showModelInfo(index);
-    }
-  });
+function updateCarousel(newIndex) {
+    const { prev, current, next } = getVisibleModels();
+    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
+    
+    // Atualizar rotação do carrossel
+    carousel.setAttribute('rotation', `0 ${rotation} 0`);
+    
+    // Atualizar posições dos modelos
+    models.forEach((model, index) => {
+        const position = getSlidePosition(index);
+        const targetPos = positions[position];
+        
+        model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
+        model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
+        model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
+        model.setAttribute('opacity', targetPos.opacity);
+    });
+    
+    // Atualizar índice atual
+    currentIndex = newIndex;
+    
+    // Mostrar informações do modelo atual
+    showModelInfo(currentIndex);
 }
 
 // Função para mover para o próximo modelo
 function nextModel() {
-  currentIndex = (currentIndex + 1) % models.length;
-  updateCarousel();
+    const nextIndex = (currentIndex + 1) % models.length;
+    updateCarousel(nextIndex);
 }
 
 // Função para mover para o modelo anterior
 function prevModel() {
-  currentIndex = (currentIndex - 1 + models.length) % models.length;
-  updateCarousel();
+    const prevIndex = (currentIndex - 1 + models.length) % models.length;
+    updateCarousel(prevIndex);
 }
 
 // Functions
@@ -215,24 +229,24 @@ nextButton.addEventListener('click', nextModel);
 // Target detection events
 const target = document.querySelector('a-entity[mindar-image-target]');
 target.addEventListener("targetFound", event => {
-  // Mostrar todos os modelos
-  modelos.forEach((modelo, i) => {
-    modelo.setAttribute('visible', 'true');
-    modelo.setAttribute('scale', '6 6 6');
-    modelo.classList.remove('blurred');
-    // Posicionar cada modelo
-    switch(i) {
-      case 0:
-        modelo.setAttribute('position', '-0.3 0 0');
-        break;
-      case 1:
-        modelo.setAttribute('position', '0 0 0');
-        break;
-      case 2:
-        modelo.setAttribute('position', '0.3 0 0');
-        break;
-    }
-  });
+    // Mostrar todos os modelos
+    modelos.forEach((modelo, i) => {
+        modelo.setAttribute('visible', 'true');
+        modelo.setAttribute('scale', '6 6 6');
+        modelo.classList.remove('blurred');
+        // Posicionar cada modelo
+        switch(i) {
+            case 0:
+                modelo.setAttribute('position', '-0.3 0 0');
+                break;
+            case 1:
+                modelo.setAttribute('position', '0 0 0');
+                break;
+            case 2:
+                modelo.setAttribute('position', '0.3 0 0');
+                break;
+        }
+    });
 });
 
 target.addEventListener("targetLost", event => {
