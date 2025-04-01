@@ -305,4 +305,15 @@ sceneEl.addEventListener('loaded', () => {
 models.forEach(model => {
     model.removeAttribute('event-set__mouseenter');
     model.removeAttribute('event-set__mouseleave');
-}); 
+});
+
+function handleModelClick(index) {
+  // Atualizar o carrossel para mostrar o modelo clicado
+  updateCarousel(index);
+  
+  // Atualizar o modelo atual
+  currentModel = index;
+  
+  // Atualizar as posições dos modelos
+  updateModelPositions();
+} 
