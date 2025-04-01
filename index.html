@@ -61,33 +61,30 @@
 
       .model-container {
         position: absolute;
-        transition: all 2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.5s ease-in-out;
         transform-origin: center center;
         cursor: pointer;
-        transform-style: preserve-3d;
-        backface-visibility: visible;
       }
 
       .model-container.active {
         scale: 8 8 8;
-        z-index: 3;
+        z-index: 2;
         opacity: 1;
-        transform: translateZ(50px);
+        transform: translateX(0);
       }
 
       .model-container.inactive {
         scale: 4 4 4;
         opacity: 0.7;
         z-index: 1;
-        transform: translateZ(-50px);
       }
 
       .model-container.inactive.left {
-        transform: translateX(-100px) translateZ(-50px);
+        transform: translateX(-200px);
       }
 
       .model-container.inactive.right {
-        transform: translateX(100px) translateZ(-50px);
+        transform: translateX(200px);
       }
 
       #controls {
