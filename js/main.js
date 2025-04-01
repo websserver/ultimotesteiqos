@@ -133,14 +133,14 @@ function showModelInfo(index) {
   // Atualizar informações baseado no modelo
   switch(index) {
     case 0:
-      modelName.textContent = 'ILUMA i';
-      modelButton.textContent = 'Personalizar  ILUMA i';
-      modelButton.onclick = () => window.open('ilumai.html','_self');
-      break;
-    case 1:
       modelName.textContent = 'ILUMA i ONE';
       modelButton.textContent = 'Personalizar ILUMA i ONE';
       modelButton.onclick = () => window.open('ilumaone.html','_self');
+      break;
+    case 1:
+      modelName.textContent = 'ILUMA i';
+      modelButton.textContent = 'Personalizar  ILUMA i';
+      modelButton.onclick = () => window.open('ilumai.html','_self');
       break;
     case 2:
       modelName.textContent = 'ILUMA i PRIME';
@@ -275,21 +275,18 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// Inicializar o carrossel
-function initializePositions() {
-    models.forEach((model, index) => {
-        const position = getSlidePosition(index);
-        const targetPos = positions[position];
-        
-        model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
-        model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
-        model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
-        model.setAttribute('opacity', targetPos.opacity);
-    });
+// Inicializar posições do carrossel
+function initializeCarousel() {
+    // Definir modelo inicial (modelo2 - ILUMA i)
+    currentIndex = 1;
+    updateCarousel(currentIndex);
 }
 
-// Inicializar o carrossel
-initializePositions();
+// Inicializar o carrossel quando a cena estiver carregada
+sceneEl.addEventListener('loaded', () => {
+    initializeCarousel();
+    updateZoom();
+});
 
 // Remover eventos de zoom anteriores
 models.forEach(model => {
