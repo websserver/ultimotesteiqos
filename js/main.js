@@ -77,48 +77,39 @@ function getVisibleModels() {
 
 // Função para obter a posição do slide
 function getSlidePosition(index) {
-    const { prev, current, next } = getVisibleModels();
-    
-    if (index === prev) return 'left';
-    if (index === current) return 'center';
-    if (index === next) return 'right';
-    
-    return 'center';
+    const positions = ['left', 'center', 'right'];
+    const currentIndex = currentModel;
+    const relativeIndex = (index - currentIndex + 3) % 3;
+    return positions[relativeIndex];
 }
 
 // Atualizar posições do carrossel
-function updateCarousel(newIndex) {
-    const { prev, current, next } = getVisibleModels();
-    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
-    
-    // Atualizar rotação do carrossel
-    carousel.setAttribute('rotation', `0 ${rotation} 0`);
-    
-    // Atualizar posições dos modelos
+function updateCarousel() {
+    // Atualiza posições dos modelos
     models.forEach((model, index) => {
         const position = getSlidePosition(index);
-        const targetPos = positions[position];
+        const container = model.parentElement;
         
-        model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
-        model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
-        model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
-        model.setAttribute('opacity', targetPos.opacity);
+        container.className = 'model-container';
+        if (position === 'center') {
+            container.classList.add('active');
+        } else {
+            container.classList.add('inactive');
+            container.classList.add(position);
+        }
     });
-    
-    // Atualizar índice atual
-    currentIndex = newIndex;
 }
 
 // Função para mover para o próximo modelo
 function nextModel() {
-    const nextIndex = (currentIndex + 1) % models.length;
-    updateCarousel(nextIndex);
+    currentModel = (currentModel + 1) % models.length;
+    updateCarousel();
 }
 
 // Função para mover para o modelo anterior
 function prevModel() {
-    const prevIndex = (currentIndex - 1 + models.length) % models.length;
-    updateCarousel(prevIndex);
+    currentModel = (currentModel - 1 + models.length) % models.length;
+    updateCarousel();
 }
 
 // Functions
@@ -296,7 +287,16 @@ zoomOutBtn.addEventListener('click', () => {
 // Adicionar eventos de clique
 models.forEach((model, index) => {
     model.addEventListener('click', () => {
-        updateCarousel(index);
+        if (index !== currentModel) {
+            const diff = index - currentModel;
+            if (diff > 0) {
+                currentModel = index;
+                updateCarousel();
+            } else {
+                currentModel = index;
+                updateCarousel();
+            }
+        }
     });
 });
 
