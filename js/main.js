@@ -3,32 +3,26 @@ AFRAME.registerComponent('model-handler', {
     const el = this.el;
     const index = parseInt(el.id.split('-')[1]) - 1;
     
-    el.addEventListener('click', (evt) => {
-      evt.preventDefault();
-      evt.stopPropagation();
-      
-      // Determinar a direção da rotação baseado na posição do modelo clicado
-      const modelPosition = modelos.indexOf(el);
-      if (modelPosition === 0) {
-        rotateModels('left');
-      } else if (modelPosition === 2) {
-        rotateModels('right');
-      } else {
-        handleModelClick(modelOrder[1]); // Modelo central
-      }
+    // Adicionar todos os tipos de eventos de interação
+    const events = ['click', 'touchstart', 'mousedown'];
+    
+    events.forEach(eventName => {
+      el.addEventListener(eventName, (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+        console.log(`Evento ${eventName} detectado no modelo ${index}`);
+        console.log('Elemento clicado:', el.id);
+        console.log('Posição do clique:', evt.detail.intersection ? evt.detail.intersection.point : 'N/A');
+        handleModelClick(index);
+      });
     });
   }
 });
 
 // Constants and variables
-const BASE_SCALE = 6;
-const SELECTED_SCALE = 8;
-const CLICK_SCALE = 10;
-const MODEL_POSITIONS = {
-  LEFT: { x: -0.5, z: 0 },
-  CENTER: { x: 0, z: 0 },
-  RIGHT: { x: 0.5, z: 0 }
-};
+const BASE_SCALE = 8;
+const SELECTED_SCALE = 10;
+const CLICK_SCALE = 12;
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -38,10 +32,6 @@ const MODEL_NAMES = {
 let currentModel = 1;
 let isModelClicked = false;
 let currentScale = BASE_SCALE;
-let modelOrder = [0, 1, 2]; // Array que mantém a ordem atual dos modelos
-let currentRotation = 0;
-let touchStartX = 0;
-let isDragging = false;
 const ZOOM_FACTOR = 1.2;
 const MIN_SCALE = 5;
 const MAX_SCALE = 15;
@@ -60,6 +50,49 @@ const modelInfo = document.querySelector('#model-info');
 const modelName = document.querySelector('#model-name');
 const zoomInBtn = document.querySelector('#zoom-in');
 const zoomOutBtn = document.querySelector('#zoom-out');
+
+// Posições dos modelos no carrossel
+const positions = [
+    { x: 0, y: 0, z: 0, rotation: 0 },      // Centro
+    { x: -0.015, y: 0, z: -0.1, rotation: -120 }, // Esquerda
+    { x: 0.015, y: 0, z: -0.1, rotation: 120 }    // Direita
+];
+
+// Inicializar posições
+function initializePositions() {
+    modelos.forEach((model, index) => {
+        model.setAttribute('position', `${positions[index].x} ${positions[index].y} ${positions[index].z}`);
+        model.setAttribute('rotation', `0 ${positions[index].rotation} 0`);
+        if (index === 0) {
+            model.classList.add('active');
+        } else {
+            model.classList.add('inactive');
+        }
+    });
+}
+
+// Atualizar posições do carrossel
+function updateCarousel(newIndex) {
+    const rotation = (newIndex - currentIndex) * 120;
+    const carousel = document.querySelector('.carousel-container');
+    carousel.setAttribute('rotation', `0 ${rotation} 0`);
+    
+    modelos.forEach((model, index) => {
+        const newPosition = positions[(index - newIndex + 3) % 3];
+        model.setAttribute('position', `${newPosition.x} ${newPosition.y} ${newPosition.z}`);
+        model.setAttribute('rotation', `0 ${newPosition.rotation} 0`);
+        
+        if (index === newIndex) {
+            model.classList.add('active');
+            model.classList.remove('inactive');
+        } else {
+            model.classList.remove('active');
+            model.classList.add('inactive');
+        }
+    });
+    
+    currentIndex = newIndex;
+}
 
 // Functions
 function showModelInfo(index) {
@@ -127,10 +160,7 @@ function handleModelClick(index) {
 function updateModelPositions() {
   if (!isModelClicked) {
     modelos.forEach((modelo, index) => {
-      const position = MODEL_POSITIONS[Object.keys(MODEL_POSITIONS)[index]];
-      modelo.setAttribute('position', `${position.x} 0 ${position.z}`);
-      
-      if (index === 1) { // Modelo central
+      if (index === currentModel) {
         modelo.setAttribute('scale', `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`);
       } else {
         modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
@@ -139,40 +169,31 @@ function updateModelPositions() {
   }
 }
 
-function rotateModels(direction) {
-  hideModelInfo();
-  isModelClicked = false;
-  
-  if (direction === 'right') {
-    // Rotação para a direita
-    const lastModel = modelOrder.pop();
-    modelOrder.unshift(lastModel);
-  } else {
-    // Rotação para a esquerda
-    const firstModel = modelOrder.shift();
-    modelOrder.push(firstModel);
-  }
-  
-  // Atualizar os modelos visíveis
-  modelos.forEach((modelo, index) => {
-    const modelIndex = modelOrder[index];
-    modelo.setAttribute('gltf-model', `#modelo${modelIndex + 1}`);
-  });
-  
-  updateModelPositions();
-}
-
 function changeModel(direction) {
   hideModelInfo();
   isModelClicked = false;
   
+  // Primeiro, retornamos o modelo atual ao tamanho normal com animação
+  modelos[currentModel].setAttribute('animation', {
+    property: 'scale',
+    to: `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`,
+    dur: 300,
+    easing: 'easeOutQuad'
+  });
+
   if (direction === 'next' && currentModel < 2) {
     currentModel++;
   } else if (direction === 'prev' && currentModel > 0) {
     currentModel--;
   }
-  
-  updateModelPositions();
+
+  // Depois, aumentamos o novo modelo selecionado com animação
+  modelos[currentModel].setAttribute('animation', {
+    property: 'scale',
+    to: `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`,
+    dur: 300,
+    easing: 'easeOutQuad'
+  });
 }
 
 function updateZoom() {
@@ -208,13 +229,24 @@ nextButton.addEventListener('click', () => changeModel('next'));
 // Target detection events
 const target = document.querySelector('a-entity[mindar-image-target]');
 target.addEventListener("targetFound", event => {
+  // Mostrar todos os modelos
   modelos.forEach((modelo, i) => {
     modelo.setAttribute('visible', 'true');
     modelo.setAttribute('scale', '6 6 6');
     modelo.classList.remove('blurred');
+    // Posicionar cada modelo
+    switch(i) {
+      case 0:
+        modelo.setAttribute('position', '-0.3 0 0');
+        break;
+      case 1:
+        modelo.setAttribute('position', '0 0 0');
+        break;
+      case 2:
+        modelo.setAttribute('position', '0.3 0 0');
+        break;
+    }
   });
-  
-  updateModelPositions();
 });
 
 target.addEventListener("targetLost", event => {
@@ -236,25 +268,22 @@ zoomOutBtn.addEventListener('click', () => {
   }
 });
 
-// Adicionar eventos de toque
-sceneEl.addEventListener('touchstart', (event) => {
-  touchStartX = event.touches[0].clientX;
-  isDragging = true;
+let currentIndex = 0;
+const models = document.querySelectorAll('.model-container');
+const carousel = document.querySelector('.carousel-container');
+
+// Adicionar eventos de clique
+models.forEach((model, index) => {
+    model.addEventListener('click', () => {
+        updateCarousel(index);
+    });
 });
 
-sceneEl.addEventListener('touchmove', (event) => {
-  if (!isDragging) return;
-  
-  const touchX = event.touches[0].clientX;
-  const deltaX = touchX - touchStartX;
-  
-  // Ajustar a rotação baseada no movimento do dedo
-  currentRotation += deltaX * 0.5;
-  touchStartX = touchX;
-  
-  updateModelPositions();
-});
+// Inicializar o carrossel
+initializePositions();
 
-sceneEl.addEventListener('touchend', () => {
-  isDragging = false;
+// Remover eventos de zoom anteriores
+models.forEach(model => {
+    model.removeAttribute('event-set__mouseenter');
+    model.removeAttribute('event-set__mouseleave');
 }); 
