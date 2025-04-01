@@ -86,26 +86,34 @@ function getSlidePosition(index) {
 }
 
 // Atualizar posições do carrossel
-function updateCarousel() {
+function updateCarousel(newIndex) {
     const carousel = document.querySelector('.carousel-container');
     const slides = document.querySelectorAll('.model-container');
     
+    // Atualizar rotação do carrossel
+    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
+    carousel.setAttribute('rotation', `0 ${rotation} 0`);
+    
+    // Atualizar posições dos modelos
     slides.forEach((slide, index) => {
         const position = getSlidePosition(index);
         slide.style.transform = `translate3d(${position.x}px, ${position.y}px, ${position.z}px) rotateY(${position.rotation.y}deg)`;
     });
+    
+    // Atualizar índice atual
+    currentIndex = newIndex;
 }
 
-// Função para mover para o próximo modelo
+// Função para navegar para o próximo modelo
 function nextModel() {
-    const nextIndex = (currentIndex + 1) % models.length;
-    updateCarousel(nextIndex);
+    const newIndex = (currentIndex + 1) % models.length;
+    updateCarousel(newIndex);
 }
 
-// Função para mover para o modelo anterior
+// Função para navegar para o modelo anterior
 function prevModel() {
-    const prevIndex = (currentIndex - 1 + models.length) % models.length;
-    updateCarousel(prevIndex);
+    const newIndex = (currentIndex - 1 + models.length) % models.length;
+    updateCarousel(newIndex);
 }
 
 // Functions
