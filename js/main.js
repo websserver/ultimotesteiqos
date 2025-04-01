@@ -51,6 +51,11 @@ const modelName = document.querySelector('#model-name');
 const zoomInBtn = document.querySelector('#zoom-in');
 const zoomOutBtn = document.querySelector('#zoom-out');
 
+// Variables
+let currentIndex = 0;
+const models = document.querySelectorAll('.model-container');
+const carousel = document.querySelector('.carousel-container');
+
 // Posições dos modelos no carrossel
 const positions = [
     { x: 0, y: 0, z: 0, rotation: 0 },      // Centro
@@ -60,7 +65,7 @@ const positions = [
 
 // Inicializar posições
 function initializePositions() {
-    modelos.forEach((model, index) => {
+    models.forEach((model, index) => {
         model.setAttribute('position', `${positions[index].x} ${positions[index].y} ${positions[index].z}`);
         model.setAttribute('rotation', `0 ${positions[index].rotation} 0`);
         if (index === 0) {
@@ -74,10 +79,9 @@ function initializePositions() {
 // Atualizar posições do carrossel
 function updateCarousel(newIndex) {
     const rotation = (newIndex - currentIndex) * 120;
-    const carousel = document.querySelector('.carousel-container');
     carousel.setAttribute('rotation', `0 ${rotation} 0`);
     
-    modelos.forEach((model, index) => {
+    models.forEach((model, index) => {
         const newPosition = positions[(index - newIndex + 3) % 3];
         model.setAttribute('position', `${newPosition.x} ${newPosition.y} ${newPosition.z}`);
         model.setAttribute('rotation', `0 ${newPosition.rotation} 0`);
@@ -197,9 +201,8 @@ function changeModel(direction) {
 }
 
 function updateZoom() {
-  modelos.forEach((modelo, index) => {
-    const baseScale = index === currentModel ? currentScale * (SELECTED_SCALE/BASE_SCALE) : currentScale;
-    modelo.setAttribute('scale', `${baseScale} ${baseScale} ${baseScale}`);
+  models.forEach(model => {
+    model.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
   });
 }
 
@@ -253,24 +256,18 @@ target.addEventListener("targetLost", event => {
   hideModelInfo();
 });
 
-// Zoom events
+// Zoom controls
+let currentZoom = 6;
+
 zoomInBtn.addEventListener('click', () => {
-  if (currentScale < MAX_SCALE) {
-    currentScale *= ZOOM_FACTOR;
-    updateZoom();
-  }
+  currentZoom = Math.min(currentZoom + 1, 10);
+  updateZoom();
 });
 
 zoomOutBtn.addEventListener('click', () => {
-  if (currentScale > MIN_SCALE) {
-    currentScale /= ZOOM_FACTOR;
-    updateZoom();
-  }
+  currentZoom = Math.max(currentZoom - 1, 3);
+  updateZoom();
 });
-
-let currentIndex = 0;
-const models = document.querySelectorAll('.model-container');
-const carousel = document.querySelector('.carousel-container');
 
 // Adicionar eventos de clique
 models.forEach((model, index) => {
