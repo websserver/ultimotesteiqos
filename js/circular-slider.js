@@ -1,156 +1,92 @@
-AFRAME.registerComponent('circular-slider', {
-  init: function() {
-    this.models = [
-      this.el.querySelector('#modelo3d-2'),
-      this.el.querySelector('#modelo3d-3'),
-      this.el.querySelector('#modelo3d-1')
-    ];
-    
-    this.totalModels = this.models.length;
-    this.currentIndex = 0;
-    this.radius = 3; // Aumentado para maior efeito de profundidade
-    this.rotationY = 0;
-    this.rotationStep = 360 / this.totalModels;
-    this.isAnimating = false;
-    
-    // Container para girar todos os modelos como uma unidade
-    this.container = document.createElement('a-entity');
-    this.el.appendChild(this.container);
-    this.models.forEach(model => this.container.appendChild(model));
-    
-    // Configurar materiais e posições iniciais
-    this.models.forEach((model, index) => {
-      model.addEventListener('model-loaded', () => {
-        const obj = model.getObject3D('mesh');
-        if (obj) {
-          obj.traverse((node) => {
-            if (node.isMesh) {
-              node.material = node.material.clone();
-              node.material.transparent = true;
-              node.material.needsUpdate = true;
-            }
-          });
-        }
-      });
-      
-      // Posicionar cada modelo em seu ângulo inicial
-      this.updateModelPosition(model, index);
-    });
-    
-    this.updatePositions();
-    
-    document.getElementById('prev-button').addEventListener('click', () => {
-      if (!this.isAnimating) this.rotate('prev');
-    });
-    document.getElementById('next-button').addEventListener('click', () => {
-      if (!this.isAnimating) this.rotate('next');
-    });
-  },
+// Configuração do slider circular
+const SLIDER_CONFIG = {
+    radius: 0.8, // Aumentei o raio para melhor visualização
+    angleStep: 120, // Ângulo entre cada modelo (360° / 3 modelos)
+    rotationSpeed: 0.5, // Velocidade da rotação
+    currentAngle: 0, // Ângulo atual do slider
+    isAnimating: false // Flag para controlar animação
+};
 
-  updateModelPosition: function(model, index) {
-    const angle = (index * 2 * Math.PI) / this.totalModels;
-    const x = this.radius * Math.sin(angle);
-    const z = this.radius * Math.cos(angle);
+// Inicialização do slider
+function initCircularSlider() {
+    const sliderContainer = document.querySelector('#slider-container');
+    const models = document.querySelectorAll('.model-container');
     
-    // Adicionar um pequeno deslocamento em Y para criar efeito de arco
-    const y = -0.5 * Math.sin(angle * 2);
-    
-    model.setAttribute('position', `${x} ${y} ${z}`);
-    
-    // Rotação suave para sempre apontar ligeiramente para cima
-    const rotationY = (angle * 180 / Math.PI) + 180;
-    const rotationX = -15; // Inclinar ligeiramente para cima
-    model.setAttribute('rotation', `${rotationX} ${rotationY} 0`);
-  },
-  
-  updatePositions: function() {
-    // Atualizar a rotação do container com efeito de inclinação
-    const tiltAngle = 5 * Math.sin(this.rotationY * Math.PI / 180);
-    this.container.setAttribute('rotation', `${tiltAngle} ${this.rotationY} 0`);
-    
-    // Atualizar aparência dos modelos baseado em suas posições
-    this.models.forEach((model, index) => {
-      const baseAngle = (index * 360) / this.totalModels;
-      const currentAngle = (baseAngle + this.rotationY) % 360;
-      
-      // Calcular a distância angular do centro (180 graus é a frente)
-      const angleFromCenter = Math.abs(((currentAngle - 180 + 540) % 360) - 180);
-      const normalizedDistance = angleFromCenter / 180;
-      
-      // Efeito de profundidade mais pronunciado
-      const zOffset = -normalizedDistance * 0.5;
-      const currentPos = model.getAttribute('position');
-      model.setAttribute('position', `${currentPos.x} ${currentPos.y} ${currentPos.z + zOffset}`);
-      
-      if (angleFromCenter < 45) { // Zona frontal mais ampla
-        // Escala maior para o modelo frontal
-        model.setAttribute('scale', '7 7 7');
-        const obj = model.getObject3D('mesh');
-        if (obj) {
-          obj.traverse((node) => {
-            if (node.isMesh) {
-              node.material.opacity = 1;
-              node.material.transparent = false;
-              node.renderOrder = 2;
-            }
-          });
-        }
-      } else {
-        // Transição mais suave para modelos laterais
-        const scale = 2.5 + (1 - normalizedDistance) * 3;
-        const opacity = 0.4 + (1 - normalizedDistance) * 0.6;
-        
-        model.setAttribute('scale', `${scale} ${scale} ${scale}`);
-        const obj = model.getObject3D('mesh');
-        if (obj) {
-          obj.traverse((node) => {
-            if (node.isMesh) {
-              node.material.opacity = opacity;
-              node.material.transparent = true;
-              node.renderOrder = 1;
-            }
-          });
-        }
-      }
+    // Posicionar os modelos em um círculo
+    models.forEach((model, index) => {
+        const angle = (index * SLIDER_CONFIG.angleStep) * (Math.PI / 180);
+        const x = SLIDER_CONFIG.radius * Math.cos(angle);
+        const z = SLIDER_CONFIG.radius * Math.sin(angle);
+        model.setAttribute('position', `${x} 0 ${z}`);
     });
-  },
-  
-  rotate: function(direction) {
-    if (this.isAnimating) return;
-    this.isAnimating = true;
+
+    // Configurar os botões de navegação
+    const prevButton = document.getElementById('prev-button');
+    const nextButton = document.getElementById('next-button');
+
+    prevButton.addEventListener('click', () => rotateSlider('prev'));
+    nextButton.addEventListener('click', () => rotateSlider('next'));
+
+    // Adicionar eventos de touch para dispositivos móveis
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                rotateSlider('next');
+            } else {
+                rotateSlider('prev');
+            }
+        }
+    }
+}
+
+// Função para rotacionar o slider
+function rotateSlider(direction) {
+    if (SLIDER_CONFIG.isAnimating) return;
     
-    // Calcular nova rotação
-    const step = direction === 'next' ? -this.rotationStep : this.rotationStep;
-    const targetRotation = (this.rotationY + step + 360) % 360;
+    const sliderContainer = document.querySelector('#slider-container');
+    const currentRotation = sliderContainer.getAttribute('rotation');
+    const currentY = parseFloat(currentRotation.y) || 0;
     
-    // Criar animação de rotação com efeito de mola
-    const animation = {
-      property: 'rotation.y',
-      from: this.container.getAttribute('rotation').y,
-      to: targetRotation,
-      dur: 1000,
-      easing: 'easeOutElastic', // Efeito de mola
-      elasticity: 800 // Controle do efeito de mola
-    };
+    // Calcular novo ângulo baseado na direção
+    const newAngle = direction === 'next' 
+        ? currentY + SLIDER_CONFIG.angleStep 
+        : currentY - SLIDER_CONFIG.angleStep;
     
-    this.container.setAttribute('animation__rotate', animation);
+    SLIDER_CONFIG.isAnimating = true;
     
-    // Atualizar rotação atual
-    this.rotationY = targetRotation;
-    
-    // Atualizar índice atual
-    this.currentIndex = (this.currentIndex + (direction === 'next' ? 1 : -1) + this.totalModels) % this.totalModels;
-    
-    // Atualizar aparência dos modelos durante a animação
-    const updateInterval = setInterval(() => {
-      this.updatePositions();
-    }, 16);
-    
-    // Limpar intervalo e estado de animação
+    // Aplicar a rotação com animação
+    sliderContainer.setAttribute('animation', {
+        property: 'rotation',
+        to: `0 ${newAngle} 0`,
+        dur: 500,
+        easing: 'easeInOutQuad'
+    });
+
+    // Resetar flag de animação após a animação terminar
     setTimeout(() => {
-      clearInterval(updateInterval);
-      this.updatePositions();
-      this.isAnimating = false;
-    }, 1200);
-  }
+        SLIDER_CONFIG.isAnimating = false;
+    }, 500);
+}
+
+// Inicializar o slider quando a cena estiver pronta
+window.addEventListener('load', () => {
+    // Aguardar um momento para garantir que o A-Frame está pronto
+    setTimeout(() => {
+        initCircularSlider();
+    }, 1000);
 }); 
