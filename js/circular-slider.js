@@ -6,26 +6,22 @@ AFRAME.registerComponent('circular-slider', {
       this.el.querySelector('#modelo3d-1')
     ];
     
-    this.radius = 1.5;
+    this.radius = 1.2;
     this.currentAngle = 0;
     this.angleStep = (2 * Math.PI) / this.models.length;
     
-    // Configurar materiais iniciais e filtros
+    // Configurar materiais iniciais
     this.models.forEach(model => {
       model.addEventListener('model-loaded', () => {
         const obj = model.getObject3D('mesh');
         if (obj) {
           obj.traverse((node) => {
             if (node.isMesh) {
-              // Criar um material clone para evitar compartilhamento
               node.material = node.material.clone();
               node.material.transparent = true;
               node.material.opacity = 0.5;
               node.material.depthWrite = false;
               node.material.depthTest = true;
-              // Adicionar filtro de blur
-              node.material.defines = node.material.defines || {};
-              node.material.defines.USE_BLUR = "";
               node.material.needsUpdate = true;
             }
           });
@@ -59,30 +55,26 @@ AFRAME.registerComponent('circular-slider', {
               node.material.metalness = 0.5;
               node.renderOrder = 2;
               node.material.needsUpdate = true;
-              // Remover filtro de blur
-              if (node.material.defines) {
-                delete node.material.defines.USE_BLUR;
-              }
             }
           });
         }
       } else {
-        // Modelos laterais
+        // Modelos laterais em círculo
         const angle = this.currentAngle + ((index - 1) * this.angleStep);
         const x = this.radius * Math.cos(angle);
-        const z = this.radius * Math.sin(angle) - 1.5;
+        const z = this.radius * Math.sin(angle) - 0.3;
         model.setAttribute('position', `${x} 0 ${z}`);
         
         const rotationY = (angle * 180 / Math.PI) + 90;
         model.setAttribute('rotation', `0 ${rotationY} 0`);
-        model.setAttribute('scale', '1.5 1.5 1.5');
+        model.setAttribute('scale', '3 3 3');
         
         const obj = model.getObject3D('mesh');
         if (obj) {
           obj.traverse((node) => {
             if (node.isMesh) {
               node.material.transparent = true;
-              node.material.opacity = 0.3;
+              node.material.opacity = 0.4;
               node.material.depthWrite = false;
               node.material.depthTest = true;
               node.material.roughness = 1;
