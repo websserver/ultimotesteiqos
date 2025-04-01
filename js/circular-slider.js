@@ -6,21 +6,19 @@ AFRAME.registerComponent('circular-slider', {
       this.el.querySelector('#modelo3d-1')
     ];
     
-    this.radius = 0.8; // Reduzido para manter o círculo mais compacto
-    this.positions = []; // Array para armazenar posições fixas
+    this.totalModels = this.models.length;
     this.currentIndex = 0;
+    this.radius = 1;
+    this.rotationY = 0;
+    this.rotationStep = 360 / this.totalModels;
     
-    // Calcular posições fixas do círculo
-    for (let i = 0; i < this.models.length; i++) {
-      const angle = (i * 2 * Math.PI) / this.models.length;
-      this.positions.push({
-        x: this.radius * Math.cos(angle),
-        z: this.radius * Math.sin(angle) - 0.2
-      });
-    }
+    // Container para girar todos os modelos como uma unidade
+    this.container = document.createElement('a-entity');
+    this.el.appendChild(this.container);
+    this.models.forEach(model => this.container.appendChild(model));
     
-    // Configurar materiais iniciais
-    this.models.forEach(model => {
+    // Configurar materiais e posições iniciais
+    this.models.forEach((model, index) => {
       model.addEventListener('model-loaded', () => {
         const obj = model.getObject3D('mesh');
         if (obj) {
@@ -28,14 +26,18 @@ AFRAME.registerComponent('circular-slider', {
             if (node.isMesh) {
               node.material = node.material.clone();
               node.material.transparent = true;
-              node.material.opacity = 0.5;
-              node.material.depthWrite = false;
-              node.material.depthTest = true;
               node.material.needsUpdate = true;
             }
           });
         }
       });
+      
+      // Posicionar cada modelo em seu ângulo inicial
+      const angle = (index * 2 * Math.PI) / this.totalModels;
+      const x = this.radius * Math.sin(angle);
+      const z = this.radius * Math.cos(angle);
+      model.setAttribute('position', `${x} 0 ${z}`);
+      model.setAttribute('rotation', `0 ${-angle * 180 / Math.PI} 0`);
     });
     
     this.updatePositions();
@@ -45,51 +47,41 @@ AFRAME.registerComponent('circular-slider', {
   },
   
   updatePositions: function() {
+    // Atualizar a rotação do container
+    this.container.setAttribute('rotation', `0 ${this.rotationY} 0`);
+    
+    // Atualizar aparência dos modelos baseado em suas posições
     this.models.forEach((model, index) => {
-      if (index === 0) {
-        // Modelo central
-        model.setAttribute('position', '0 0 0');
-        model.setAttribute('rotation', '0 0 0');
+      const angle = ((index * 360) / this.totalModels + this.rotationY) % 360;
+      const isCenter = Math.abs(angle % 360) < this.rotationStep / 2 || 
+                      Math.abs(angle % 360 - 360) < this.rotationStep / 2;
+      
+      if (isCenter) {
         model.setAttribute('scale', '6 6 6');
-        
         const obj = model.getObject3D('mesh');
         if (obj) {
           obj.traverse((node) => {
             if (node.isMesh) {
-              node.material.transparent = false;
               node.material.opacity = 1;
-              node.material.depthWrite = true;
-              node.material.depthTest = true;
-              node.material.roughness = 0.5;
-              node.material.metalness = 0.5;
+              node.material.transparent = false;
               node.renderOrder = 2;
-              node.material.needsUpdate = true;
             }
           });
         }
       } else {
-        // Modelos laterais em círculo
-        const posIndex = (index + this.currentIndex) % this.positions.length;
-        const pos = this.positions[posIndex];
+        // Calcular escala e opacidade baseado na distância do centro
+        const distanceFromCenter = Math.abs((angle % 360) - 180) / 180;
+        const scale = 2 + (distanceFromCenter * 1);
+        const opacity = 0.3 + (distanceFromCenter * 0.2);
         
-        model.setAttribute('position', `${pos.x} 0 ${pos.z}`);
-        const angle = Math.atan2(pos.z, pos.x);
-        model.setAttribute('rotation', `0 ${(angle * 180 / Math.PI) + 90} 0`);
-        model.setAttribute('scale', '2 2 2'); // Reduzido de 3 para 2
-        
+        model.setAttribute('scale', `${scale} ${scale} ${scale}`);
         const obj = model.getObject3D('mesh');
         if (obj) {
           obj.traverse((node) => {
             if (node.isMesh) {
+              node.material.opacity = opacity;
               node.material.transparent = true;
-              node.material.opacity = 0.4;
-              node.material.depthWrite = false;
-              node.material.depthTest = true;
-              node.material.roughness = 1;
-              node.material.metalness = 0;
-              node.material.fog = true;
-              node.renderOrder = 0;
-              node.material.needsUpdate = true;
+              node.renderOrder = 1;
             }
           });
         }
@@ -98,14 +90,35 @@ AFRAME.registerComponent('circular-slider', {
   },
   
   rotate: function(direction) {
-    if (direction === 'next') {
-      this.currentIndex = (this.currentIndex + 1) % this.models.length;
-      this.models.push(this.models.shift());
-    } else {
-      this.currentIndex = (this.currentIndex - 1 + this.models.length) % this.models.length;
-      this.models.unshift(this.models.pop());
-    }
+    // Calcular nova rotação
+    const step = direction === 'next' ? -this.rotationStep : this.rotationStep;
+    this.rotationY = (this.rotationY + step + 360) % 360;
     
-    this.updatePositions();
+    // Animar a rotação suavemente
+    const startRotation = this.container.getAttribute('rotation').y;
+    const endRotation = this.rotationY;
+    
+    // Criar animação de rotação
+    this.container.setAttribute('animation__rotate', {
+      property: 'rotation.y',
+      from: startRotation,
+      to: endRotation,
+      dur: 500,
+      easing: 'easeOutQuad'
+    });
+    
+    // Atualizar índice atual
+    this.currentIndex = (this.currentIndex + (direction === 'next' ? 1 : -1) + this.totalModels) % this.totalModels;
+    
+    // Atualizar aparência dos modelos durante a animação
+    const animation = setInterval(() => {
+      this.updatePositions();
+    }, 16);
+    
+    // Parar a atualização após a animação terminar
+    setTimeout(() => {
+      clearInterval(animation);
+      this.updatePositions();
+    }, 500);
   }
 }); 
