@@ -62,17 +62,69 @@
       .model-container {
         position: absolute;
         transition: all 0.5s ease-in-out;
+        transform-origin: center center;
       }
 
       .model-container.active {
         scale: 8 8 8;
         z-index: 2;
+        opacity: 1;
       }
 
       .model-container.inactive {
         scale: 4 4 4;
         opacity: 0.7;
         z-index: 1;
+      }
+
+      #controls {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: flex;
+        gap: 20px;
+      }
+
+      #controls button {
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 20px;
+        transition: background 0.3s ease;
+      }
+
+      #controls button:hover {
+        background: rgba(0, 0, 0, 0.8);
+      }
+
+      #zoom-controls {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        gap: 10px;
+      }
+
+      .zoom-button {
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        transition: background 0.3s ease;
+      }
+
+      .zoom-button:hover {
+        background: rgba(0, 0, 0, 0.8);
       }
     </style>
   </head>

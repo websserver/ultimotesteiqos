@@ -56,18 +56,24 @@ let currentIndex = 0;
 const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
+// Configuração do carrossel
+const RADIUS = 0.5; // Raio do círculo
+const ANGLE_STEP = 120; // Ângulo entre cada modelo
+const TRANSITION_DURATION = 500; // Duração da transição em ms
+
 // Posições dos modelos no carrossel
 const positions = [
     { x: 0, y: 0, z: 0, rotation: 0 },      // Centro
-    { x: -0.015, y: 0, z: -0.1, rotation: -120 }, // Esquerda
-    { x: 0.015, y: 0, z: -0.1, rotation: 120 }    // Direita
+    { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP }, // Esquerda
+    { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP }    // Direita
 ];
 
 // Inicializar posições
 function initializePositions() {
     models.forEach((model, index) => {
-        model.setAttribute('position', `${positions[index].x} ${positions[index].y} ${positions[index].z}`);
-        model.setAttribute('rotation', `0 ${positions[index].rotation} 0`);
+        const position = positions[index];
+        model.setAttribute('position', `${position.x} ${position.y} ${position.z}`);
+        model.setAttribute('rotation', `0 ${position.rotation} 0`);
         if (index === 0) {
             model.classList.add('active');
         } else {
@@ -78,7 +84,7 @@ function initializePositions() {
 
 // Atualizar posições do carrossel
 function updateCarousel(newIndex) {
-    const rotation = (newIndex - currentIndex) * 120;
+    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
     carousel.setAttribute('rotation', `0 ${rotation} 0`);
     
     models.forEach((model, index) => {
