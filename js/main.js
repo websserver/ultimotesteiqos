@@ -107,18 +107,17 @@ function getSlidePosition(index) {
 
 // Função para mostrar informações do modelo
 function showModelInfo(modelId) {
-    const modelInfo = document.getElementById('model-info');
-    const modelName = document.getElementById('model-name');
-    const modelButton = document.querySelector('.model-info button');
-    
-    // Atualizar informações baseado no modelo atual
-    const config = modelConfigs[modelId];
-    if (config) {
-        modelName.textContent = config.name;
-        modelButton.textContent = config.buttonText;
-        modelButton.onclick = () => window.open(config.link, '_self');
-        modelInfo.style.display = 'block';
-    }
+    const modelConfig = modelConfigs[modelId];
+    if (!modelConfig) return;
+
+    const modelInfo = document.querySelector('.model-info');
+    if (!modelInfo) return;
+
+    modelInfo.innerHTML = `
+        <h2>${modelConfig.name}</h2>
+        <button onclick="window.location.href='${modelConfig.link}'">${modelConfig.buttonText}</button>
+    `;
+    modelInfo.style.display = 'flex';
 }
 
 // Atualizar posições do carrossel
