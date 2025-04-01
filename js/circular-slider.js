@@ -6,7 +6,7 @@ AFRAME.registerComponent('circular-slider', {
       this.el.querySelector('#modelo3d-3')
     ];
     
-    this.radius = 0.5; // Raio do círculo
+    this.radius = 1.2; // Aumentado o raio do círculo
     this.currentAngle = 0;
     this.angleStep = (2 * Math.PI) / this.models.length;
     
@@ -28,12 +28,25 @@ AFRAME.registerComponent('circular-slider', {
       // Rotacionar o modelo para olhar para o centro
       const rotationY = (angle * 180 / Math.PI) + 90;
       model.setAttribute('rotation', `0 ${rotationY} 0`);
+
+      // Ajustar a escala baseado na posição
+      const isCenter = index === 0; // O modelo atual (índice 0) é o central
+      const scale = isCenter ? 8 : 4; // Modelo central maior, outros menores
+      model.setAttribute('scale', `${scale} ${scale} ${scale}`);
     });
   },
   
   rotate: function(direction) {
     const step = direction === 'next' ? -this.angleStep : this.angleStep;
     this.currentAngle += step;
+    
+    // Rotacionar o array de modelos
+    if (direction === 'next') {
+      this.models.push(this.models.shift());
+    } else {
+      this.models.unshift(this.models.pop());
+    }
+    
     this.updatePositions();
   }
 }); 
