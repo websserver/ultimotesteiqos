@@ -69,23 +69,23 @@ const positions = {
 };
 
 // Configuração dos modelos com suas informações
-const modelConfigs = [
-    {
+const modelConfigs = {
+    'modelo3d-1': {
         name: 'ILUMA i ONE',
         buttonText: 'Personalizar ILUMA i ONE',
         link: 'ilumaone.html'
     },
-    {
+    'modelo3d-2': {
         name: 'ILUMA i',
         buttonText: 'Personalizar ILUMA i',
         link: 'ilumai.html'
     },
-    {
+    'modelo3d-3': {
         name: 'ILUMA i PRIME',
         buttonText: 'Personalizar ILUMA i PRIME',
         link: 'ilumaprime.html'
     }
-];
+};
 
 // Função para obter os índices dos modelos visíveis
 function getVisibleModels() {
@@ -106,18 +106,19 @@ function getSlidePosition(index) {
 }
 
 // Função para mostrar informações do modelo
-function showModelInfo(index) {
+function showModelInfo(modelId) {
     const modelInfo = document.getElementById('model-info');
     const modelName = document.getElementById('model-name');
     const modelButton = document.querySelector('.model-info button');
     
     // Atualizar informações baseado no modelo atual
-    const config = modelConfigs[index];
-    modelName.textContent = config.name;
-    modelButton.textContent = config.buttonText;
-    modelButton.onclick = () => window.open(config.link, '_self');
-    
-    modelInfo.style.display = 'block';
+    const config = modelConfigs[modelId];
+    if (config) {
+        modelName.textContent = config.name;
+        modelButton.textContent = config.buttonText;
+        modelButton.onclick = () => window.open(config.link, '_self');
+        modelInfo.style.display = 'block';
+    }
 }
 
 // Atualizar posições do carrossel
@@ -137,13 +138,16 @@ function updateCarousel(newIndex) {
         model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
         model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
         model.setAttribute('opacity', targetPos.opacity);
+
+        // Se este é o modelo central, mostrar suas informações
+        if (position === 'center') {
+            const modelId = model.getAttribute('id');
+            showModelInfo(modelId);
+        }
     });
     
     // Atualizar índice atual
     currentIndex = newIndex;
-    
-    // Mostrar informações do modelo atual
-    showModelInfo(currentIndex);
 }
 
 // Função para mover para o próximo modelo
