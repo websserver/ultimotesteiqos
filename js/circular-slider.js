@@ -11,6 +11,15 @@ AFRAME.registerComponent('circular-slider', {
     this.currentAngle = 0;
     this.angleStep = (2 * Math.PI) / this.models.length;
     
+    // Adicionar material de blur para os modelos laterais
+    this.models.forEach(model => {
+      model.setAttribute('material', {
+        shader: 'standard',
+        opacity: 1,
+        transparent: true
+      });
+    });
+    
     // Posicionar os modelos inicialmente
     this.updatePositions();
     
@@ -26,17 +35,36 @@ AFRAME.registerComponent('circular-slider', {
         model.setAttribute('position', '0 0 0');
         model.setAttribute('rotation', '0 0 0');
         model.setAttribute('scale', '8 8 8');
+        // Remover blur do modelo central
+        model.setAttribute('material', {
+          shader: 'standard',
+          opacity: 1,
+          transparent: false,
+          metalness: 0.5,
+          roughness: 0.5
+        });
       } else {
         // Modelos laterais
         const angle = this.currentAngle + ((index - 1) * this.angleStep);
         const x = this.radius * Math.cos(angle);
-        const z = this.radius * Math.sin(angle);
+        // Posicionar modelos laterais mais atrás (z negativo)
+        const z = this.radius * Math.sin(angle) - 0.5;
         model.setAttribute('position', `${x} 0 ${z}`);
         
         // Rotacionar o modelo para olhar para o centro
         const rotationY = (angle * 180 / Math.PI) + 90;
         model.setAttribute('rotation', `0 ${rotationY} 0`);
         model.setAttribute('scale', '4 4 4');
+        
+        // Adicionar efeito de blur nos modelos laterais
+        model.setAttribute('material', {
+          shader: 'standard',
+          opacity: 0.7,
+          transparent: true,
+          metalness: 0.3,
+          roughness: 0.8,
+          blending: 'additive'
+        });
       }
     });
   },
