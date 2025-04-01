@@ -20,9 +20,10 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 8;
-const SELECTED_SCALE = 10;
-const CLICK_SCALE = 12;
+const BASE_SCALE = 6;
+const SELECTED_SCALE = 8;
+const CLICK_SCALE = 10;
+const CIRCLE_RADIUS = 0.5; // Raio do círculo
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -32,6 +33,9 @@ const MODEL_NAMES = {
 let currentModel = 1;
 let isModelClicked = false;
 let currentScale = BASE_SCALE;
+let currentRotation = 0;
+let touchStartX = 0;
+let isDragging = false;
 const ZOOM_FACTOR = 1.2;
 const MIN_SCALE = 5;
 const MAX_SCALE = 15;
@@ -117,6 +121,11 @@ function handleModelClick(index) {
 function updateModelPositions() {
   if (!isModelClicked) {
     modelos.forEach((modelo, index) => {
+      const angle = (index * (360 / 3) + currentRotation) * (Math.PI / 180);
+      const x = CIRCLE_RADIUS * Math.cos(angle);
+      const z = CIRCLE_RADIUS * Math.sin(angle);
+      
+      modelo.setAttribute('position', `${x} 0 ${z}`);
       if (index === currentModel) {
         modelo.setAttribute('scale', `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`);
       } else {
@@ -130,27 +139,13 @@ function changeModel(direction) {
   hideModelInfo();
   isModelClicked = false;
   
-  // Primeiro, retornamos o modelo atual ao tamanho normal com animação
-  modelos[currentModel].setAttribute('animation', {
-    property: 'scale',
-    to: `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`,
-    dur: 300,
-    easing: 'easeOutQuad'
-  });
-
   if (direction === 'next' && currentModel < 2) {
     currentModel++;
   } else if (direction === 'prev' && currentModel > 0) {
     currentModel--;
   }
-
-  // Depois, aumentamos o novo modelo selecionado com animação
-  modelos[currentModel].setAttribute('animation', {
-    property: 'scale',
-    to: `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`,
-    dur: 300,
-    easing: 'easeOutQuad'
-  });
+  
+  updateModelPositions();
 }
 
 function updateZoom() {
@@ -186,24 +181,13 @@ nextButton.addEventListener('click', () => changeModel('next'));
 // Target detection events
 const target = document.querySelector('a-entity[mindar-image-target]');
 target.addEventListener("targetFound", event => {
-  // Mostrar todos os modelos
   modelos.forEach((modelo, i) => {
     modelo.setAttribute('visible', 'true');
     modelo.setAttribute('scale', '6 6 6');
     modelo.classList.remove('blurred');
-    // Posicionar cada modelo
-    switch(i) {
-      case 0:
-        modelo.setAttribute('position', '-0.3 0 0');
-        break;
-      case 1:
-        modelo.setAttribute('position', '0 0 0');
-        break;
-      case 2:
-        modelo.setAttribute('position', '0.3 0 0');
-        break;
-    }
   });
+  
+  updateModelPositions();
 });
 
 target.addEventListener("targetLost", event => {
@@ -223,4 +207,27 @@ zoomOutBtn.addEventListener('click', () => {
     currentScale /= ZOOM_FACTOR;
     updateZoom();
   }
+});
+
+// Adicionar eventos de toque
+sceneEl.addEventListener('touchstart', (event) => {
+  touchStartX = event.touches[0].clientX;
+  isDragging = true;
+});
+
+sceneEl.addEventListener('touchmove', (event) => {
+  if (!isDragging) return;
+  
+  const touchX = event.touches[0].clientX;
+  const deltaX = touchX - touchStartX;
+  
+  // Ajustar a rotação baseada no movimento do dedo
+  currentRotation += deltaX * 0.5;
+  touchStartX = touchX;
+  
+  updateModelPositions();
+});
+
+sceneEl.addEventListener('touchend', () => {
+  isDragging = false;
 }); 
