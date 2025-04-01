@@ -98,6 +98,18 @@ function updateCarousel(newIndex) {
     currentIndex = newIndex;
 }
 
+// Função para mover para o próximo modelo
+function nextModel() {
+    const nextIndex = (currentIndex + 1) % models.length;
+    updateCarousel(nextIndex);
+}
+
+// Função para mover para o modelo anterior
+function prevModel() {
+    const prevIndex = (currentIndex - 1 + models.length) % models.length;
+    updateCarousel(prevIndex);
+}
+
 // Functions
 function showModelInfo(index) {
   const modelInfo = document.getElementById('model-info');
@@ -226,8 +238,8 @@ sceneEl.addEventListener('renderstart', () => {
 });
 
 // Button events
-prevButton.addEventListener('click', () => changeModel('prev'));
-nextButton.addEventListener('click', () => changeModel('next'));
+prevButton.addEventListener('click', prevModel);
+nextButton.addEventListener('click', nextModel);
 
 // Target detection events
 const target = document.querySelector('a-entity[mindar-image-target]');
@@ -274,6 +286,15 @@ models.forEach((model, index) => {
     model.addEventListener('click', () => {
         updateCarousel(index);
     });
+});
+
+// Adicionar eventos de teclado
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+        prevModel();
+    } else if (event.key === 'ArrowRight') {
+        nextModel();
+    }
 });
 
 // Inicializar o carrossel
