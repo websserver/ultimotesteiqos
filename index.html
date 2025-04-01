@@ -64,13 +64,14 @@
         transition: all 0.5s ease-in-out;
         transform-origin: center center;
         cursor: pointer;
+        left: 50%;
+        transform: translateX(-50%);
       }
 
       .model-container.active {
         scale: 8 8 8;
         z-index: 2;
         opacity: 1;
-        transform: translateX(0);
       }
 
       .model-container.inactive {
@@ -80,11 +81,11 @@
       }
 
       .model-container.inactive.left {
-        transform: translateX(-200px);
+        transform: translateX(-200px) scale(4);
       }
 
       .model-container.inactive.right {
-        transform: translateX(200px);
+        transform: translateX(200px) scale(4);
       }
 
       #controls {

@@ -328,11 +328,17 @@ document.getElementById('nextBtn').addEventListener('click', () => {
 // Inicialização
 updateCarousel();
 
+// Remover eventos de clique antigos
+models.forEach(model => {
+  model.removeEventListener('click', handleModelClick);
+});
+
 // Adicionar eventos de clique
 models.forEach((model, index) => {
-    model.addEventListener('click', () => {
-        updateCarousel(index);
-    });
+  model.addEventListener('click', () => {
+    currentIndex = index;
+    updateCarousel();
+  });
 });
 
 // Adicionar eventos de teclado
