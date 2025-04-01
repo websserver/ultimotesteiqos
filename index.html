@@ -181,6 +181,43 @@
       .model-info button:hover {
         background-color: #1aabb9;
       }
+
+      .navigation-buttons {
+        position: fixed;
+        bottom: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 100px;
+        z-index: 1000;
+      }
+
+      .nav-button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 2em;
+        cursor: pointer;
+        padding: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease;
+      }
+
+      .nav-button:hover {
+        transform: scale(1.2);
+      }
+
+      .nav-button:active {
+        transform: scale(0.95);
+      }
+
+      #zoomControls {
+        display: none !important;
+      }
+
+      .zoom-button {
+        display: none !important;
+      }
     </style>
   </head>
   <body>
@@ -205,8 +242,8 @@
     </div>
 
     <div class="navigation-buttons">
-      <button id="prevButton" class="nav-button">←</button>
-      <button id="nextButton" class="nav-button">→</button>
+      <button id="prevButton" class="nav-button">◀</button>
+      <button id="nextButton" class="nav-button">▶</button>
     </div>
 
     <a-scene mindar-image="imageTargetSrc: ./markers/targets.mind;
