@@ -138,10 +138,15 @@ function updateCarousel(newIndex) {
         model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
         model.setAttribute('opacity', targetPos.opacity);
 
-        // Se este é o modelo central, mostrar suas informações
+        // Se este é o modelo central, mostrar suas informações e atualizar o modelo 3D
         if (position === 'center') {
             const modelId = model.getAttribute('id');
             showModelInfo(modelId);
+            
+            // Atualizar o modelo 3D correspondente
+            currentModel = index;
+            updateModelPositions();
+            
             // Salvar o índice do modelo selecionado
             localStorage.setItem('selectedModelIndex', index.toString());
         }
@@ -308,12 +313,36 @@ models.forEach(model => {
 });
 
 function handleModelClick(index) {
-  // Atualizar o carrossel para mostrar o modelo clicado
+  console.log('Modelo clicado:', index);
+  
+  // Atualizar o carrossel
   updateCarousel(index);
   
   // Atualizar o modelo atual
   currentModel = index;
+  isModelClicked = true;
   
-  // Atualizar as posições dos modelos
-  updateModelPositions();
+  // Animar o modelo clicado
+  modelos[index].setAttribute('animation', {
+    property: 'scale',
+    to: `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`,
+    dur: 300,
+    easing: 'easeOutQuad'
+  });
+  
+  // Retornar os outros modelos ao tamanho normal
+  modelos.forEach((modelo, i) => {
+    if (i !== index) {
+      modelo.setAttribute('animation', {
+        property: 'scale',
+        to: `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`,
+        dur: 300,
+        easing: 'easeOutQuad'
+      });
+    }
+  });
+  
+  // Mostrar informações do modelo
+  const modelId = `modelo3d-${index + 1}`;
+  showModelInfo(modelId);
 } 
