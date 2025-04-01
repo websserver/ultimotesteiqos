@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/color-switcher.js"></script>
     <script src="js/age-verification.js"></script>
+    <script src="js/circular-slider.js"></script>
     <style>
       .marker-lost-message {
         position: fixed;
@@ -32,6 +33,44 @@
       @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
+      }
+
+      .circular-slider {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .model-container {
+        transition: transform 0.3s ease;
+      }
+
+      .model-container:hover {
+        transform: scale(1.5);
+      }
+
+      #controls {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: flex;
+        gap: 20px;
+      }
+
+      #controls button {
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      #controls button:hover {
+        background: rgba(0, 0, 0, 0.7);
       }
     </style>
   </head>
@@ -83,36 +122,32 @@
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="rayOrigin: mouse; fuse: false;" raycaster="objects: .clickable; far: 10000; interval: 100"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-entity class="model-container clickable" 
-                  id="modelo3d-1" 
-                  model-handler 
-                  gltf-model="#modelo"
-                  position="-0.015 0 0" 
-                  rotation="0 0 0" 
-                  scale="6 6 6" 
-                  visible="true" 
-                  event-set__mouseenter="scale: 9 9 9" 
-                  event-set__mouseleave="scale: 6 6 6"></a-entity>
-        <a-entity class="model-container clickable" 
-                  id="modelo3d-2" 
-                  model-handler 
-                  gltf-model="#modelo2" 
-                  position="0 0 0"
-                  rotation="0 0 0" 
-                  scale="6 6 6" 
-                  visible="true" 
-                  event-set__mouseenter="scale: 9 9 9" 
-                  event-set__mouseleave="scale: 6 6 6"></a-entity>
-        <a-entity class="model-container clickable" 
-                  id="modelo3d-3" 
-                  model-handler 
-                  gltf-model="#modelo3" 
-                  position="0.015 0 0" 
-                  rotation="0 0 0" 
-                  scale="6 6 6" 
-                  visible="true" 
-                  event-set__mouseenter="scale: 9 9 9" 
-                  event-set__mouseleave="scale: 6 6 6"></a-entity>
+        <a-entity class="circular-slider" id="circular-slider" circular-slider>
+          <a-entity class="model-container clickable" 
+                    id="modelo3d-1" 
+                    model-handler 
+                    gltf-model="#modelo"
+                    position="0 0 0" 
+                    rotation="0 0 0" 
+                    scale="6 6 6" 
+                    visible="true"></a-entity>
+          <a-entity class="model-container clickable" 
+                    id="modelo3d-2" 
+                    model-handler 
+                    gltf-model="#modelo2" 
+                    position="0 0 0"
+                    rotation="0 0 0" 
+                    scale="6 6 6" 
+                    visible="true"></a-entity>
+          <a-entity class="model-container clickable" 
+                    id="modelo3d-3" 
+                    model-handler 
+                    gltf-model="#modelo3" 
+                    position="0 0 0" 
+                    rotation="0 0 0" 
+                    scale="6 6 6" 
+                    visible="true"></a-entity>
+        </a-entity>
       </a-entity>
     </a-scene>
 
