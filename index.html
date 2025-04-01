@@ -165,37 +165,44 @@
 
       .model-info {
         position: fixed;
-        top: 25%;
+        bottom: 120px;
         left: 50%;
         transform: translateX(-50%);
         text-align: center;
         z-index: 1000;
-        background: rgba(0, 0, 0, 0.7);
         padding: 20px;
-        border-radius: 10px;
         color: white;
         font-family: 'IQOSSans-Bold', sans-serif;
+        width: 100%;
       }
 
       .model-info h2 {
         margin: 0 0 15px 0;
-        font-size: 24px;
+        font-size: 36px;
         color: #00A0DC;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
       }
 
       .model-info button {
         background: #00A0DC;
         border: none;
         color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
+        padding: 15px 30px;
+        border-radius: 50px;
         cursor: pointer;
-        font-size: 16px;
-        transition: background 0.3s ease;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       }
 
       .model-info button:hover {
         background: #0088BC;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0,0,0,0.2);
+      }
+
+      .model-info button:active {
+        transform: translateY(0);
       }
     </style>
   </head>
