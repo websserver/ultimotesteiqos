@@ -348,55 +348,53 @@
         </div>
       </div>
     </div>
-    
-    <div style="margin-top: 15%;">
-        <a-scene
-          mindar-image="imageTargetSrc: ./markers/targets.mind; 
-          filterMinCF: 0.0001; 
-          filterBeta: 0.001;
-          warmupTolerance: 30;
-          missTolerance: 5;
-          smoothCount: 80;
-          smoothTolerance: 0.005;
-          smoothThreshold: 0.5;
-          maxTrack: 1;
-          minDetectionConfidence: 0.1;
-          maxDetectionConfidence: 0.95;
-          trackingMethod: best;
-          trackingSmoothingFactor: 0.7;
-          trackingThreshold: 0.1;
-          trackingTimeout: 3000;
-          trackingResetTimeout: 6000;
-          trackingResetThreshold: 0.3;
-          debugUIEnabled: true"
-          color-space="sRGB" 
-          renderer="colorManagement: true, physicallyCorrectLights, alpha: false" 
-          vr-mode-ui="enabled: false"
-          device-orientation-permission-ui="enabled: false"
-          loading-screen="enabled: false">
-          <a-assets>
-            <a-asset-item id="modelo" src="modelo3d/modelo_IQOS ILUMA ONE/navy-blazer.glb"></a-asset-item>
-          </a-assets>
 
-          <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <a-scene
+      mindar-image="imageTargetSrc: ./markers/targets.mind; 
+      filterMinCF: 0.0001; 
+      filterBeta: 0.001;
+      warmupTolerance: 30;
+      missTolerance: 5;
+      smoothCount: 80;
+      smoothTolerance: 0.005;
+      smoothThreshold: 0.5;
+      maxTrack: 1;
+      minDetectionConfidence: 0.1;
+      maxDetectionConfidence: 0.95;
+      trackingMethod: best;
+      trackingSmoothingFactor: 0.7;
+      trackingThreshold: 0.1;
+      trackingTimeout: 3000;
+      trackingResetTimeout: 6000;
+      trackingResetThreshold: 0.3;
+      debugUIEnabled: true"
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights, alpha: false" 
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+      loading-screen="enabled: false">
+      <a-assets>
+        <a-asset-item id="modelo" src="modelo3d/modelo_IQOS ILUMA ONE/navy-blazer.glb"></a-asset-item>
+      </a-assets>
 
-          <a-entity mindar-image-target="targetIndex: 0">
-            <a-entity 
-              id="modelo3d-1" 
-              gltf-model="#modelo"
-              position="0 0 20" 
-              rotation="0 0 0" 
-              scale="8 8 8" 
-              class="clickable"
-              animation-mixer="loop: repeat"
-              animation="property: position; dur: 300; easing: easeOutQuad"
-              material="transparent: false; opacity: 1; depthWrite: true; depthTest: true; blending: NoBlending"
-              remove-transparency
-              gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08">
-            </a-entity>
-          </a-entity>
-        </a-scene>
-      </div>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-entity 
+          id="modelo3d-1" 
+          gltf-model="#modelo"
+          position="0 0 20" 
+          rotation="0 0 0" 
+          scale="8 8 8" 
+          class="clickable"
+          animation-mixer="loop: repeat"
+          animation="property: position; dur: 300; easing: easeOutQuad"
+          material="transparent: false; opacity: 1; depthWrite: true; depthTest: true; blending: NoBlending"
+          remove-transparency
+          gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08">
+        </a-entity>
+      </a-entity>
+    </a-scene>
 
     <div class="overlay-gradient"></div>
     <div class="marker-lost-message">
