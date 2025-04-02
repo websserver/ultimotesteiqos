@@ -138,7 +138,7 @@
 
       .title-container {
         position: fixed;
-        top: 15%;
+        top: 13%;
         left: 50%;
         transform: translateX(-50%);
         text-align: center;
@@ -155,25 +155,66 @@
         text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
       }
 
+      .color-selector-frame {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 600px;
+        height: 120px;
+        border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+        z-index: 999;
+        pointer-events: none;
+      }
+
       .color-selector {
+        position: fixed;
+        bottom: 95px;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
         justify-content: center;
-        gap: 15px;
-        margin-top: 6%;
+        gap: 25px;
+        padding: 15px 30px;
+        z-index: 1000;
+        width: 300px;
+        height: 60px;
+        align-items: center;
+      }
+
+      .color-selector::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 200%;
+        bottom: -50%;
+        left: 0;
+        border-radius: 50%;
+        z-index: -1;
+        pointer-events: none;
       }
 
       .color-option {
-        width: 20px;
-        height: 20px;
+        width: 25px;
+        height: 25px;
         border-radius: 50%;
         cursor: pointer;
-        border: 2px solid white;
+        border: 2px solid rgba(255, 255, 255, 0.8);
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        transition: transform 0.2s ease;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+        position: relative;
+        transform-origin: center 150px;
       }
 
+      .color-option:nth-child(1) { transform: rotate(0deg) translateY(0px); }
+      .color-option:nth-child(2) { transform: rotate(3deg) translateY(20px); }
+      .color-option:nth-child(3) { transform: translateY(33px); }
+      .color-option:nth-child(4) { transform: rotate(0deg) translateY(20px); }
+      .color-option:nth-child(5) { transform: rotate(3deg) translateY(0px); }
+
       .color-option:hover {
-        transform: scale(1.1);
+        border-color: white;
       }
 
       .color-option.active {
@@ -225,6 +266,52 @@
         from { opacity: 0; }
         to { opacity: 1; }
       }
+
+      .features-container {
+        position: fixed;
+        top: 37%;
+        bottom: 65%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        max-width: 400px;
+        background: transparent;
+        border-radius: 20px;
+        padding: 15px;
+        color: black;
+        z-index: 1000;
+        font-family: 'IQOSSans-Regular', sans-serif;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .feature-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .feature-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .feature-icon {
+        width: 30px;
+        height: 30px;
+        object-fit: contain;
+      }
+
+      .feature-title {
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+        font-family: 'IQOSSans-Bold', sans-serif;
+      }
     </style>
   </head>
   <body>
@@ -240,12 +327,32 @@
 
     <div class="title-container">
       <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">IQOS ILUMA <b style="font-size: 25px; background-color: #16becf; color:white; border-radius: 5px; padding: 0 5px;">i</b> ONE</h1>
-      <div class="color-selector">
-        <div class="color-option" style="background-color: #2D3339;" data-color="navy" onclick="changeColor('navy')"></div>
-        <div class="color-option" style="background-color: #8B9C3C;" data-color="olive" onclick="changeColor('olive')"></div>
-        <div class="color-option" style="background-color: #8B90C5;" data-color="jacaranda" onclick="changeColor('jacaranda')"></div>
-        <div class="color-option" style="background-color: #B84C39;" data-color="rooibos" onclick="changeColor('rooibos')"></div>
-        <div class="color-option" style="background-color: #7EC4BC;" data-color="turquoise" onclick="changeColor('turquoise')"></div>
+    </div>
+
+    <div class="features-container">
+      <div class="feature-item">
+        <div class="feature-header">
+          <img src="icons/touch.webp" alt="Ecrã Tátil" class="feature-icon">
+          <span class="feature-title">Ecrã<br>Tátil</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-header">
+          <img src="icons/pause.webp" alt="Modo Pausa" class="feature-icon">
+          <span class="feature-title">Modo<br>Pausa</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-header">
+          <img src="icons/puff.webp" alt="FlexPuff" class="feature-icon">
+          <span class="feature-title">Flex<br>Puff</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-header">
+          <img src="icons/battery.webp" alt="FlexBattery" class="feature-icon">
+          <span class="feature-title">Flex<br>Battery</span>
+        </div>
       </div>
     </div>
 
@@ -301,56 +408,14 @@
       Por favor, mantenha a câmara apontada para a imagem.
     </div>
 
-    <button class="toggle-features" onclick="toggleFeatures()">
-      <img src="icons/iqosicon_branco.png" alt="IQOS Icon">
-      Características
-    </button>
-
-    <div class="features-dropdown" style="display: none;">
-      <h3>
-        Características
-        <button class="close-button" onclick="toggleFeatures()">×</button>
-      </h3>
-      <div class="feature-item">
-        <div class="feature-header">
-          <img src="icons/touch.webp" alt="Ecrã Tátil" class="feature-icon">
-          <div class="feature-title">Ecrã Tátil</div>
-        </div>
-        <div class="feature-description">
-          Verifique o estado do equipamento e personalize a sua experiência.
-        </div>
-      </div>
-
-      <div class="feature-item">
-        <div class="feature-header">
-          <img src="icons/pause.webp" alt="Modo Pausa" class="feature-icon">
-          <div class="feature-title">Modo Pausa</div>
-        </div>
-        <div class="feature-description">
-          Pausar e retomar a utilização, em qualquer momento.
-        </div>
-      </div>
-
-      <div class="feature-item">
-        <div class="feature-header">
-          <img src="icons/puff.webp" alt="FlexPuff" class="feature-icon">
-          <div class="feature-title">FlexPuff</div>
-        </div>
-        <div class="feature-description">
-          Permite até 4 aspirações extra**.
-        </div>
-      </div>
-
-      <div class="feature-item" style="padding-bottom: 50px;">
-        <div class="feature-header">
-          <img src="icons/battery.webp" alt="FlexBattery" class="feature-icon">
-          <div class="feature-title">FlexBattery</div>
-        </div>
-        <div class="feature-description">
-          Prolongue o tempo de vida útil da bateria do equipamento até um ano*** ou obtenha até 3 utilizações consecutivas****.
-        </div>
-      </div>
+    <div class="color-selector">
+      <div class="color-option" style="background-color: #2D3339;" data-color="navy" onclick="changeColor('navy')"></div>
+      <div class="color-option" style="background-color: #8B9C3C;" data-color="olive" onclick="changeColor('olive')"></div>
+      <div class="color-option" style="background-color: #8B90C5;" data-color="jacaranda" onclick="changeColor('jacaranda')"></div>
+      <div class="color-option" style="background-color: #B84C39;" data-color="rooibos" onclick="changeColor('rooibos')"></div>
+      <div class="color-option" style="background-color: #7EC4BC;" data-color="turquoise" onclick="changeColor('turquoise')"></div>
     </div>
+    <div class="color-selector-frame"></div>
 
     <script>
       const sceneEl = document.querySelector('a-scene');
@@ -598,12 +663,6 @@
         console.log('Cena carregada - verificando visibilidade');
         modeloEl.object3D.visible = true;
       });
-
-      function toggleFeatures() {
-        const dropdown = document.querySelector('.features-dropdown');
-        const currentDisplay = dropdown.style.display;
-        dropdown.style.display = currentDisplay === 'none' ? 'block' : 'none';
-      }
 
       function changeColor(color) {
         // Remover classe active de todas as opções
