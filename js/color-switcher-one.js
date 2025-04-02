@@ -48,8 +48,8 @@ function changeColor(color) {
         // Atualiza o modelo após o carregamento
         modelContainer.setAttribute('gltf-model', `#${modelId}`);
         // Reseta a posição e escala
-        modelContainer.setAttribute('position', '20 20 20');
-        modelContainer.setAttribute('scale', '2 2 2');
+        modelContainer.setAttribute('position', '0 -0.5 0.1');
+        modelContainer.setAttribute('scale', '7 7 7');
         modelContainer.setAttribute('rotation', '0 0 0');
         // Força a atualização da cena
         modelContainer.object3D.visible = true;
