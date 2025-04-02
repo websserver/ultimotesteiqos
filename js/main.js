@@ -1,3 +1,14 @@
+window.addEventListener("pageshow", function(event) {
+  if (event.persisted) {
+    // a página voltou do histórico - reativa a câmara
+    startCamera();
+  }
+});
+
+
+
+
+
 AFRAME.registerComponent('model-handler', {
   init: function() {
     const el = this.el;
