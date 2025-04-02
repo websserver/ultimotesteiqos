@@ -32,3 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Esconder loading após 5 segundos (fallback)
   setTimeout(hideLoading, 5000);
 });
+
+
+window.addEventListener("pageshow", function(event) {
+  if (event.persisted) {
+    // a página voltou do histórico - reativa a câmara
+    startCamera();
+  }
+});
