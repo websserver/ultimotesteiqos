@@ -1,7 +1,7 @@
 window.addEventListener("pageshow", function(event) {
   if (event.persisted) {
     // a página voltou do histórico - reativa a câmara
-    startCamera();
+    activateCamera();
   }
 });
 
