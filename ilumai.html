@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script>
-      window.addEventListener("pageshow", function (event) {
-        if (event.persisted) {
-          window.location.reload();
-        }
-      });
-    </script>
    <!----push-->
     <title>IQOS ILUMA i</title>
     <link rel="icon" type="image/webp" href="icons/favicon-32x32.webp">
@@ -18,6 +11,13 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
+    <script>
+      window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+          window.location.reload();
+        }
+      });
+    </script>
     <style>
       .overlay-gradient {
         position: fixed;
