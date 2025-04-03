@@ -280,55 +280,64 @@
 
       .features-container {
         position: fixed;
-        top: 37%;
-        bottom: 65%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80%;
-        max-width: 400px;
-        background: transparent;
-        border-radius: 20px;
-        padding: 15px;
-        color: black;
-        z-index: 1000;
-        font-family: 'IQOSSans-Regular', sans-serif;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+        z-index: 100;
+        width: auto;
+        padding-right: 3%;
       }
 
       .feature-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        text-align: center;
+        gap: 0px;
+        padding: 10px;
+        border-radius: 12px;
+        transition: transform 0.3s ease;
+        width: auto;
       }
 
-      .feature-header {
+      .feature-item:hover {
+        transform: translateX(-5px);
+      }
+
+      .feature-icon {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .feature-icon img {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+      }
+
+      .feature-text {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 2px;
       }
 
-      .feature-icon {
-        width: 30px;
-        height: 30px;
-        object-fit: contain;
-      }
-
-      .feature-title {
+      .feature-label {
+        font-size: 12px;
         color: white;
-        font-weight: bold;
-        font-size: 14px;
-        font-family: 'IQOSSans-Bold', sans-serif;
-      }
-
-      .feature-description {
-        color: #666;
-        font-size: 14px;
-        margin-left: 34px;
-        line-height: 1.4;
+        font-weight: 500;
+        white-space: nowrap;
+        text-align: center;
+        font-family: 'IQOSSans-Regular', sans-serif;
       }
 
       .model-container {
@@ -419,27 +428,35 @@
 
     <div class="features-container">
       <div class="feature-item">
-        <div class="feature-header">
-          <img src="icons/touch.webp" alt="Ecrã Tátil" class="feature-icon">
-          <span class="feature-title">Ecrã<br>Tátil</span>
+        <div class="feature-icon">
+          <img src="icons/battery.webp" alt="Bateria">
+        </div>
+        <div class="feature-text">
+          <span class="feature-label">Bateria</span>
         </div>
       </div>
       <div class="feature-item">
-        <div class="feature-header">
-          <img src="icons/pause.webp" alt="Modo Pausa" class="feature-icon">
-          <span class="feature-title">Modo<br>Pausa</span>
+        <div class="feature-icon">
+          <img src="icons/puff.webp" alt="Puffs">
+        </div>
+        <div class="feature-text">
+          <span class="feature-label">Puffs</span>
         </div>
       </div>
       <div class="feature-item">
-        <div class="feature-header">
-          <img src="icons/puff.webp" alt="FlexPuff" class="feature-icon">
-          <span class="feature-title">Flex<br>Puff</span>
+        <div class="feature-icon">
+          <img src="icons/pause.webp" alt="Tempo">
+        </div>
+        <div class="feature-text">
+          <span class="feature-label">Tempo</span>
         </div>
       </div>
       <div class="feature-item">
-        <div class="feature-header">
-          <img src="icons/battery.webp" alt="FlexBattery" class="feature-icon">
-          <span class="feature-title">Flex<br>Battery</span>
+        <div class="feature-icon">
+          <img src="icons/touch.webp" alt="Touch">
+        </div>
+        <div class="feature-text">
+          <span class="feature-label">Touch</span>
         </div>
       </div>
     </div>
