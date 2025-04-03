@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script>
+      window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+          window.location.reload();
+        }
+      });
+    </script>
    <!----push-->
     <title>IQOS ILUMA i</title>
     <link rel="icon" type="image/webp" href="icons/favicon-32x32.webp">
@@ -653,12 +660,6 @@
         document.querySelector('#modelo3d-1').object3D.visible = true;
       });
     </script>
-    <script>
-      window.addEventListener("pageshow", function (event) {
-        if (event.persisted) {
-          window.location.reload();
-        }
-      });
-    </script>
+   
   </body>
 </html> 

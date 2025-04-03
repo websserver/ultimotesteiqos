@@ -5,12 +5,17 @@
     <title>IQOS ILUMA i ONE</title>
     <link rel="icon" type="image/webp" href="icons/favicon-32x32.webp">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
+    <script>
+      window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+          window.location.reload();
+        }
+      });
+    </script>
     <style>
       .overlay-gradient {
         position: fixed;
@@ -113,7 +118,6 @@
       .feature-label {
         font-size: 12px;
         color: white;
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
         font-weight: 500;
         white-space: nowrap;
         text-align: center;
@@ -708,12 +712,5 @@
         document.querySelector('#modelo3d-1').object3D.visible = true;
       });
     </script>
-<script>
-  window.addEventListener("pageshow", function (event) {
-    if (event.persisted) {
-      window.location.reload();
-    }
-  });
-</script>
   </body>
 </html> 
