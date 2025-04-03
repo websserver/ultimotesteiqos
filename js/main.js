@@ -53,7 +53,7 @@ const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
-const RADIUS = 0.6; // Raio do círculo
+const RADIUS = 0.9; // Raio do círculo
 const ANGLE_STEP = 360; // Ângulo entre cada modelo (já está em 360 graus)
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
