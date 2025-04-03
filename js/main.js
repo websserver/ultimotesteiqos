@@ -22,7 +22,6 @@ AFRAME.registerComponent('model-handler', {
 // Constants and variables
 const BASE_SCALE = 3.5;
 const SELECTED_SCALE = 4.5;
-const CLICK_SCALE = 4.5;
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -31,7 +30,6 @@ const MODEL_NAMES = {
 
 let currentModel = 1;
 let isModelClicked = false;
-let currentScale = BASE_SCALE;
 const ZOOM_FACTOR = 0.15;
 const MIN_SCALE = 2.5;
 const MAX_SCALE = 5;
@@ -221,23 +219,6 @@ function changeModel(direction) {
     to: `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`,
     dur: 300,
     easing: 'easeOutQuad'
-  });
-}
-
-function updateZoom() {
-  if (currentScale < MIN_SCALE) currentScale = MIN_SCALE;
-  if (currentScale > MAX_SCALE) currentScale = MAX_SCALE;
-
-  modelos.forEach((modelo, index) => {
-    if (index === currentModel) {
-      modelo.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
-      modelo.setAttribute('animation', {
-        property: 'scale',
-        to: `${currentScale} ${currentScale} ${currentScale}`,
-        dur: 200,
-        easing: 'easeOutQuad'
-      });
-    }
   });
 }
 
