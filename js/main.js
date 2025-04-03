@@ -236,6 +236,9 @@ window.addEventListener('load', function() {
       modelo.setAttribute('scale', '6 6 6');
     }
   });
+  
+  // Inicializar o carrossel e começar a rotação automática
+  initializeCarousel();
 });
 
 const sceneEl = document.querySelector('a-scene');
@@ -244,8 +247,15 @@ sceneEl.addEventListener('renderstart', () => {
 });
 
 // Button events
-prevButton.addEventListener('click', prevModel);
-nextButton.addEventListener('click', nextModel);
+prevButton.addEventListener('click', () => {
+  stopAutoRotate();
+  prevModel();
+});
+
+nextButton.addEventListener('click', () => {
+  stopAutoRotate();
+  nextModel();
+});
 
 // Target detection events
 const target = document.querySelector('a-entity[mindar-image-target]');
@@ -356,7 +366,6 @@ function initializeCarousel() {
 
 // Inicializar o carrossel quando a cena estiver carregada
 sceneEl.addEventListener('loaded', () => {
-    initializeCarousel();
     updateZoom();
 });
 
