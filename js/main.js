@@ -31,6 +31,7 @@ let currentModel = 1;
 let isModelClicked = false;
 let autoRotateInterval = null;
 const AUTO_ROTATE_INTERVAL = 5000; // 5 segundos entre cada rotação
+let initialRotationDone = false; // Flag para controlar se a rotação inicial já foi feita
 
 // DOM Elements
 const loading = document.querySelector('.loading');
@@ -54,7 +55,7 @@ const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
 const RADIUS = 0.6; // Raio do círculo
-const ANGLE_STEP = 360; // Ângulo entre cada modelo (mantido em 360 graus)
+const ANGLE_STEP = 360; // Ângulo entre cada modelo
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
@@ -119,11 +120,24 @@ function showModelInfo(modelId) {
 // Atualizar posições do carrossel
 function updateCarousel(newIndex) {
     const { prev, current, next } = getVisibleModels();
-    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
     
-    // Atualizar rotação do carrossel
-    carousel.setAttribute('rotation', `0 ${rotation} 0`);
-    
+    // Se for a primeira vez, fazer uma rotação completa de 360°
+    if (!initialRotationDone) {
+        carousel.setAttribute('rotation', `0 360 0`);
+        initialRotationDone = true;
+        
+        // Após a rotação inicial, posicionar os modelos corretamente
+        setTimeout(() => {
+            positionModels(newIndex);
+        }, 1000); // Esperar 1 segundo para a rotação inicial terminar
+    } else {
+        // Para navegações subsequentes, apenas posicionar os modelos sem rotação
+        positionModels(newIndex);
+    }
+}
+
+// Função para posicionar os modelos sem rotação
+function positionModels(newIndex) {
     // Atualizar posições dos modelos
     models.forEach((model, index) => {
         const position = getSlidePosition(index);
@@ -292,10 +306,12 @@ function initializeCarousel() {
   // Tentar recuperar o índice salvo, se não existir usar o modelo2 (ILUMA i) como padrão
   const savedIndex = localStorage.getItem('selectedModelIndex');
   currentIndex = savedIndex !== null ? parseInt(savedIndex) : 1;
-  updateCarousel(currentIndex);
   
-  // Iniciar a rotação automática
-  startAutoRotate();
+  // Resetar a flag de rotação inicial
+  initialRotationDone = false;
+  
+  // Iniciar a rotação inicial
+  updateCarousel(currentIndex);
   
   // Reiniciar a rotação automática após 10 segundos de inatividade
   let inactivityTimeout;
