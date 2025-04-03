@@ -29,9 +29,10 @@ const MODEL_NAMES = {
 
 let currentModel = 1;
 let isModelClicked = false;
-let autoRotateInterval = null;
-const AUTO_ROTATE_INTERVAL = 5000; // 5 segundos entre cada rotação
 let initialRotationDone = false; // Flag para controlar se a rotação inicial já foi feita
+let touchStartX = 0;
+let touchEndX = 0;
+const SWIPE_THRESHOLD = 50; // Distância mínima para considerar um swipe
 
 // DOM Elements
 const loading = document.querySelector('.loading');
@@ -208,8 +209,13 @@ window.addEventListener('load', function() {
     }
   });
   
-  // Inicializar o carrossel e começar a rotação automática
+  // Inicializar o carrossel
   initializeCarousel();
+  
+  // Adicionar eventos de toque para detectar swipes
+  document.addEventListener('touchstart', handleTouchStart);
+  document.addEventListener('touchmove', handleTouchMove);
+  document.addEventListener('touchend', handleTouchEnd);
 });
 
 const sceneEl = document.querySelector('a-scene');
@@ -219,12 +225,10 @@ sceneEl.addEventListener('renderstart', () => {
 
 // Button events
 prevButton.addEventListener('click', () => {
-  stopAutoRotate();
   prevModel();
 });
 
 nextButton.addEventListener('click', () => {
-  stopAutoRotate();
   nextModel();
 });
 
@@ -269,38 +273,30 @@ zoomOutBtn.addEventListener('click', () => {
   updateZoom();
 });
 
-// Adicionar eventos de teclado
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft') {
-        prevModel();
-    } else if (event.key === 'ArrowRight') {
-        nextModel();
-    }
-});
+// Funções para lidar com eventos de toque
+function handleTouchStart(event) {
+  touchStartX = event.touches[0].clientX;
+}
 
-// Função para iniciar a rotação automática
-function startAutoRotate() {
-  console.log("Iniciando rotação automática");
-  if (autoRotateInterval) {
-    clearInterval(autoRotateInterval);
-  }
+function handleTouchMove(event) {
+  touchEndX = event.touches[0].clientX;
+}
+
+function handleTouchEnd() {
+  const swipeDistance = touchEndX - touchStartX;
   
-  autoRotateInterval = setInterval(() => {
-    console.log("Rotação automática: próximo modelo");
-    nextModel();
-  }, AUTO_ROTATE_INTERVAL);
-}
-
-// Função para parar a rotação automática
-function stopAutoRotate() {
-  console.log("Parando rotação automática");
-  if (autoRotateInterval) {
-    clearInterval(autoRotateInterval);
-    autoRotateInterval = null;
+  if (Math.abs(swipeDistance) > SWIPE_THRESHOLD) {
+    if (swipeDistance > 0) {
+      // Swipe para a direita, ir para o modelo anterior
+      prevModel();
+    } else {
+      // Swipe para a esquerda, ir para o próximo modelo
+      nextModel();
+    }
   }
 }
 
-// Modificar a função initializeCarousel para iniciar a rotação automática
+// Modificar a função initializeCarousel para remover a rotação automática
 function initializeCarousel() {
   console.log("Inicializando carrossel");
   // Tentar recuperar o índice salvo, se não existir usar o modelo2 (ILUMA i) como padrão
@@ -312,22 +308,6 @@ function initializeCarousel() {
   
   // Iniciar a rotação inicial
   updateCarousel(currentIndex);
-  
-  // Reiniciar a rotação automática após 10 segundos de inatividade
-  let inactivityTimeout;
-  const resetAutoRotate = () => {
-    if (inactivityTimeout) {
-      clearTimeout(inactivityTimeout);
-    }
-    inactivityTimeout = setTimeout(() => {
-      startAutoRotate();
-    }, 10000);
-  };
-  
-  // Adicionar listeners para interações do usuário
-  document.addEventListener('click', resetAutoRotate);
-  document.addEventListener('touchstart', resetAutoRotate);
-  document.addEventListener('mousemove', resetAutoRotate);
 }
 
 // Inicializar o carrossel quando a cena estiver carregada
@@ -354,7 +334,4 @@ function handleModelClick(index) {
   // Mostrar informações do modelo
   const modelId = `modelo3d-${index + 1}`;
   showModelInfo(modelId);
-  
-  // Parar a rotação automática quando um modelo é clicado
-  stopAutoRotate();
 } 
