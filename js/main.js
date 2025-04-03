@@ -33,7 +33,7 @@ let initialRotationDone = false; // Flag para controlar se a rotação inicial j
 let touchStartX = 0;
 let touchEndX = 0;
 const SWIPE_THRESHOLD = 50; // Distância mínima para considerar um swipe
-const ROTATION_DURATION = 1000; // Duração da rotação em ms
+const ROTATION_DURATION = 200; // Duração da rotação em ms
 
 // DOM Elements
 const loading = document.querySelector('.loading');
