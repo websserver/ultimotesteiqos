@@ -20,8 +20,7 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 2.5;
-const SELECTED_SCALE = 3.2;
+const BASE_SCALE = 8.0; // Escala fixa para todos os modelos
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -30,9 +29,6 @@ const MODEL_NAMES = {
 
 let currentModel = 1;
 let isModelClicked = false;
-const ZOOM_FACTOR = 0.15;
-const MIN_SCALE = 1.8;
-const MAX_SCALE = 3.5;
 let autoRotateInterval = null;
 const AUTO_ROTATE_INTERVAL = 5000; // 5 segundos entre cada rotação
 
@@ -63,9 +59,9 @@ const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
 const positions = {
-    left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: 2.0, opacity: 0.7 },
-    center: { x: 0, y: 0, z: 0, rotation: 0, scale: 2.0, opacity: 1 },
-    right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: 2.0, opacity: 0.7 }
+    left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: BASE_SCALE, opacity: 0.7 },
+    center: { x: 0, y: 0, z: 0, rotation: 0, scale: BASE_SCALE, opacity: 1 },
+    right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: BASE_SCALE, opacity: 0.7 }
 };
 
 // Configuração dos modelos com suas informações
@@ -145,7 +141,6 @@ function updateCarousel(newIndex) {
             
             // Atualizar o modelo 3D correspondente
             currentModel = index;
-            updateModelPositions();
             
             // Salvar o índice do modelo selecionado
             localStorage.setItem('selectedModelIndex', index.toString());
@@ -158,12 +153,14 @@ function updateCarousel(newIndex) {
 
 // Função para mover para o próximo modelo
 function nextModel() {
+    console.log("Próximo modelo");
     const nextIndex = (currentIndex + 1) % models.length;
     updateCarousel(nextIndex);
 }
 
 // Função para mover para o modelo anterior
 function prevModel() {
+    console.log("Modelo anterior");
     const prevIndex = (currentIndex - 1 + models.length) % models.length;
     updateCarousel(prevIndex);
 }
@@ -173,55 +170,15 @@ function hideModelInfo() {
   modelInfo.style.display = 'none';
 }
 
-function updateModelPositions() {
-  if (!isModelClicked) {
-    modelos.forEach((modelo, index) => {
-      if (index === currentModel) {
-        modelo.setAttribute('scale', `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`);
-        modelo.setAttribute('animation', {
-          property: 'scale',
-          to: `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`,
-          dur: 300,
-          easing: 'easeOutQuad'
-        });
-      } else {
-        modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
-        modelo.setAttribute('animation', {
-          property: 'scale',
-          to: `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`,
-          dur: 300,
-          easing: 'easeOutQuad'
-        });
-      }
-    });
-  }
-}
-
 function changeModel(direction) {
   hideModelInfo();
   isModelClicked = false;
   
-  // Primeiro, retornamos o modelo atual ao tamanho normal com animação
-  modelos[currentModel].setAttribute('animation', {
-    property: 'scale',
-    to: `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`,
-    dur: 300,
-    easing: 'easeOutQuad'
-  });
-
   if (direction === 'next' && currentModel < 2) {
     currentModel++;
   } else if (direction === 'prev' && currentModel > 0) {
     currentModel--;
   }
-
-  // Depois, aumentamos o novo modelo selecionado com animação
-  modelos[currentModel].setAttribute('animation', {
-    property: 'scale',
-    to: `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`,
-    dur: 300,
-    easing: 'easeOutQuad'
-  });
 }
 
 // Event Listeners
@@ -230,10 +187,10 @@ window.addEventListener('load', function() {
   modelos.forEach((modelo, i) => {
     if (i === 1) {
       modelo.setAttribute('visible', 'true');
-      modelo.setAttribute('scale', '6 6 6');
+      modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
     } else {
       modelo.setAttribute('visible', 'false');
-      modelo.setAttribute('scale', '6 6 6');
+      modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
     }
   });
   
@@ -264,7 +221,7 @@ target.addEventListener("targetFound", event => {
     // Mostrar todos os modelos
     modelos.forEach((modelo, i) => {
         modelo.setAttribute('visible', 'true');
-        modelo.setAttribute('scale', '6 6 6');
+        modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
         modelo.classList.remove('blurred');
     });
     
@@ -276,7 +233,7 @@ target.addEventListener("targetLost", event => {
     // Manter os modelos visíveis
     modelos.forEach((modelo, i) => {
         modelo.setAttribute('visible', 'true');
-        modelo.setAttribute('scale', '6 6 6');
+        modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
         modelo.classList.remove('blurred');
     });
     
@@ -309,17 +266,20 @@ document.addEventListener('keydown', (event) => {
 
 // Função para iniciar a rotação automática
 function startAutoRotate() {
+  console.log("Iniciando rotação automática");
   if (autoRotateInterval) {
     clearInterval(autoRotateInterval);
   }
   
   autoRotateInterval = setInterval(() => {
+    console.log("Rotação automática: próximo modelo");
     nextModel();
   }, AUTO_ROTATE_INTERVAL);
 }
 
 // Função para parar a rotação automática
 function stopAutoRotate() {
+  console.log("Parando rotação automática");
   if (autoRotateInterval) {
     clearInterval(autoRotateInterval);
     autoRotateInterval = null;
@@ -328,24 +288,14 @@ function stopAutoRotate() {
 
 // Modificar a função initializeCarousel para iniciar a rotação automática
 function initializeCarousel() {
+  console.log("Inicializando carrossel");
   // Tentar recuperar o índice salvo, se não existir usar o modelo2 (ILUMA i) como padrão
   const savedIndex = localStorage.getItem('selectedModelIndex');
   currentIndex = savedIndex !== null ? parseInt(savedIndex) : 1;
   updateCarousel(currentIndex);
   
-  updateModelPositions();
+  // Iniciar a rotação automática
   startAutoRotate();
-  
-  // Parar a rotação automática quando o usuário interagir com os controles
-  prevButton.addEventListener('click', () => {
-    stopAutoRotate();
-    prevModel();
-  });
-  
-  nextButton.addEventListener('click', () => {
-    stopAutoRotate();
-    nextModel();
-  });
   
   // Reiniciar a rotação automática após 10 segundos de inatividade
   let inactivityTimeout;
@@ -385,27 +335,10 @@ function handleModelClick(index) {
   currentModel = index;
   isModelClicked = true;
   
-  // Animar o modelo clicado
-  modelos[index].setAttribute('animation', {
-    property: 'scale',
-    to: `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`,
-    dur: 300,
-    easing: 'easeOutQuad'
-  });
-  
-  // Retornar os outros modelos ao tamanho normal
-  modelos.forEach((modelo, i) => {
-    if (i !== index) {
-      modelo.setAttribute('animation', {
-        property: 'scale',
-        to: `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`,
-        dur: 300,
-        easing: 'easeOutQuad'
-      });
-    }
-  });
-  
   // Mostrar informações do modelo
   const modelId = `modelo3d-${index + 1}`;
   showModelInfo(modelId);
+  
+  // Parar a rotação automática quando um modelo é clicado
+  stopAutoRotate();
 } 
