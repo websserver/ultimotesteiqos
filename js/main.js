@@ -20,8 +20,8 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 3.5;
-const SELECTED_SCALE = 4.5;
+const BASE_SCALE = 6;
+const SELECTED_SCALE = 6;
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -32,7 +32,7 @@ let currentModel = 1;
 let isModelClicked = false;
 const ZOOM_FACTOR = 0.15;
 const MIN_SCALE = 2.5;
-const MAX_SCALE = 5;
+const MAX_SCALE = 6;
 
 // DOM Elements
 const loading = document.querySelector('.loading');
@@ -55,7 +55,7 @@ const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
-const RADIUS = 0.8; // Raio do círculo
+const RADIUS = 0.6; // Raio do círculo
 const ANGLE_STEP = 360; // Ângulo entre cada modelo
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
