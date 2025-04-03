@@ -379,18 +379,21 @@
       device-orientation-permission-ui="enabled: false"
       loading-screen="enabled: false">
       <a-assets>
-        <a-asset-item id="modelo" src="modelo3d/modelo_IQOS ILUMA ONE/navy-blazer.glb"></a-asset-item>
+        <a-asset-item id="modelo-navy" src="modelo3d/modelo_IQOS ILUMA ONE/navy-blazer.glb"></a-asset-item>
+        <a-asset-item id="modelo-olive" src="modelo3d/modelo_IQOS ILUMA ONE/olive-blazer.glb"></a-asset-item>
+        <a-asset-item id="modelo-jacaranda" src="modelo3d/modelo_IQOS ILUMA ONE/jacaranda-blazer.glb"></a-asset-item>
+        <a-asset-item id="modelo-rooibos" src="modelo3d/modelo_IQOS ILUMA ONE/rooibos-tea.glb"></a-asset-item>
+        <a-asset-item id="modelo-turquoise" src="modelo3d/modelo_IQOS ILUMA ONE/turquoise-blazer.glb"></a-asset-item>
       </a-assets>
 
       <a-light type="directional" color="#ffffff" intensity="3" position="0 1 1"></a-light>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-
       <a-entity mindar-image-target="targetIndex: 0">
         <a-entity 
-          id="modelo3d-1" 
-          gltf-model="#modelo"
+          id="modelo-navy-3d" 
+          gltf-model="#modelo-navy"
           position="0 0 0.1" 
           rotation="0 0 0" 
           scale="8 8 8" 
@@ -400,6 +403,62 @@
           material="transparent: false; opacity: 1; depthWrite: true; depthTest: true; blending: NoBlending"
           remove-transparency
           gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08">
+        </a-entity>
+        <a-entity 
+          id="modelo-olive-3d" 
+          gltf-model="#modelo-olive"
+          position="0 0 0.1" 
+          rotation="0 0 0" 
+          scale="8 8 8" 
+          class="clickable"
+          animation-mixer="loop: repeat"
+          animation="property: position; dur: 300; easing: easeOutQuad"
+          material="transparent: false; opacity: 1; depthWrite: true; depthTest: true; blending: NoBlending"
+          remove-transparency
+          gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08"
+          visible="false">
+        </a-entity>
+        <a-entity 
+          id="modelo-jacaranda-3d" 
+          gltf-model="#modelo-jacaranda"
+          position="0 0 0.1" 
+          rotation="0 0 0" 
+          scale="8 8 8" 
+          class="clickable"
+          animation-mixer="loop: repeat"
+          animation="property: position; dur: 300; easing: easeOutQuad"
+          material="transparent: false; opacity: 1; depthWrite: true; depthTest: true; blending: NoBlending"
+          remove-transparency
+          gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08"
+          visible="false">
+        </a-entity>
+        <a-entity 
+          id="modelo-rooibos-3d" 
+          gltf-model="#modelo-rooibos"
+          position="0 0 0.1" 
+          rotation="0 0 0" 
+          scale="8 8 8" 
+          class="clickable"
+          animation-mixer="loop: repeat"
+          animation="property: position; dur: 300; easing: easeOutQuad"
+          material="transparent: false; opacity: 1; depthWrite: true; depthTest: true; blending: NoBlending"
+          remove-transparency
+          gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08"
+          visible="false">
+        </a-entity>
+        <a-entity 
+          id="modelo-turquoise-3d" 
+          gltf-model="#modelo-turquoise"
+          position="0 0 0.1" 
+          rotation="0 0 0" 
+          scale="8 8 8" 
+          class="clickable"
+          animation-mixer="loop: repeat"
+          animation="property: position; dur: 300; easing: easeOutQuad"
+          material="transparent: false; opacity: 1; depthWrite: true; depthTest: true; blending: NoBlending"
+          remove-transparency
+          gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08"
+          visible="false">
         </a-entity>
       </a-entity>
     </a-scene>
@@ -425,7 +484,7 @@
 
     <script>
       const sceneEl = document.querySelector('a-scene');
-      const modeloEl = document.querySelector('#modelo3d-1');
+      const modeloEl = document.querySelector('#modelo-navy-3d');
       const target = document.querySelector('a-entity[mindar-image-target]');
 
       // Componente para remover transparência
@@ -506,31 +565,25 @@
       // Target events com mais informações
       target.addEventListener('targetFound', function() {
         console.log('Marcador encontrado');
-        const modelContainer = document.querySelector('#modelo3d-1');
-        if (modelContainer) {
-          modelContainer.object3D.visible = true;
-          modelContainer.object3D.updateMatrix();
-          modelContainer.object3D.updateMatrixWorld(true);
-        }
+        modeloEl.object3D.visible = true;
         document.querySelector('.marker-lost-message').style.display = 'none';
         
+        // Forçar atualização das matrizes
+        modeloEl.object3D.updateMatrix();
+        modeloEl.object3D.updateMatrixWorld(true);
+        
         console.log('Estado após encontrar marcador:', {
-          modelVisible: modelContainer ? modelContainer.getAttribute('visible') : 'N/A',
-          modelObject3DVisible: modelContainer ? modelContainer.object3D.visible : 'N/A',
-          modelPosition: modelContainer ? modelContainer.object3D.position : 'N/A',
-          modelRotation: modelContainer ? modelContainer.object3D.rotation : 'N/A',
-          modelScale: modelContainer ? modelContainer.object3D.scale : 'N/A'
+          modelVisible: modeloEl.getAttribute('visible'),
+          modelObject3DVisible: modeloEl.object3D.visible,
+          modelPosition: modeloEl.object3D.position,
+          modelRotation: modeloEl.object3D.rotation,
+          modelScale: modeloEl.object3D.scale
         });
       });
 
       target.addEventListener('targetLost', function() {
         console.log('Marcador perdido');
-        const modelContainer = document.querySelector('#modelo3d-1');
-        if (modelContainer) {
-          modelContainer.object3D.visible = false;
-          modelContainer.object3D.updateMatrix();
-          modelContainer.object3D.updateMatrixWorld(true);
-        }
+        modeloEl.object3D.visible = false;
         document.querySelector('.marker-lost-message').style.display = 'block';
       });
 
@@ -685,7 +738,17 @@
         // Adicionar classe active à opção selecionada
         document.querySelector(`[data-color="${color}"]`).classList.add('active');
         
-        // Aqui você pode adicionar lógica adicional para mudar a cor do modelo 3D
+        // Esconder todos os modelos
+        document.querySelectorAll('[id^="modelo-"]').forEach(model => {
+          model.setAttribute('visible', 'false');
+        });
+        
+        // Mostrar o modelo selecionado
+        const selectedModel = document.querySelector(`#modelo-${color}-3d`);
+        if (selectedModel) {
+          selectedModel.setAttribute('visible', 'true');
+        }
+        
         console.log('Cor selecionada:', color);
       }
     </script>
@@ -715,7 +778,7 @@
       // Monitora o estado da cena
       document.querySelector('a-scene').addEventListener('loaded', function () {
         console.log('A-Frame scene loaded');
-        document.querySelector('#modelo3d-1').object3D.visible = true;
+        document.querySelector('#modelo-navy-3d').object3D.visible = true;
       });
     </script>
   </body>
