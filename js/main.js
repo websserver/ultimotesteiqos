@@ -1,3 +1,20 @@
+// Adicionar estilos CSS para o botão de personalizar
+const style = document.createElement('style');
+style.textContent = `
+    .personalize-button {
+        position: relative;
+        z-index: 1000;
+        pointer-events: auto;
+        cursor: pointer;
+    }
+    .model-info {
+        position: relative;
+        z-index: 1000;
+        pointer-events: auto;
+    }
+`;
+document.head.appendChild(style);
+
 AFRAME.registerComponent('model-handler', {
   init: function() {
     const el = this.el;
@@ -114,9 +131,19 @@ function showModelInfo(modelId) {
 
     modelInfo.innerHTML = `
         <h2>${modelConfig.name}</h2>
-        <button onclick="window.location.href='${modelConfig.link}'">Personalizar</button>
+        <button id="personalize-btn" class="personalize-button">Personalizar</button>
     `;
     modelInfo.style.display = 'flex';
+
+    // Adicionar evento de clique ao botão de personalizar
+    const personalizeBtn = document.getElementById('personalize-btn');
+    if (personalizeBtn) {
+        personalizeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = modelConfig.link;
+        });
+    }
 }
 
 // Atualizar posições do carrossel
