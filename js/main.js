@@ -33,6 +33,8 @@ let isModelClicked = false;
 const ZOOM_FACTOR = 0.15;
 const MIN_SCALE = 1.8;
 const MAX_SCALE = 3.5;
+let autoRotateInterval = null;
+const AUTO_ROTATE_INTERVAL = 5000; // 5 segundos entre cada rotação
 
 // DOM Elements
 const loading = document.querySelector('.loading');
@@ -295,12 +297,61 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// Inicializar posições do carrossel
+// Função para iniciar a rotação automática
+function startAutoRotate() {
+  if (autoRotateInterval) {
+    clearInterval(autoRotateInterval);
+  }
+  
+  autoRotateInterval = setInterval(() => {
+    nextModel();
+  }, AUTO_ROTATE_INTERVAL);
+}
+
+// Função para parar a rotação automática
+function stopAutoRotate() {
+  if (autoRotateInterval) {
+    clearInterval(autoRotateInterval);
+    autoRotateInterval = null;
+  }
+}
+
+// Modificar a função initializeCarousel para iniciar a rotação automática
 function initializeCarousel() {
-    // Tentar recuperar o índice salvo, se não existir usar o modelo2 (ILUMA i) como padrão
-    const savedIndex = localStorage.getItem('selectedModelIndex');
-    currentIndex = savedIndex !== null ? parseInt(savedIndex) : 1;
-    updateCarousel(currentIndex);
+  // Tentar recuperar o índice salvo, se não existir usar o modelo2 (ILUMA i) como padrão
+  const savedIndex = localStorage.getItem('selectedModelIndex');
+  currentIndex = savedIndex !== null ? parseInt(savedIndex) : 1;
+  updateCarousel(currentIndex);
+  
+  updateModelPositions();
+  startAutoRotate();
+  
+  // Parar a rotação automática quando o usuário interagir com os controles
+  prevButton.addEventListener('click', () => {
+    stopAutoRotate();
+    prevModel();
+  });
+  
+  nextButton.addEventListener('click', () => {
+    stopAutoRotate();
+    nextModel();
+  });
+  
+  // Reiniciar a rotação automática após 10 segundos de inatividade
+  let inactivityTimeout;
+  const resetAutoRotate = () => {
+    if (inactivityTimeout) {
+      clearTimeout(inactivityTimeout);
+    }
+    inactivityTimeout = setTimeout(() => {
+      startAutoRotate();
+    }, 10000);
+  };
+  
+  // Adicionar listeners para interações do usuário
+  document.addEventListener('click', resetAutoRotate);
+  document.addEventListener('touchstart', resetAutoRotate);
+  document.addEventListener('mousemove', resetAutoRotate);
 }
 
 // Inicializar o carrossel quando a cena estiver carregada
