@@ -389,7 +389,7 @@
         <a-entity 
           id="modelo-navy-3d" 
           gltf-model="#modelo-navy"
-          position="0 -0.5 0.1"
+          position="0 -0.5 0.1" 
           rotation="0 0 0" 
           scale="4 4 4" 
           class="clickable"
@@ -402,7 +402,7 @@
         <a-entity 
           id="modelo-olive-3d" 
           gltf-model="#modelo-olive"
-          position="0 -0.5 0.1"
+          position="0 -0.5 0.1" 
           rotation="0 0 0" 
           scale="4 4 4" 
           class="clickable"
@@ -714,21 +714,13 @@
       });
 
       function changeColor(color) {
-        // Remover classe active de todas as opções
-        document.querySelectorAll('.color-option').forEach(option => {
-          option.classList.remove('active');
-        });
-        
-        // Adicionar classe active à opção selecionada
-        document.querySelector(`[data-color="${color}"]`).classList.add('active');
-        
-        // Esconder todos os modelos
-        document.querySelectorAll('[id^="modelo-"]').forEach(model => {
+        // Esconde todos os modelos
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
           model.setAttribute('visible', 'false');
         });
         
-        // Mostrar o modelo selecionado
-        const selectedModel = document.querySelector(`#modelo-${color}-3d`);
+        // Mostra apenas o modelo selecionado
+        const selectedModel = document.getElementById(`modelo-${color}-3d`);
         if (selectedModel) {
           selectedModel.setAttribute('visible', 'true');
         }
