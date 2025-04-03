@@ -1,20 +1,3 @@
-// Adicionar estilos CSS para o botão de personalizar
-const style = document.createElement('style');
-style.textContent = `
-    .personalize-button {
-        position: relative;
-        z-index: 1000;
-        pointer-events: auto;
-        cursor: pointer;
-    }
-    .model-info {
-        position: relative;
-        z-index: 1000;
-        pointer-events: auto;
-    }
-`;
-document.head.appendChild(style);
-
 AFRAME.registerComponent('model-handler', {
   init: function() {
     const el = this.el;
@@ -37,7 +20,8 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 4.0; // Escala reduzida para metade (era 8.0)
+const BASE_SCALE = 2.5;
+const SELECTED_SCALE = 3.2;
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -46,11 +30,9 @@ const MODEL_NAMES = {
 
 let currentModel = 1;
 let isModelClicked = false;
-let initialRotationDone = false; // Flag para controlar se a rotação inicial já foi feita
-let touchStartX = 0;
-let touchEndX = 0;
-const SWIPE_THRESHOLD = 50; // Distância mínima para considerar um swipe
-const ROTATION_DURATION = 200; // Duração da rotação em ms
+const ZOOM_FACTOR = 0.15;
+const MIN_SCALE = 1.8;
+const MAX_SCALE = 3.5;
 
 // DOM Elements
 const loading = document.querySelector('.loading');
@@ -73,15 +55,15 @@ const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
-const RADIUS = 0.8; // Raio do círculo
+const RADIUS = 0.6; // Raio do círculo
 const ANGLE_STEP = 360; // Ângulo entre cada modelo
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
 const positions = {
-    left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: BASE_SCALE, opacity: 0.7 },
-    center: { x: 0, y: 0, z: 0, rotation: 0, scale: BASE_SCALE, opacity: 1 },
-    right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: BASE_SCALE, opacity: 0.7 }
+    left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: 2.0, opacity: 0.7 },
+    center: { x: 0, y: 0, z: 0, rotation: 0, scale: 2.0, opacity: 1 },
+    right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: 2.0, opacity: 0.7 }
 };
 
 // Configuração dos modelos com suas informações
@@ -131,83 +113,28 @@ function showModelInfo(modelId) {
 
     modelInfo.innerHTML = `
         <h2>${modelConfig.name}</h2>
-        <button id="personalize-btn" class="personalize-button">Personalizar</button>
+        <button onclick="window.location.href='${modelConfig.link}'">Personalizar</button>
     `;
     modelInfo.style.display = 'flex';
-
-    // Adicionar evento de clique ao botão de personalizar
-    const personalizeBtn = document.getElementById('personalize-btn');
-    if (personalizeBtn) {
-        personalizeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            window.location.href = modelConfig.link;
-        });
-    }
 }
 
 // Atualizar posições do carrossel
 function updateCarousel(newIndex) {
     const { prev, current, next } = getVisibleModels();
+    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
     
-    // Se for a primeira vez, fazer uma rotação completa de 360°
-    if (!initialRotationDone) {
-        // Adicionar animação de rotação suave
-        carousel.setAttribute('animation', {
-            property: 'rotation',
-            to: '0 360 0',
-            dur: ROTATION_DURATION,
-            easing: 'easeInOutQuad',
-            loop: false
-        });
-        
-        initialRotationDone = true;
-        
-        // Após a rotação inicial, posicionar os modelos corretamente
-        setTimeout(() => {
-            positionModels(newIndex);
-        }, ROTATION_DURATION + 100); // Esperar a rotação inicial terminar
-    } else {
-        // Para navegações subsequentes, apenas posicionar os modelos sem rotação
-        positionModels(newIndex);
-    }
-}
-
-// Função para posicionar os modelos sem rotação
-function positionModels(newIndex) {
+    // Atualizar rotação do carrossel
+    carousel.setAttribute('rotation', `0 ${rotation} 0`);
+    
     // Atualizar posições dos modelos
     models.forEach((model, index) => {
         const position = getSlidePosition(index);
         const targetPos = positions[position];
         
-        // Adicionar animações suaves para todas as propriedades
-        model.setAttribute('animation__position', {
-            property: 'position',
-            to: `${targetPos.x} ${targetPos.y} ${targetPos.z}`,
-            dur: TRANSITION_DURATION,
-            easing: 'easeInOutQuad'
-        });
-        
-        model.setAttribute('animation__rotation', {
-            property: 'rotation',
-            to: `0 ${targetPos.rotation} 0`,
-            dur: TRANSITION_DURATION,
-            easing: 'easeInOutQuad'
-        });
-        
-        model.setAttribute('animation__scale', {
-            property: 'scale',
-            to: `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`,
-            dur: TRANSITION_DURATION,
-            easing: 'easeInOutQuad'
-        });
-        
-        model.setAttribute('animation__opacity', {
-            property: 'opacity',
-            to: targetPos.opacity,
-            dur: TRANSITION_DURATION,
-            easing: 'easeInOutQuad'
-        });
+        model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
+        model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
+        model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
+        model.setAttribute('opacity', targetPos.opacity);
 
         // Se este é o modelo central, mostrar suas informações e atualizar o modelo 3D
         if (position === 'center') {
@@ -216,6 +143,7 @@ function positionModels(newIndex) {
             
             // Atualizar o modelo 3D correspondente
             currentModel = index;
+            updateModelPositions();
             
             // Salvar o índice do modelo selecionado
             localStorage.setItem('selectedModelIndex', index.toString());
@@ -228,14 +156,12 @@ function positionModels(newIndex) {
 
 // Função para mover para o próximo modelo
 function nextModel() {
-    console.log("Próximo modelo");
     const nextIndex = (currentIndex + 1) % models.length;
     updateCarousel(nextIndex);
 }
 
 // Função para mover para o modelo anterior
 function prevModel() {
-    console.log("Modelo anterior");
     const prevIndex = (currentIndex - 1 + models.length) % models.length;
     updateCarousel(prevIndex);
 }
@@ -245,15 +171,55 @@ function hideModelInfo() {
   modelInfo.style.display = 'none';
 }
 
+function updateModelPositions() {
+  if (!isModelClicked) {
+    modelos.forEach((modelo, index) => {
+      if (index === currentModel) {
+        modelo.setAttribute('scale', `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`);
+        modelo.setAttribute('animation', {
+          property: 'scale',
+          to: `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`,
+          dur: 300,
+          easing: 'easeOutQuad'
+        });
+      } else {
+        modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
+        modelo.setAttribute('animation', {
+          property: 'scale',
+          to: `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`,
+          dur: 300,
+          easing: 'easeOutQuad'
+        });
+      }
+    });
+  }
+}
+
 function changeModel(direction) {
   hideModelInfo();
   isModelClicked = false;
   
+  // Primeiro, retornamos o modelo atual ao tamanho normal com animação
+  modelos[currentModel].setAttribute('animation', {
+    property: 'scale',
+    to: `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`,
+    dur: 300,
+    easing: 'easeOutQuad'
+  });
+
   if (direction === 'next' && currentModel < 2) {
     currentModel++;
   } else if (direction === 'prev' && currentModel > 0) {
     currentModel--;
   }
+
+  // Depois, aumentamos o novo modelo selecionado com animação
+  modelos[currentModel].setAttribute('animation', {
+    property: 'scale',
+    to: `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`,
+    dur: 300,
+    easing: 'easeOutQuad'
+  });
 }
 
 // Event Listeners
@@ -262,20 +228,12 @@ window.addEventListener('load', function() {
   modelos.forEach((modelo, i) => {
     if (i === 1) {
       modelo.setAttribute('visible', 'true');
-      modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
+      modelo.setAttribute('scale', '6 6 6');
     } else {
       modelo.setAttribute('visible', 'false');
-      modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
+      modelo.setAttribute('scale', '6 6 6');
     }
   });
-  
-  // Inicializar o carrossel
-  initializeCarousel();
-  
-  // Adicionar eventos de toque para detectar swipes
-  document.addEventListener('touchstart', handleTouchStart);
-  document.addEventListener('touchmove', handleTouchMove);
-  document.addEventListener('touchend', handleTouchEnd);
 });
 
 const sceneEl = document.querySelector('a-scene');
@@ -284,13 +242,8 @@ sceneEl.addEventListener('renderstart', () => {
 });
 
 // Button events
-prevButton.addEventListener('click', () => {
-  prevModel();
-});
-
-nextButton.addEventListener('click', () => {
-  nextModel();
-});
+prevButton.addEventListener('click', prevModel);
+nextButton.addEventListener('click', nextModel);
 
 // Target detection events
 const target = document.querySelector('a-entity[mindar-image-target]');
@@ -299,7 +252,7 @@ target.addEventListener("targetFound", event => {
     // Mostrar todos os modelos
     modelos.forEach((modelo, i) => {
         modelo.setAttribute('visible', 'true');
-        modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
+        modelo.setAttribute('scale', '6 6 6');
         modelo.classList.remove('blurred');
     });
     
@@ -311,7 +264,7 @@ target.addEventListener("targetLost", event => {
     // Manter os modelos visíveis
     modelos.forEach((modelo, i) => {
         modelo.setAttribute('visible', 'true');
-        modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
+        modelo.setAttribute('scale', '6 6 6');
         modelo.classList.remove('blurred');
     });
     
@@ -333,58 +286,26 @@ zoomOutBtn.addEventListener('click', () => {
   updateZoom();
 });
 
-// Funções para lidar com eventos de toque
-function handleTouchStart(event) {
-  touchStartX = event.touches[0].clientX;
-}
-
-function handleTouchMove(event) {
-  touchEndX = event.touches[0].clientX;
-  
-  // Calcular a distância do swipe em tempo real
-  const swipeDistance = touchEndX - touchStartX;
-  
-  // Aplicar uma transformação suave ao carrossel durante o swipe
-  if (Math.abs(swipeDistance) > 10) {
-    const rotationFactor = swipeDistance / 500; // Ajuste este valor para controlar a sensibilidade
-    const currentRotation = carousel.getAttribute('rotation').y || 0;
-    carousel.setAttribute('rotation', `0 ${currentRotation + rotationFactor} 0`);
-  }
-}
-
-function handleTouchEnd() {
-  const swipeDistance = touchEndX - touchStartX;
-  
-  if (Math.abs(swipeDistance) > SWIPE_THRESHOLD) {
-    if (swipeDistance > 0) {
-      // Swipe para a direita, ir para o modelo anterior
-      prevModel();
-    } else {
-      // Swipe para a esquerda, ir para o próximo modelo
-      nextModel();
+// Adicionar eventos de teclado
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+        prevModel();
+    } else if (event.key === 'ArrowRight') {
+        nextModel();
     }
-  } else {
-    // Se o swipe não for suficiente, voltar à posição original
-    updateCarousel(currentIndex);
-  }
-}
+});
 
-// Modificar a função initializeCarousel para remover a rotação automática
+// Inicializar posições do carrossel
 function initializeCarousel() {
-  console.log("Inicializando carrossel");
-  // Tentar recuperar o índice salvo, se não existir usar o modelo2 (ILUMA i) como padrão
-  const savedIndex = localStorage.getItem('selectedModelIndex');
-  currentIndex = savedIndex !== null ? parseInt(savedIndex) : 1;
-  
-  // Resetar a flag de rotação inicial
-  initialRotationDone = false;
-  
-  // Iniciar a rotação inicial
-  updateCarousel(currentIndex);
+    // Tentar recuperar o índice salvo, se não existir usar o modelo2 (ILUMA i) como padrão
+    const savedIndex = localStorage.getItem('selectedModelIndex');
+    currentIndex = savedIndex !== null ? parseInt(savedIndex) : 1;
+    updateCarousel(currentIndex);
 }
 
 // Inicializar o carrossel quando a cena estiver carregada
 sceneEl.addEventListener('loaded', () => {
+    initializeCarousel();
     updateZoom();
 });
 
@@ -403,6 +324,26 @@ function handleModelClick(index) {
   // Atualizar o modelo atual
   currentModel = index;
   isModelClicked = true;
+  
+  // Animar o modelo clicado
+  modelos[index].setAttribute('animation', {
+    property: 'scale',
+    to: `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`,
+    dur: 300,
+    easing: 'easeOutQuad'
+  });
+  
+  // Retornar os outros modelos ao tamanho normal
+  modelos.forEach((modelo, i) => {
+    if (i !== index) {
+      modelo.setAttribute('animation', {
+        property: 'scale',
+        to: `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`,
+        dur: 300,
+        easing: 'easeOutQuad'
+      });
+    }
+  });
   
   // Mostrar informações do modelo
   const modelId = `modelo3d-${index + 1}`;
