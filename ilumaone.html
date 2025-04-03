@@ -506,25 +506,31 @@
       // Target events com mais informações
       target.addEventListener('targetFound', function() {
         console.log('Marcador encontrado');
-        modeloEl.object3D.visible = true;
+        const modelContainer = document.querySelector('#modelo3d-1');
+        if (modelContainer) {
+          modelContainer.object3D.visible = true;
+          modelContainer.object3D.updateMatrix();
+          modelContainer.object3D.updateMatrixWorld(true);
+        }
         document.querySelector('.marker-lost-message').style.display = 'none';
         
-        // Forçar atualização das matrizes
-        modeloEl.object3D.updateMatrix();
-        modeloEl.object3D.updateMatrixWorld(true);
-        
         console.log('Estado após encontrar marcador:', {
-          modelVisible: modeloEl.getAttribute('visible'),
-          modelObject3DVisible: modeloEl.object3D.visible,
-          modelPosition: modeloEl.object3D.position,
-          modelRotation: modeloEl.object3D.rotation,
-          modelScale: modeloEl.object3D.scale
+          modelVisible: modelContainer ? modelContainer.getAttribute('visible') : 'N/A',
+          modelObject3DVisible: modelContainer ? modelContainer.object3D.visible : 'N/A',
+          modelPosition: modelContainer ? modelContainer.object3D.position : 'N/A',
+          modelRotation: modelContainer ? modelContainer.object3D.rotation : 'N/A',
+          modelScale: modelContainer ? modelContainer.object3D.scale : 'N/A'
         });
       });
 
       target.addEventListener('targetLost', function() {
         console.log('Marcador perdido');
-        modeloEl.object3D.visible = false;
+        const modelContainer = document.querySelector('#modelo3d-1');
+        if (modelContainer) {
+          modelContainer.object3D.visible = false;
+          modelContainer.object3D.updateMatrix();
+          modelContainer.object3D.updateMatrixWorld(true);
+        }
         document.querySelector('.marker-lost-message').style.display = 'block';
       });
 

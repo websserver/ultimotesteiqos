@@ -7,8 +7,16 @@ const colorToModel = {
     'turquoise': 'modelo3d/modelo_IQOS ILUMA ONE/pastel-turquoise.glb'
 };
 
+let currentColor = 'navy';
+let isModelLoading = false;
+
 // Função para trocar a cor do modelo
 function changeColor(color) {
+    if (isModelLoading || color === currentColor) return;
+    
+    isModelLoading = true;
+    currentColor = color;
+
     // Atualiza a classe active nos botões de cor
     document.querySelectorAll('.color-option').forEach(option => {
         option.classList.remove('active');
@@ -17,26 +25,23 @@ function changeColor(color) {
         }
     });
 
-    // Obtém a cena A-Frame
+    // Obtém a cena A-Frame e elementos necessários
     const scene = document.querySelector('a-scene');
     const modelContainer = document.querySelector('#modelo3d-1');
+    const target = document.querySelector('a-entity[mindar-image-target]');
     
-    if (!scene || !modelContainer) {
+    if (!scene || !modelContainer || !target) {
+        console.error('Elementos necessários não encontrados');
+        isModelLoading = false;
         return;
     }
 
+    // Verifica se o marcador está visível
+    const isMarkerVisible = target.object3D.visible;
+    
     // Cria um novo asset para o modelo
     const modelId = `model-${color}`;
     const modelUrl = colorToModel[color];
-    
-    // Remove o modelo atual primeiro
-    modelContainer.removeAttribute('gltf-model');
-    
-    // Remove o asset anterior se existir
-    const oldAsset = document.querySelector(`#${modelId}`);
-    if (oldAsset) {
-        oldAsset.parentNode.removeChild(oldAsset);
-    }
     
     // Cria um novo asset
     const newAsset = document.createElement('a-asset-item');
@@ -45,47 +50,49 @@ function changeColor(color) {
     
     // Adiciona listeners para monitorar o carregamento
     newAsset.addEventListener('loaded', () => {
+        // Remove o modelo atual apenas após o novo estar carregado
+        modelContainer.removeAttribute('gltf-model');
+        
+        // Remove o asset anterior se existir
+        const oldAsset = document.querySelector(`#${modelId}`);
+        if (oldAsset) {
+            oldAsset.parentNode.removeChild(oldAsset);
+        }
+        
         // Atualiza o modelo após o carregamento
         modelContainer.setAttribute('gltf-model', `#${modelId}`);
-        // Reseta a posição e escala
+        
+        // Mantém a escala e rotação atuais
+        const currentScale = modelContainer.getAttribute('scale');
+        const currentRotation = modelContainer.getAttribute('rotation');
+        
+        // Reseta apenas a posição
         modelContainer.setAttribute('position', '0 -0.5 0.1');
-        modelContainer.setAttribute('scale', '8 8 8');
-        modelContainer.setAttribute('rotation', '0 0 0');
+        
+        // Restaura escala e rotação
+        if (currentScale) modelContainer.setAttribute('scale', currentScale);
+        if (currentRotation) modelContainer.setAttribute('rotation', currentRotation);
+        
         // Força a atualização da cena
-        modelContainer.object3D.visible = true;
+        modelContainer.object3D.visible = isMarkerVisible;
         modelContainer.object3D.updateMatrixWorld(true);
         scene.object3D.updateMatrixWorld(true);
+        
+        isModelLoading = false;
     });
     
     // Adiciona o novo asset à cena
     scene.querySelector('a-assets').appendChild(newAsset);
     
-    // Adiciona uma animação de fade
-    modelContainer.setAttribute('animation', {
-        property: 'opacity',
-        from: 0,
-        to: 1,
-        dur: 500,
-        easing: 'easeInOutQuad'
-    });
-    
-    // Remove a animação após sua conclusão
-    setTimeout(() => {
-        modelContainer.removeAttribute('animation');
-    }, 500);
-
     // Adiciona um listener para o evento de carregamento do modelo
-    modelContainer.addEventListener('model-loaded', function() {
+    modelContainer.addEventListener('model-loaded', function onModelLoaded() {
         // Força atualização da visibilidade
-        modelContainer.object3D.visible = true;
+        modelContainer.object3D.visible = isMarkerVisible;
         modelContainer.object3D.updateMatrixWorld(true);
         scene.object3D.updateMatrixWorld(true);
         
-        // Verifica se o marcador está visível
-        const target = document.querySelector('a-entity[mindar-image-target]');
-        if (target && target.object3D.visible) {
-            modelContainer.setAttribute('visible', true);
-        }
+        // Remove o listener após o carregamento
+        modelContainer.removeEventListener('model-loaded', onModelLoaded);
     });
 }
 
@@ -98,8 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         scene.addEventListener('model-error', (e) => {
-            console.log(`ERRO ao carregar modelo: ${e.detail.model.src}`);
-            console.log(`Detalhes do erro: ${e.detail.error}`);
+            console.error(`ERRO ao carregar modelo: ${e.detail.model.src}`);
+            console.error(`Detalhes do erro: ${e.detail.error}`);
+            isModelLoading = false;
         });
     }
 }); 
