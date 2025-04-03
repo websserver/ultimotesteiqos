@@ -62,7 +62,7 @@ const TRANSITION_DURATION = 1000; // Duração da transição em ms
 // Posições dos modelos no carrossel
 const positions = {
     left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: 2.0, opacity: 0.7 },
-    center: { x: 0, y: 0, z: 0, rotation: 0, scale: 2.5, opacity: 1 },
+    center: { x: 0, y: 0, z: 0, rotation: 0, scale: 2.0, opacity: 1 },
     right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: 2.0, opacity: 0.7 }
 };
 
