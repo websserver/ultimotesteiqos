@@ -12,19 +12,8 @@ let isModelLoading = false;
 
 // Função para trocar a cor do modelo
 function changeColor(color) {
-    if (isModelLoading || color === currentColor) return;
+    console.log('Tentando mudar para cor:', color);
     
-    isModelLoading = true;
-    currentColor = color;
-
-    // Atualiza a classe active nos botões de cor
-    document.querySelectorAll('.color-option').forEach(option => {
-        option.classList.remove('active');
-        if (option.dataset.color === color) {
-            option.classList.add('active');
-        }
-    });
-
     // Obtém a cena A-Frame e elementos necessários
     const scene = document.querySelector('a-scene');
     const modelContainer = document.querySelector('#modelo3d-1');
@@ -32,7 +21,6 @@ function changeColor(color) {
     
     if (!scene || !modelContainer || !target) {
         console.error('Elementos necessários não encontrados');
-        isModelLoading = false;
         return;
     }
 
@@ -43,49 +31,60 @@ function changeColor(color) {
     const modelId = `model-${color}`;
     const modelUrl = colorToModel[color];
     
+    // Remove o modelo atual
+    modelContainer.removeAttribute('gltf-model');
+    
+    // Remove o asset anterior se existir
+    const oldAsset = document.querySelector(`#${modelId}`);
+    if (oldAsset) {
+        oldAsset.parentNode.removeChild(oldAsset);
+    }
+    
     // Cria um novo asset
     const newAsset = document.createElement('a-asset-item');
     newAsset.setAttribute('id', modelId);
     newAsset.setAttribute('src', modelUrl);
     
+    // Adiciona o novo asset à cena
+    scene.querySelector('a-assets').appendChild(newAsset);
+    
+    // Atualiza a classe active nos botões de cor
+    document.querySelectorAll('.color-option').forEach(option => {
+        option.classList.remove('active');
+        if (option.dataset.color === color) {
+            option.classList.add('active');
+        }
+    });
+    
     // Adiciona listeners para monitorar o carregamento
     newAsset.addEventListener('loaded', () => {
-        // Remove o modelo atual apenas após o novo estar carregado
-        modelContainer.removeAttribute('gltf-model');
-        
-        // Remove o asset anterior se existir
-        const oldAsset = document.querySelector(`#${modelId}`);
-        if (oldAsset) {
-            oldAsset.parentNode.removeChild(oldAsset);
-        }
+        console.log('Novo modelo carregado:', color);
         
         // Atualiza o modelo após o carregamento
         modelContainer.setAttribute('gltf-model', `#${modelId}`);
         
         // Mantém a escala e rotação atuais
-        const currentScale = modelContainer.getAttribute('scale');
-        const currentRotation = modelContainer.getAttribute('rotation');
+        const currentScale = modelContainer.getAttribute('scale') || '8 8 8';
+        const currentRotation = modelContainer.getAttribute('rotation') || '0 0 0';
         
         // Reseta apenas a posição
         modelContainer.setAttribute('position', '0 -0.5 0.1');
-        
-        // Restaura escala e rotação
-        if (currentScale) modelContainer.setAttribute('scale', currentScale);
-        if (currentRotation) modelContainer.setAttribute('rotation', currentRotation);
+        modelContainer.setAttribute('scale', currentScale);
+        modelContainer.setAttribute('rotation', currentRotation);
         
         // Força a atualização da cena
         modelContainer.object3D.visible = isMarkerVisible;
         modelContainer.object3D.updateMatrixWorld(true);
         scene.object3D.updateMatrixWorld(true);
         
+        currentColor = color;
         isModelLoading = false;
     });
     
-    // Adiciona o novo asset à cena
-    scene.querySelector('a-assets').appendChild(newAsset);
-    
     // Adiciona um listener para o evento de carregamento do modelo
     modelContainer.addEventListener('model-loaded', function onModelLoaded() {
+        console.log('Modelo carregado com sucesso:', color);
+        
         // Força atualização da visibilidade
         modelContainer.object3D.visible = isMarkerVisible;
         modelContainer.object3D.updateMatrixWorld(true);
