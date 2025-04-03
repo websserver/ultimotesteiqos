@@ -227,6 +227,10 @@ target.addEventListener("targetFound", event => {
     
     // Restaurar a posição correta do modelo selecionado
     updateCarousel(currentIndex);
+    
+    // Iniciar a rotação automática quando o alvo for encontrado
+    console.log("Alvo encontrado, iniciando rotação automática");
+    startAutoRotate();
 });
 
 target.addEventListener("targetLost", event => {
@@ -271,6 +275,10 @@ function startAutoRotate() {
     clearInterval(autoRotateInterval);
   }
   
+  // Garantir que a rotação automática comece imediatamente
+  nextModel();
+  
+  // Configurar o intervalo para continuar a rotação
   autoRotateInterval = setInterval(() => {
     console.log("Rotação automática: próximo modelo");
     nextModel();
@@ -294,8 +302,10 @@ function initializeCarousel() {
   currentIndex = savedIndex !== null ? parseInt(savedIndex) : 1;
   updateCarousel(currentIndex);
   
-  // Iniciar a rotação automática
-  startAutoRotate();
+  // Iniciar a rotação automática após um pequeno atraso para garantir que tudo esteja carregado
+  setTimeout(() => {
+    startAutoRotate();
+  }, 1000);
   
   // Reiniciar a rotação automática após 10 segundos de inatividade
   let inactivityTimeout;
@@ -317,6 +327,12 @@ function initializeCarousel() {
 // Inicializar o carrossel quando a cena estiver carregada
 sceneEl.addEventListener('loaded', () => {
     updateZoom();
+    
+    // Iniciar a rotação automática quando a cena estiver carregada
+    setTimeout(() => {
+        console.log("Cena carregada, iniciando rotação automática");
+        startAutoRotate();
+    }, 2000);
 });
 
 // Remover eventos de zoom anteriores
