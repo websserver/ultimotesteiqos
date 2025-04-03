@@ -1,4 +1,3 @@
-
 AFRAME.registerComponent('model-handler', {
   init: function() {
     const el = this.el;
@@ -21,9 +20,9 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 4;
-const SELECTED_SCALE = 5;
-const CLICK_SCALE = 5;
+const BASE_SCALE = 3.5;
+const SELECTED_SCALE = 4.5;
+const CLICK_SCALE = 4.5;
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -33,9 +32,9 @@ const MODEL_NAMES = {
 let currentModel = 1;
 let isModelClicked = false;
 let currentScale = BASE_SCALE;
-const ZOOM_FACTOR = 0.2;
-const MIN_SCALE = 2;
-const MAX_SCALE = 4;
+const ZOOM_FACTOR = 0.15;
+const MIN_SCALE = 2.5;
+const MAX_SCALE = 5;
 
 // DOM Elements
 const loading = document.querySelector('.loading');
@@ -58,15 +57,15 @@ const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
-const RADIUS = 0.7; // Raio do círculo
+const RADIUS = 0.8; // Raio do círculo
 const ANGLE_STEP = 360; // Ângulo entre cada modelo
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
 const positions = {
-    left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: 2, opacity: 0.7 },
-    center: { x: 0, y: 0, z: 0, rotation: 0, scale: 4, opacity: 1 },
-    right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: 2, opacity: 0.7 }
+    left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: 2.8, opacity: 0.7 },
+    center: { x: 0, y: 0, z: 0, rotation: 0, scale: 3.5, opacity: 1 },
+    right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: 2.8, opacity: 0.7 }
 };
 
 // Configuração dos modelos com suas informações
@@ -179,8 +178,20 @@ function updateModelPositions() {
     modelos.forEach((modelo, index) => {
       if (index === currentModel) {
         modelo.setAttribute('scale', `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`);
+        modelo.setAttribute('animation', {
+          property: 'scale',
+          to: `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`,
+          dur: 300,
+          easing: 'easeOutQuad'
+        });
       } else {
         modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
+        modelo.setAttribute('animation', {
+          property: 'scale',
+          to: `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`,
+          dur: 300,
+          easing: 'easeOutQuad'
+        });
       }
     });
   }
@@ -214,9 +225,19 @@ function changeModel(direction) {
 }
 
 function updateZoom() {
-  models.forEach(model => {
-    const baseScale = model.getAttribute('position').x === '0' ? 4 : 2;
-    model.setAttribute('scale', `${baseScale * currentZoom/6} ${baseScale * currentZoom/6} ${baseScale * currentZoom/6}`);
+  if (currentScale < MIN_SCALE) currentScale = MIN_SCALE;
+  if (currentScale > MAX_SCALE) currentScale = MAX_SCALE;
+
+  modelos.forEach((modelo, index) => {
+    if (index === currentModel) {
+      modelo.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
+      modelo.setAttribute('animation', {
+        property: 'scale',
+        to: `${currentScale} ${currentScale} ${currentScale}`,
+        dur: 200,
+        easing: 'easeOutQuad'
+      });
+    }
   });
 }
 
