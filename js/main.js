@@ -30,7 +30,7 @@ const MODEL_NAMES = {
 let currentModel = 1;
 let isModelClicked = false;
 let autoRotateInterval = null;
-const ROTATION_SPEED = 0.5; // Velocidade de rotação em graus por frame
+const AUTO_ROTATE_INTERVAL = 5000; // 5 segundos entre cada rotação
 
 // DOM Elements
 const loading = document.querySelector('.loading');
@@ -53,8 +53,8 @@ const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
-const RADIUS = 0.9; // Raio do círculo
-const ANGLE_STEP = 360; // Ângulo entre cada modelo (já está em 360 graus)
+const RADIUS = 0.6; // Raio do círculo
+const ANGLE_STEP = 360; // Ângulo entre cada modelo (mantido em 360 graus)
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
@@ -119,9 +119,10 @@ function showModelInfo(modelId) {
 // Atualizar posições do carrossel
 function updateCarousel(newIndex) {
     const { prev, current, next } = getVisibleModels();
+    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
     
-    // Não alterar a rotação do carrossel, apenas atualizar o índice atual
-    currentIndex = newIndex;
+    // Atualizar rotação do carrossel
+    carousel.setAttribute('rotation', `0 ${rotation} 0`);
     
     // Atualizar posições dos modelos
     models.forEach((model, index) => {
@@ -145,6 +146,9 @@ function updateCarousel(newIndex) {
             localStorage.setItem('selectedModelIndex', index.toString());
         }
     });
+    
+    // Atualizar índice atual
+    currentIndex = newIndex;
 }
 
 // Função para mover para o próximo modelo
@@ -223,10 +227,6 @@ target.addEventListener("targetFound", event => {
     
     // Restaurar a posição correta do modelo selecionado
     updateCarousel(currentIndex);
-    
-    // Iniciar a rotação automática quando o alvo for encontrado
-    console.log("Alvo encontrado, iniciando rotação automática");
-    startAutoRotate();
 });
 
 target.addEventListener("targetLost", event => {
@@ -266,33 +266,22 @@ document.addEventListener('keydown', (event) => {
 
 // Função para iniciar a rotação automática
 function startAutoRotate() {
-  console.log("Iniciando rotação contínua");
+  console.log("Iniciando rotação automática");
   if (autoRotateInterval) {
-    cancelAnimationFrame(autoRotateInterval);
+    clearInterval(autoRotateInterval);
   }
   
-  // Função para animar a rotação contínua
-  function animateRotation() {
-    // Obter a rotação atual do carrossel
-    const currentRotation = carousel.getAttribute('rotation');
-    const yRotation = currentRotation.y || 0;
-    
-    // Atualizar a rotação
-    carousel.setAttribute('rotation', `0 ${yRotation + ROTATION_SPEED} 0`);
-    
-    // Continuar a animação
-    autoRotateInterval = requestAnimationFrame(animateRotation);
-  }
-  
-  // Iniciar a animação
-  animateRotation();
+  autoRotateInterval = setInterval(() => {
+    console.log("Rotação automática: próximo modelo");
+    nextModel();
+  }, AUTO_ROTATE_INTERVAL);
 }
 
 // Função para parar a rotação automática
 function stopAutoRotate() {
-  console.log("Parando rotação contínua");
+  console.log("Parando rotação automática");
   if (autoRotateInterval) {
-    cancelAnimationFrame(autoRotateInterval);
+    clearInterval(autoRotateInterval);
     autoRotateInterval = null;
   }
 }
@@ -303,14 +292,10 @@ function initializeCarousel() {
   // Tentar recuperar o índice salvo, se não existir usar o modelo2 (ILUMA i) como padrão
   const savedIndex = localStorage.getItem('selectedModelIndex');
   currentIndex = savedIndex !== null ? parseInt(savedIndex) : 1;
-  
-  // Posicionar os modelos inicialmente
   updateCarousel(currentIndex);
   
-  // Iniciar a rotação contínua após um pequeno atraso para garantir que tudo esteja carregado
-  setTimeout(() => {
-    startAutoRotate();
-  }, 1000);
+  // Iniciar a rotação automática
+  startAutoRotate();
   
   // Reiniciar a rotação automática após 10 segundos de inatividade
   let inactivityTimeout;
@@ -332,12 +317,6 @@ function initializeCarousel() {
 // Inicializar o carrossel quando a cena estiver carregada
 sceneEl.addEventListener('loaded', () => {
     updateZoom();
-    
-    // Iniciar a rotação automática quando a cena estiver carregada
-    setTimeout(() => {
-        console.log("Cena carregada, iniciando rotação automática");
-        startAutoRotate();
-    }, 2000);
 });
 
 // Remover eventos de zoom anteriores
