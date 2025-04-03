@@ -493,7 +493,7 @@
                   material.depthWrite = true;
                   material.depthTest = true;
                   material.blending = THREE.NoBlending;
-                  material.alphaTest = 0.5; // ou 0.01 para garantir o corte de fragmentos "fantasmas"
+                  material.alphaTest = 0.01; // ou 0.01 para garantir o corte de fragmentos "fantasmas"
                   material.side = THREE.FrontSide; // use FrontSide para melhor desempenho (ou DoubleSide se necessário)
                   material.needsUpdate = true;
                 });
