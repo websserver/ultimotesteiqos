@@ -21,9 +21,9 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 8;
-const SELECTED_SCALE = 10;
-const CLICK_SCALE = 12;
+const BASE_SCALE = 5;
+const SELECTED_SCALE = 6;
+const CLICK_SCALE = 6;
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -33,9 +33,9 @@ const MODEL_NAMES = {
 let currentModel = 1;
 let isModelClicked = false;
 let currentScale = BASE_SCALE;
-const ZOOM_FACTOR = 1.2;
-const MIN_SCALE = 5;
-const MAX_SCALE = 15;
+const ZOOM_FACTOR = 0.5;
+const MIN_SCALE = 2;
+const MAX_SCALE = 6;
 
 // DOM Elements
 const loading = document.querySelector('.loading');
@@ -58,15 +58,15 @@ const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
-const RADIUS = 0.5; // Raio do círculo
+const RADIUS = 0.8; // Raio do círculo
 const ANGLE_STEP = 360; // Ângulo entre cada modelo
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
 const positions = {
-    left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: 4, opacity: 0.7 },
-    center: { x: 0, y: 0, z: 0, rotation: 0, scale: 8, opacity: 1 },
-    right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: 4, opacity: 0.7 }
+    left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: 2, opacity: 0.7 },
+    center: { x: 0, y: 0, z: 0, rotation: 0, scale: 4, opacity: 1 },
+    right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: 2, opacity: 0.7 }
 };
 
 // Configuração dos modelos com suas informações
