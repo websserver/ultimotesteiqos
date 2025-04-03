@@ -33,6 +33,7 @@ let initialRotationDone = false; // Flag para controlar se a rotação inicial j
 let touchStartX = 0;
 let touchEndX = 0;
 const SWIPE_THRESHOLD = 50; // Distância mínima para considerar um swipe
+const ROTATION_DURATION = 1000; // Duração da rotação em ms
 
 // DOM Elements
 const loading = document.querySelector('.loading');
@@ -124,13 +125,21 @@ function updateCarousel(newIndex) {
     
     // Se for a primeira vez, fazer uma rotação completa de 360°
     if (!initialRotationDone) {
-        carousel.setAttribute('rotation', `0 360 0`);
+        // Adicionar animação de rotação suave
+        carousel.setAttribute('animation', {
+            property: 'rotation',
+            to: '0 360 0',
+            dur: ROTATION_DURATION,
+            easing: 'easeInOutQuad',
+            loop: false
+        });
+        
         initialRotationDone = true;
         
         // Após a rotação inicial, posicionar os modelos corretamente
         setTimeout(() => {
             positionModels(newIndex);
-        }, 1000); // Esperar 1 segundo para a rotação inicial terminar
+        }, ROTATION_DURATION + 100); // Esperar a rotação inicial terminar
     } else {
         // Para navegações subsequentes, apenas posicionar os modelos sem rotação
         positionModels(newIndex);
@@ -144,10 +153,34 @@ function positionModels(newIndex) {
         const position = getSlidePosition(index);
         const targetPos = positions[position];
         
-        model.setAttribute('position', `${targetPos.x} ${targetPos.y} ${targetPos.z}`);
-        model.setAttribute('rotation', `0 ${targetPos.rotation} 0`);
-        model.setAttribute('scale', `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`);
-        model.setAttribute('opacity', targetPos.opacity);
+        // Adicionar animações suaves para todas as propriedades
+        model.setAttribute('animation__position', {
+            property: 'position',
+            to: `${targetPos.x} ${targetPos.y} ${targetPos.z}`,
+            dur: TRANSITION_DURATION,
+            easing: 'easeInOutQuad'
+        });
+        
+        model.setAttribute('animation__rotation', {
+            property: 'rotation',
+            to: `0 ${targetPos.rotation} 0`,
+            dur: TRANSITION_DURATION,
+            easing: 'easeInOutQuad'
+        });
+        
+        model.setAttribute('animation__scale', {
+            property: 'scale',
+            to: `${targetPos.scale} ${targetPos.scale} ${targetPos.scale}`,
+            dur: TRANSITION_DURATION,
+            easing: 'easeInOutQuad'
+        });
+        
+        model.setAttribute('animation__opacity', {
+            property: 'opacity',
+            to: targetPos.opacity,
+            dur: TRANSITION_DURATION,
+            easing: 'easeInOutQuad'
+        });
 
         // Se este é o modelo central, mostrar suas informações e atualizar o modelo 3D
         if (position === 'center') {
@@ -280,6 +313,16 @@ function handleTouchStart(event) {
 
 function handleTouchMove(event) {
   touchEndX = event.touches[0].clientX;
+  
+  // Calcular a distância do swipe em tempo real
+  const swipeDistance = touchEndX - touchStartX;
+  
+  // Aplicar uma transformação suave ao carrossel durante o swipe
+  if (Math.abs(swipeDistance) > 10) {
+    const rotationFactor = swipeDistance / 500; // Ajuste este valor para controlar a sensibilidade
+    const currentRotation = carousel.getAttribute('rotation').y || 0;
+    carousel.setAttribute('rotation', `0 ${currentRotation + rotationFactor} 0`);
+  }
 }
 
 function handleTouchEnd() {
@@ -293,6 +336,9 @@ function handleTouchEnd() {
       // Swipe para a esquerda, ir para o próximo modelo
       nextModel();
     }
+  } else {
+    // Se o swipe não for suficiente, voltar à posição original
+    updateCarousel(currentIndex);
   }
 }
 
