@@ -21,9 +21,9 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 5;
-const SELECTED_SCALE = 6;
-const CLICK_SCALE = 6;
+const BASE_SCALE = 4;
+const SELECTED_SCALE = 5;
+const CLICK_SCALE = 5;
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -33,9 +33,9 @@ const MODEL_NAMES = {
 let currentModel = 1;
 let isModelClicked = false;
 let currentScale = BASE_SCALE;
-const ZOOM_FACTOR = 0.5;
+const ZOOM_FACTOR = 0.2;
 const MIN_SCALE = 2;
-const MAX_SCALE = 6;
+const MAX_SCALE = 4;
 
 // DOM Elements
 const loading = document.querySelector('.loading');
@@ -58,7 +58,7 @@ const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
-const RADIUS = 0.8; // Raio do círculo
+const RADIUS = 0.7; // Raio do círculo
 const ANGLE_STEP = 360; // Ângulo entre cada modelo
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
@@ -215,7 +215,7 @@ function changeModel(direction) {
 
 function updateZoom() {
   models.forEach(model => {
-    const baseScale = model.getAttribute('position').x === '0' ? 8 : 4;
+    const baseScale = model.getAttribute('position').x === '0' ? 4 : 2;
     model.setAttribute('scale', `${baseScale * currentZoom/6} ${baseScale * currentZoom/6} ${baseScale * currentZoom/6}`);
   });
 }
@@ -226,10 +226,10 @@ window.addEventListener('load', function() {
   modelos.forEach((modelo, i) => {
     if (i === 1) {
       modelo.setAttribute('visible', 'true');
-      modelo.setAttribute('scale', '8 8 8');
+      modelo.setAttribute('scale', '6 6 6');
     } else {
       modelo.setAttribute('visible', 'false');
-      modelo.setAttribute('scale', '8 8 8');
+      modelo.setAttribute('scale', '6 6 6');
     }
   });
 });
