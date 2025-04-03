@@ -731,30 +731,18 @@
     <script src="js/age-verification.js"></script>
     <script src="js/ilumai.js"></script>
     <script>
-      // Inicializa a cor padrão como navy apenas se nenhum modelo estiver visível
+      // Variável para controlar se a página acabou de ser carregada
+      let paginaAcabouDeCarregar = true;
+      
+      // Inicializa a cor padrão como navy apenas quando a página é carregada
       window.addEventListener('load', function() {
-        console.log('Verificando estado inicial dos modelos...');
+        console.log('Página carregada - aplicando cor padrão navy');
         
-        // Verifica se algum modelo já está visível
-        const modelos = document.querySelectorAll('[id^="modelo-"][id$="-3d"]');
-        let algumModeloVisivel = false;
-        
-        modelos.forEach(modelo => {
-          if (modelo.getAttribute('visible') === 'true') {
-            algumModeloVisivel = true;
-            console.log('Modelo já visível:', modelo.id);
-          }
-        });
-        
-        // Só aplica a cor navy se nenhum modelo estiver visível
-        if (!algumModeloVisivel) {
-          console.log('Nenhum modelo visível, aplicando cor padrão navy');
-          setTimeout(() => {
-            changeColor('navy');
-          }, 1000);
-        } else {
-          console.log('Já existe um modelo visível, não alterando a cor');
-        }
+        // Aplica a cor navy apenas quando a página é carregada
+        setTimeout(() => {
+          changeColor('navy');
+          paginaAcabouDeCarregar = false;
+        }, 1000);
       });
 
       // Adiciona listener para erros de carregamento
@@ -768,7 +756,23 @@
       // Monitora o estado da cena
       document.querySelector('a-scene').addEventListener('loaded', function () {
         console.log('A-Frame scene loaded');
-        // Não forçar a visibilidade do modelo navy aqui
+      });
+      
+      // Modifica o evento targetLost para mostrar o modelo navy quando o marcador é perdido
+      target.addEventListener('targetLost', function() {
+        console.log('Marcador perdido');
+        // Esconde todos os modelos
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
+          model.setAttribute('visible', 'false');
+        });
+        
+        // Mostra apenas o modelo navy
+        const navyModel = document.getElementById('modelo-navy-3d');
+        if (navyModel) {
+          navyModel.setAttribute('visible', 'true');
+        }
+        
+        document.querySelector('.marker-lost-message').style.display = 'block';
       });
     </script>
    
