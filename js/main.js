@@ -30,7 +30,7 @@ const MODEL_NAMES = {
 let currentModel = 1;
 let isModelClicked = false;
 let autoRotateInterval = null;
-const AUTO_ROTATE_INTERVAL = 5000; // 5 segundos entre cada rotação
+const ROTATION_SPEED = 0.5; // Velocidade de rotação em graus por frame
 
 // DOM Elements
 const loading = document.querySelector('.loading');
@@ -119,10 +119,9 @@ function showModelInfo(modelId) {
 // Atualizar posições do carrossel
 function updateCarousel(newIndex) {
     const { prev, current, next } = getVisibleModels();
-    const rotation = (newIndex - currentIndex) * ANGLE_STEP;
     
-    // Atualizar rotação do carrossel
-    carousel.setAttribute('rotation', `0 ${rotation} 0`);
+    // Não alterar a rotação do carrossel, apenas atualizar o índice atual
+    currentIndex = newIndex;
     
     // Atualizar posições dos modelos
     models.forEach((model, index) => {
@@ -146,9 +145,6 @@ function updateCarousel(newIndex) {
             localStorage.setItem('selectedModelIndex', index.toString());
         }
     });
-    
-    // Atualizar índice atual
-    currentIndex = newIndex;
 }
 
 // Função para mover para o próximo modelo
@@ -270,26 +266,33 @@ document.addEventListener('keydown', (event) => {
 
 // Função para iniciar a rotação automática
 function startAutoRotate() {
-  console.log("Iniciando rotação automática");
+  console.log("Iniciando rotação contínua");
   if (autoRotateInterval) {
-    clearInterval(autoRotateInterval);
+    cancelAnimationFrame(autoRotateInterval);
   }
   
-  // Garantir que a rotação automática comece imediatamente
-  nextModel();
+  // Função para animar a rotação contínua
+  function animateRotation() {
+    // Obter a rotação atual do carrossel
+    const currentRotation = carousel.getAttribute('rotation');
+    const yRotation = currentRotation.y || 0;
+    
+    // Atualizar a rotação
+    carousel.setAttribute('rotation', `0 ${yRotation + ROTATION_SPEED} 0`);
+    
+    // Continuar a animação
+    autoRotateInterval = requestAnimationFrame(animateRotation);
+  }
   
-  // Configurar o intervalo para continuar a rotação
-  autoRotateInterval = setInterval(() => {
-    console.log("Rotação automática: próximo modelo");
-    nextModel();
-  }, AUTO_ROTATE_INTERVAL);
+  // Iniciar a animação
+  animateRotation();
 }
 
 // Função para parar a rotação automática
 function stopAutoRotate() {
-  console.log("Parando rotação automática");
+  console.log("Parando rotação contínua");
   if (autoRotateInterval) {
-    clearInterval(autoRotateInterval);
+    cancelAnimationFrame(autoRotateInterval);
     autoRotateInterval = null;
   }
 }
@@ -300,9 +303,11 @@ function initializeCarousel() {
   // Tentar recuperar o índice salvo, se não existir usar o modelo2 (ILUMA i) como padrão
   const savedIndex = localStorage.getItem('selectedModelIndex');
   currentIndex = savedIndex !== null ? parseInt(savedIndex) : 1;
+  
+  // Posicionar os modelos inicialmente
   updateCarousel(currentIndex);
   
-  // Iniciar a rotação automática após um pequeno atraso para garantir que tudo esteja carregado
+  // Iniciar a rotação contínua após um pequeno atraso para garantir que tudo esteja carregado
   setTimeout(() => {
     startAutoRotate();
   }, 1000);
