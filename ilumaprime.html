@@ -695,6 +695,142 @@
         document.querySelector('.marker-lost-message').style.display = 'block';
       });
 
+      AFRAME.registerComponent('gesture-handler-custom', {
+        schema: {
+          minScale: { type: 'number', default: 4 },
+          maxScale: { type: 'number', default: 12 },
+          rotationSensitivity: { type: 'number', default: 0.3 },
+          scaleSensitivity: { type: 'number', default: 0.1 }
+        },
+        init: function() {
+          this.touchStartX = 0;
+          this.touchStartY = 0;
+          this.touchStartDistance = 0;
+          this.currentRotation = { x: 0, y: 0, z: 0 };
+          this.currentScale = 8;
+          
+          this.el.addEventListener('touchstart', this.onTouchStart.bind(this));
+          this.el.addEventListener('touchmove', this.onTouchMove.bind(this));
+          this.el.addEventListener('touchend', this.onTouchEnd.bind(this));
+
+          sceneEl.addEventListener('touchstart', this.onTouchStart.bind(this));
+          sceneEl.addEventListener('touchmove', this.onTouchMove.bind(this));
+          sceneEl.addEventListener('touchend', this.onTouchEnd.bind(this));
+        },
+        onTouchStart: function(event) {
+          const isVisible = this.el.getAttribute('visible');
+          if (!isVisible) return;
+
+          if (event.touches.length === 1) {
+            this.touchStartX = event.touches[0].clientX;
+            this.touchStartY = event.touches[0].clientY;
+          } else if (event.touches.length === 2) {
+            this.touchStartDistance = Math.hypot(
+              event.touches[0].clientX - event.touches[1].clientX,
+              event.touches[0].clientY - event.touches[1].clientY
+            );
+          }
+        },
+        onTouchMove: function(event) {
+          event.preventDefault();
+          
+          const isVisible = this.el.getAttribute('visible');
+          if (!isVisible) return;
+          
+          if (event.touches.length === 1) {
+            const deltaX = event.touches[0].clientX - this.touchStartX;
+            const deltaY = event.touches[0].clientY - this.touchStartY;
+            
+            this.currentRotation.y += deltaX * this.data.rotationSensitivity;
+            this.currentRotation.x += deltaY * this.data.rotationSensitivity;
+            
+            this.el.setAttribute('rotation', this.currentRotation);
+            
+            this.touchStartX = event.touches[0].clientX;
+            this.touchStartY = event.touches[0].clientY;
+          } else if (event.touches.length === 2) {
+            const currentDistance = Math.hypot(
+              event.touches[0].clientX - event.touches[1].clientX,
+              event.touches[0].clientY - event.touches[1].clientY
+            );
+            
+            const delta = currentDistance - this.touchStartDistance;
+            this.currentScale = Math.max(
+              this.data.minScale,
+              Math.min(this.data.maxScale, this.currentScale + delta * this.data.scaleSensitivity)
+            );
+            
+            this.el.setAttribute('scale', `${this.currentScale} ${this.currentScale} ${this.currentScale}`);
+            this.touchStartDistance = currentDistance;
+          }
+        },
+        onTouchEnd: function(event) {
+          this.touchStartX = 0;
+          this.touchStartY = 0;
+          this.touchStartDistance = 0;
+        }
+      });
+
+      // Componente para suavizar a posição
+      AFRAME.registerComponent('smooth-position', {
+        schema: {
+          smoothFactor: { type: 'number', default: 0.3 }
+        },
+
+        init: function() {
+          this.targetPosition = new THREE.Vector3();
+          this.currentPosition = new THREE.Vector3();
+          this.velocity = new THREE.Vector3();
+        },
+
+        tick: function() {
+          const currentWorldPos = this.el.object3D.getWorldPosition(new THREE.Vector3());
+          
+          // Suavizar a posição
+          this.currentPosition.lerp(currentWorldPos, this.data.smoothFactor);
+          this.el.object3D.position.copy(this.currentPosition);
+        }
+      });
+
+      // Componente para suavizar a rotação
+      AFRAME.registerComponent('smooth-rotation', {
+        schema: {
+          smoothFactor: { type: 'number', default: 0.3 }
+        },
+
+        init: function() {
+          this.currentRotation = new THREE.Quaternion();
+        },
+
+        tick: function() {
+          const currentWorldQuat = this.el.object3D.getWorldQuaternion(new THREE.Quaternion());
+          
+          // Suavizar a rotação
+          this.currentRotation.slerp(currentWorldQuat, this.data.smoothFactor);
+          this.el.object3D.setRotationFromQuaternion(this.currentRotation);
+        }
+      });
+
+      // Componente de estabilização geral
+      AFRAME.registerComponent('stabilizer', {
+        init: function() {
+          this.lastPosition = new THREE.Vector3();
+          this.lastRotation = new THREE.Euler();
+          this.smoothingFactor = 0.3;
+        },
+        
+        tick: function() {
+          const object3D = this.el.object3D;
+          
+          // Aplicar suavização simples
+          object3D.position.lerp(this.lastPosition, this.smoothingFactor);
+          
+          // Atualizar últimas posições
+          this.lastPosition.copy(object3D.position);
+          this.lastRotation.copy(object3D.rotation);
+        }
+      });
+
       function changeColor(color) {
         // Esconde todos os modelos
         document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
