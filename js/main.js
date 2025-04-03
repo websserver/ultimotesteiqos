@@ -20,7 +20,7 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 8.0; // Escala fixa para todos os modelos
+const BASE_SCALE = 4.0; // Escala reduzida para metade (era 8.0)
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -54,7 +54,7 @@ const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
 const RADIUS = 0.6; // Raio do círculo
-const ANGLE_STEP = 360; // Ângulo entre cada modelo
+const ANGLE_STEP = 360; // Ângulo entre cada modelo (já está em 360 graus)
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
