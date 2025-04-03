@@ -696,74 +696,66 @@
       });
 
       function changeColor(color) {
-        // Remover classe active de todas as opções
-        document.querySelectorAll('.color-option').forEach(option => {
-          option.classList.remove('active');
-        });
-        
-        // Adicionar classe active à opção selecionada
-        document.querySelector(`[data-color="${color}"]`).classList.add('active');
-        
-        // Esconder todos os modelos
-        document.querySelectorAll('[id^="modelo-"]').forEach(model => {
+        // Esconde todos os modelos
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
           model.setAttribute('visible', 'false');
         });
         
-        // Mostrar o modelo selecionado
-        const selectedModel = document.querySelector(`#modelo-${color}-3d`);
+        // Mostra apenas o modelo selecionado
+        const selectedModel = document.getElementById(`modelo-${color}-3d`);
         if (selectedModel) {
           selectedModel.setAttribute('visible', 'true');
         }
       }
     </script>
 
+    <script src="js/color-switcher-iluma.js"></script>
+    <script src="js/age-verification.js"></script>
     <script src="js/ilumaprime.js"></script>
-    <script src="js/color-switcher.js"></script>
     <script>
-      // Inicializar o modelo 3D
-      const modelContainer = document.querySelector('.model-container');
-      const modelViewer = document.querySelector('model-viewer');
-      const backButton = document.querySelector('.back-button');
-      const markerLostMessage = document.querySelector('.marker-lost-message');
-      const titleContainer = document.querySelector('.title-container');
-      const featuresContainer = document.querySelector('.features-container');
+      // Variável para controlar se a página acabou de ser carregada
+      let paginaAcabouDeCarregar = true;
+      
+      // Inicializa a cor padrão como navy apenas quando a página é carregada
+      window.addEventListener('load', function() {
+        console.log('Página carregada - aplicando cor padrão navy');
+        
+        // Aplica a cor navy apenas quando a página é carregada
+        setTimeout(() => {
+          changeColor('navy');
+          paginaAcabouDeCarregar = false;
+        }, 1000);
+      });
 
-      // Função para mostrar/esconder elementos baseado no estado do marcador
-      function updateUIForMarker(isVisible) {
-        if (isVisible) {
-          backButton.style.display = 'none';
-          markerLostMessage.style.display = 'none';
-          titleContainer.style.display = 'block';
-          featuresContainer.style.display = 'block';
-        } else {
-          backButton.style.display = 'block';
-          markerLostMessage.style.display = 'block';
-          titleContainer.style.display = 'none';
-          featuresContainer.style.display = 'none';
+      // Adiciona listener para erros de carregamento
+      window.addEventListener('error', function(e) {
+        console.error('Erro global:', e.message);
+        if (e.filename) {
+          console.error('Arquivo:', e.filename);
         }
-      }
-
-      // Configurar o model-viewer
-      modelViewer.addEventListener('ar-status', (event) => {
-        const isMarkerVisible = event.detail.status === 'session-started';
-        updateUIForMarker(isMarkerVisible);
       });
 
-      // Configurar o botão de voltar
-      backButton.addEventListener('click', () => {
-        window.location.href = 'index.html';
-      });
-
-      // Configurar o model-viewer para carregar o modelo 3D
-      modelViewer.addEventListener('load', () => {
-        console.log('Modelo 3D carregado com sucesso');
-      });
-
-      // Configurar o model-viewer para erros
-      modelViewer.addEventListener('error', (error) => {
-        console.error('Erro ao carregar o modelo 3D:', error);
+      // Monitora o estado da cena
+      document.querySelector('a-scene').addEventListener('loaded', function () {
+        console.log('A-Frame scene loaded');
       });
       
+      // Modifica o evento targetLost para mostrar o modelo navy quando o marcador é perdido
+      target.addEventListener('targetLost', function() {
+        console.log('Marcador perdido');
+        // Esconde todos os modelos
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
+          model.setAttribute('visible', 'false');
+        });
+        
+        // Mostra apenas o modelo navy
+        const navyModel = document.getElementById('modelo-navy-3d');
+        if (navyModel) {
+          navyModel.setAttribute('visible', 'true');
+        }
+        
+        document.querySelector('.marker-lost-message').style.display = 'block';
+      });
     </script>
   </body>
 </html> 
