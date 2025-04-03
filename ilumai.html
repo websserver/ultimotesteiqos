@@ -731,13 +731,30 @@
     <script src="js/age-verification.js"></script>
     <script src="js/ilumai.js"></script>
     <script>
-      // Inicializa a cor padrão como navy
+      // Inicializa a cor padrão como navy apenas se nenhum modelo estiver visível
       window.addEventListener('load', function() {
-        console.log('Inicializando cor padrão...');
-        // Pequeno delay para garantir que a cena A-Frame esteja pronta
-        setTimeout(() => {
-          changeColor('navy');
-        }, 1000);
+        console.log('Verificando estado inicial dos modelos...');
+        
+        // Verifica se algum modelo já está visível
+        const modelos = document.querySelectorAll('[id^="modelo-"][id$="-3d"]');
+        let algumModeloVisivel = false;
+        
+        modelos.forEach(modelo => {
+          if (modelo.getAttribute('visible') === 'true') {
+            algumModeloVisivel = true;
+            console.log('Modelo já visível:', modelo.id);
+          }
+        });
+        
+        // Só aplica a cor navy se nenhum modelo estiver visível
+        if (!algumModeloVisivel) {
+          console.log('Nenhum modelo visível, aplicando cor padrão navy');
+          setTimeout(() => {
+            changeColor('navy');
+          }, 1000);
+        } else {
+          console.log('Já existe um modelo visível, não alterando a cor');
+        }
       });
 
       // Adiciona listener para erros de carregamento
@@ -751,7 +768,7 @@
       // Monitora o estado da cena
       document.querySelector('a-scene').addEventListener('loaded', function () {
         console.log('A-Frame scene loaded');
-        document.querySelector('#modelo-navy-3d').object3D.visible = true;
+        // Não forçar a visibilidade do modelo navy aqui
       });
     </script>
    
