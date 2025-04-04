@@ -216,8 +216,8 @@ h1{
   }
 
   .color-option {
-    width: 32pxx!important;
-    height: 32pxx!important;
+    width: 32px!important;
+    height: 32px!important;
   }
 
   h1 {
@@ -230,11 +230,11 @@ h1{
     right: 18%!important;
   }
   .frame {
-    position: fixedx!important;
-    top: 18pxx!important;
-    left: 65pxx!important;
-    width: 87%x!important;
-    height: 97%x!important;
+    position: fixed!important;
+    top: 18px!important;
+    left: 65px!important;
+    width: 87%!important;
+    height: 97%!important;
     pointer-events: none!important;
     z-index: 999!important;
     touch-action: none!important;
