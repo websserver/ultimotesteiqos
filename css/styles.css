@@ -100,7 +100,6 @@ h1{
   text-align: center;
   display: none;
   z-index: 10000;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: auto;
   min-width: 200px;
   -webkit-transform: translateX(-50%);
@@ -205,3 +204,60 @@ h1{
     font-size: 20px;
   }
 } 
+
+
+/*----------------------alteracoes tablet----------------------*/
+
+
+@media only screen and (max-width: 600px) {
+
+  .color-selector {
+    bottom: 137px;
+  }
+
+  .color-option {
+    width: 32px;
+    height: 32px;
+  }
+
+  h1 {
+    font-size: 20px !important;
+    margin-top: 15% !important;
+    color: white !important;
+  }
+  .features-container {
+    right: 15%;
+  }
+  .frame {
+    position: fixed;
+    top: 0;
+    left: 65px;
+    width: 87%;
+    height: 90%;
+    pointer-events: none;
+    z-index: 999;
+    touch-action: none;
+  }
+  .frame img {
+    width: 98%;
+    object-fit: cover;
+}
+
+}
+
+/*----------------------para o index tablet-------*/
+.nav-button {
+  width: 59px;
+  height: 59px;
+}
+
+#controls {
+  bottom: 46px;
+}
+
+@media (max-width: 768px) {
+  #controls button {
+      padding: 12px 24px;
+      font-size: 25px;
+  }
+}
