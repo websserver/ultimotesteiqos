@@ -20,8 +20,8 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 4.4;  // Escala base ajustada para 4
-const SELECTED_SCALE = 6.0;  // Escala quando selecionado em 6
+const BASE_SCALE = 4;  // Escala base ajustada para 4
+const SELECTED_SCALE = 5.0;  // Escala quando selecionado em 6
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
