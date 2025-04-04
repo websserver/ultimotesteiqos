@@ -570,33 +570,34 @@
       const sceneEl = document.querySelector('a-scene');
       const modeloEl = document.querySelector('#modelo-turquoise-3d');
       const target = document.querySelector('a-entity[mindar-image-target]');
+      let currentColor = 'turquoise'; // Variável para rastrear a cor atual
 
-       // Componente para remover transparência
-       AFRAME.registerComponent('remove-transparency', {
-      init: function () {
-        this.el.addEventListener('model-loaded', () => {
-          const model = this.el.getObject3D('mesh');
-          if (model) {
-            model.traverse((node) => {
-              if (node.isMesh && node.material) {
-                const materials = Array.isArray(node.material) ? node.material : [node.material];
+      // Componente para remover transparência
+      AFRAME.registerComponent('remove-transparency', {
+        init: function () {
+          this.el.addEventListener('model-loaded', () => {
+            const model = this.el.getObject3D('mesh');
+            if (model) {
+              model.traverse((node) => {
+                if (node.isMesh && node.material) {
+                  const materials = Array.isArray(node.material) ? node.material : [node.material];
 
-                materials.forEach((material) => {
-                  material.transparent = false;
-                  material.opacity = 1;
-                  material.depthWrite = true;
-                  material.depthTest = true;
-                  material.blending = THREE.NoBlending;
-                  material.alphaTest = 0.01; // ou 0.01 para garantir o corte de fragmentos "fantasmas"
-                  material.side = THREE.DoubleSide; // use FrontSide para melhor desempenho (ou DoubleSide se necessário)
-                  material.needsUpdate = true;
-                });
-              }
-            });
-          }
-        });
-      }
-    });
+                  materials.forEach((material) => {
+                    material.transparent = false;
+                    material.opacity = 1;
+                    material.depthWrite = true;
+                    material.depthTest = true;
+                    material.blending = THREE.NoBlending;
+                    material.alphaTest = 0.01; // ou 0.01 para garantir o corte de fragmentos "fantasmas"
+                    material.side = THREE.DoubleSide; // use FrontSide para melhor desempenho (ou DoubleSide se necessário)
+                    material.needsUpdate = true;
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
 
 
       // Debug events com mais detalhes
@@ -641,65 +642,60 @@
       // Target events com mais informações
       target.addEventListener('targetFound', function() {
         console.log('Marcador encontrado');
-        modeloEl.object3D.visible = true;
-        document.querySelector('.marker-lost-message').style.display = 'none';
-        
-        // Forçar atualização das matrizes
-        modeloEl.object3D.updateMatrix();
-        modeloEl.object3D.updateMatrixWorld(true);
-        
-        console.log('Estado após encontrar marcador:', {
-          modelVisible: modeloEl.getAttribute('visible'),
-          modelObject3DVisible: modeloEl.object3D.visible,
-          modelPosition: modeloEl.object3D.position,
-          modelRotation: modeloEl.object3D.rotation,
-          modelScale: modeloEl.object3D.scale
+        // Mostra o modelo da cor atual
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
+          model.object3D.visible = model.id === `modelo-${currentColor}-3d`;
         });
+        document.querySelector('.marker-lost-message').style.display = 'none';
       });
 
-      // Variável para controlar se a página acabou de ser carregada
-      let paginaAcabouDeCarregar = true;
-      
-      // Inicializa a cor padrão como turquoise quando a página é carregada
-      window.addEventListener('load', function() {
-        console.log('Página carregada - aplicando cor padrão turquoise');
+      target.addEventListener('targetLost', function() {
+        console.log('Marcador perdido');
+        // Esconde todos os modelos quando o marcador é perdido
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
+          model.object3D.visible = false;
+        });
+        document.querySelector('.marker-lost-message').style.display = 'block';
+      });
+
+      function changeColor(color) {
+        currentColor = color; // Atualiza a cor atual
         
-        // Aplica a cor turquoise quando a página é carregada
+        // Remover classe active de todas as opções
+        document.querySelectorAll('.color-option').forEach(option => {
+          option.classList.remove('active');
+        });
+        
+        // Adicionar classe active à opção selecionada
+        document.querySelector(`[data-color="${color}"]`).classList.add('active');
+        
+        // Esconder todos os modelos
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
+          model.object3D.visible = false;
+          model.setAttribute('visible', 'false');
+        });
+        
+        // Mostrar o modelo selecionado
+        const selectedModel = document.querySelector(`#modelo-${color}-3d`);
+        if (selectedModel) {
+          selectedModel.object3D.visible = true;
+          selectedModel.setAttribute('visible', 'true');
+        }
+      }
+
+      // Inicializa a cor turquesa quando a página carrega
+      window.addEventListener('load', function() {
         setTimeout(() => {
           changeColor('turquoise');
-          paginaAcabouDeCarregar = false;
+          // Adiciona a classe active ao botão turquesa
+          document.querySelector('[data-color="turquoise"]').classList.add('active');
         }, 1000);
-      });
-
-      // Adiciona listener para erros de carregamento
-      window.addEventListener('error', function(e) {
-        console.error('Erro global:', e.message);
-        if (e.filename) {
-          console.error('Arquivo:', e.filename);
-        }
       });
 
       // Monitora o estado da cena
       document.querySelector('a-scene').addEventListener('loaded', function () {
         console.log('A-Frame scene loaded');
-        document.querySelector('#modelo-turquoise-3d').object3D.visible = true;
-      });
-
-      // Modifica o evento targetLost para mostrar o modelo turquoise quando o marcador é perdido
-      target.addEventListener('targetLost', function() {
-        console.log('Marcador perdido');
-        // Esconde todos os modelos
-        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
-          model.setAttribute('visible', 'false');
-        });
-        
-        // Mostra apenas o modelo turquoise
-        const turquoiseModel = document.getElementById('modelo-turquoise-3d');
-        if (turquoiseModel) {
-          turquoiseModel.setAttribute('visible', 'true');
-        }
-        
-        document.querySelector('.marker-lost-message').style.display = 'block';
+        changeColor('turquoise');
       });
 
       AFRAME.registerComponent('gesture-handler-custom', {
@@ -843,57 +839,10 @@
         console.log('Cena carregada - verificando visibilidade');
         modeloEl.object3D.visible = true;
       });
-
-      function changeColor(color) {
-        // Remover classe active de todas as opções
-        document.querySelectorAll('.color-option').forEach(option => {
-          option.classList.remove('active');
-        });
-        
-        // Adicionar classe active à opção selecionada
-        document.querySelector(`[data-color="${color}"]`).classList.add('active');
-        
-        // Esconder todos os modelos
-        document.querySelectorAll('[id^="modelo-"]').forEach(model => {
-          model.setAttribute('visible', 'false');
-        });
-        
-        // Mostrar o modelo selecionado
-        const selectedModel = document.querySelector(`#modelo-${color}-3d`);
-        if (selectedModel) {
-          selectedModel.setAttribute('visible', 'true');
-        }
-        
-        console.log('Cor selecionada:', color);
-      }
     </script>
 
     <script src="js/age-verification.js"></script>
     <script src="js/ilumaprime-one.js"></script>
     <script src="js/camara.js"></script>
-    <script>
-      // Inicializa a cor padrão como navy
-      window.addEventListener('load', function() {
-        console.log('Inicializando cor padrão...');
-        // Pequeno delay para garantir que a cena A-Frame esteja pronta
-        setTimeout(() => {
-          changeColor('turquoise');
-        }, 1000);
-      });
-
-      // Adiciona listener para erros de carregamento
-      window.addEventListener('error', function(e) {
-        console.error('Erro global:', e.message);
-        if (e.filename) {
-          console.error('Arquivo:', e.filename);
-        }
-      });
-
-      // Monitora o estado da cena
-      document.querySelector('a-scene').addEventListener('loaded', function () {
-        console.log('A-Frame scene loaded');
-        document.querySelector('#modelo-turquoise-3d').object3D.visible = true;
-      });
-    </script>
   </body>
 </html> 

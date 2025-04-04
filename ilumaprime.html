@@ -595,6 +595,7 @@
       const sceneEl = document.querySelector('a-scene');
       const modeloEl = document.querySelector('#modelo-turquoise-3d');
       const target = document.querySelector('a-entity[mindar-image-target]');
+      let currentColor = 'turquoise'; // Variável para rastrear a cor atual
 
       // Componente para remover transparência
       AFRAME.registerComponent('remove-transparency', {
@@ -674,25 +675,19 @@
       // Target events com mais informações
       target.addEventListener('targetFound', function() {
         console.log('Marcador encontrado');
-        modeloEl.object3D.visible = true;
-        document.querySelector('.marker-lost-message').style.display = 'none';
-        
-        // Forçar atualização das matrizes
-        modeloEl.object3D.updateMatrix();
-        modeloEl.object3D.updateMatrixWorld(true);
-        
-        console.log('Estado após encontrar marcador:', {
-          modelVisible: modeloEl.getAttribute('visible'),
-          modelObject3DVisible: modeloEl.object3D.visible,
-          modelPosition: modeloEl.object3D.position,
-          modelRotation: modeloEl.object3D.rotation,
-          modelScale: modeloEl.object3D.scale
+        // Mostra o modelo da cor atual
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
+          model.object3D.visible = model.id === `modelo-${currentColor}-3d`;
         });
+        document.querySelector('.marker-lost-message').style.display = 'none';
       });
 
       target.addEventListener('targetLost', function() {
         console.log('Marcador perdido');
-        modeloEl.object3D.visible = false;
+        // Esconde todos os modelos quando o marcador é perdido
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
+          model.object3D.visible = false;
+        });
         document.querySelector('.marker-lost-message').style.display = 'block';
       });
 
@@ -833,67 +828,48 @@
       });
 
       function changeColor(color) {
-        // Esconde todos os modelos
+        currentColor = color; // Atualiza a cor atual
+        
+        // Remover classe active de todas as opções
+        document.querySelectorAll('.color-option').forEach(option => {
+          option.classList.remove('active');
+        });
+        
+        // Adicionar classe active à opção selecionada
+        document.querySelector(`[data-color="${color}"]`).classList.add('active');
+        
+        // Esconder todos os modelos
         document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
+          model.object3D.visible = false;
           model.setAttribute('visible', 'false');
         });
         
-        // Mostra apenas o modelo selecionado
-        const selectedModel = document.getElementById(`modelo-${color}-3d`);
+        // Mostrar o modelo selecionado
+        const selectedModel = document.querySelector(`#modelo-${color}-3d`);
         if (selectedModel) {
+          selectedModel.object3D.visible = true;
           selectedModel.setAttribute('visible', 'true');
         }
       }
-    </script>
 
-    <script src="js/color-switcher-iluma.js"></script>
-    <script src="js/age-verification.js"></script>
-    <script src="js/ilumaprime.js"></script>
-    <script>
-      // Variável para controlar se a página acabou de ser carregada
-      let paginaAcabouDeCarregar = true;
-      
-      // Inicializa a cor padrão como turquoise quando a página é carregada
+      // Inicializa a cor turquesa quando a página carrega
       window.addEventListener('load', function() {
-        console.log('Página carregada - aplicando cor padrão turquoise');
-        
-        // Aplica a cor turquoise quando a página é carregada
         setTimeout(() => {
           changeColor('turquoise');
-          paginaAcabouDeCarregar = false;
+          // Adiciona a classe active ao botão turquesa
+          document.querySelector('[data-color="turquoise"]').classList.add('active');
         }, 1000);
-      });
-
-      // Adiciona listener para erros de carregamento
-      window.addEventListener('error', function(e) {
-        console.error('Erro global:', e.message);
-        if (e.filename) {
-          console.error('Arquivo:', e.filename);
-        }
       });
 
       // Monitora o estado da cena
       document.querySelector('a-scene').addEventListener('loaded', function () {
         console.log('A-Frame scene loaded');
-        document.querySelector('#modelo-turquoise-3d').object3D.visible = true;
-      });
-
-      // Modifica o evento targetLost para mostrar o modelo turquoise quando o marcador é perdido
-      target.addEventListener('targetLost', function() {
-        console.log('Marcador perdido');
-        // Esconde todos os modelos
-        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
-          model.setAttribute('visible', 'false');
-        });
-        
-        // Mostra apenas o modelo turquoise
-        const turquoiseModel = document.getElementById('modelo-turquoise-3d');
-        if (turquoiseModel) {
-          turquoiseModel.setAttribute('visible', 'true');
-        }
-        
-        document.querySelector('.marker-lost-message').style.display = 'block';
+        changeColor('turquoise');
       });
     </script>
+
+    <script src="js/color-switcher-iluma.js"></script>
+    <script src="js/age-verification.js"></script>
+    <script src="js/ilumaprime.js"></script>
   </body>
 </html> 
