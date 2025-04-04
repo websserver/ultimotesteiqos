@@ -20,8 +20,8 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 6.0;
-const SELECTED_SCALE = 8.0;  // Escala quando clicado
+const BASE_SCALE = 5.0;  // Escala base reduzida para 5
+const SELECTED_SCALE = 6.0;  // Escala quando selecionado alterada para 6
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -55,7 +55,7 @@ const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
-const RADIUS = 0.6; // Raio do círculo
+const RADIUS = 0.8; // Raio do círculo aumentado para 0.8
 const ANGLE_STEP = 360; // Ângulo entre cada modelo
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
@@ -173,13 +173,16 @@ function hideModelInfo() {
 
 function updateModelPositions() {
   modelos.forEach((modelo, index) => {
-    modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
+    if (index === currentModel) {
+      modelo.setAttribute('scale', `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`);
+    } else {
+      modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
+    }
   });
 }
 
 function changeModel(direction) {
   hideModelInfo();
-  isModelClicked = false;
   
   // Resetar escala do modelo atual
   modelos[currentModel].setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
@@ -190,8 +193,11 @@ function changeModel(direction) {
     currentModel--;
   }
 
-  // Manter escala base para o novo modelo
-  modelos[currentModel].setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
+  // Atualizar escala do novo modelo selecionado
+  modelos[currentModel].setAttribute('scale', `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`);
+  
+  // Atualizar o carrossel
+  updateCarousel(currentModel);
 }
 
 // Event Listeners
@@ -206,6 +212,11 @@ window.addEventListener('load', function() {
       modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
     }
   });
+  
+  // Definir o modelo inicial como selecionado
+  if (modelos[currentModel]) {
+    modelos[currentModel].setAttribute('scale', `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`);
+  }
 });
 
 const sceneEl = document.querySelector('a-scene');
@@ -268,14 +279,24 @@ sceneEl.addEventListener('loaded', () => {
 });
 
 function handleModelClick(index) {
-  const modelo = modelos[index];
-  const currentScale = modelo.getAttribute('scale').x;
+  // Atualizar o modelo atual
+  currentModel = index;
   
-  if (currentScale === BASE_SCALE) {
-    modelo.setAttribute('scale', `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`);
-  } else {
-    modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
-  }
+  // Atualizar o carrossel para mostrar o modelo clicado
+  updateCarousel(index);
+  
+  // Atualizar as escalas dos modelos
+  modelos.forEach((modelo, i) => {
+    if (i === index) {
+      modelo.setAttribute('scale', `${SELECTED_SCALE} ${SELECTED_SCALE} ${SELECTED_SCALE}`);
+    } else {
+      modelo.setAttribute('scale', `${BASE_SCALE} ${BASE_SCALE} ${BASE_SCALE}`);
+    }
+  });
+  
+  // Mostrar informações do modelo clicado
+  const modelId = `modelo3d-${index + 1}`;
+  showModelInfo(modelId);
 }
 
 // Remover eventos de zoom
