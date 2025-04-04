@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const leftArrow = document.querySelector('#prev-button');
     const rightArrow = document.querySelector('#next-button');
     const customizeButtons = document.querySelectorAll('.model-info button');
+    let modelSelected = false;
     
     // Função para iniciar animação das setas
     function startArrowsAnimation() {
@@ -29,8 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function startCustomizeButtonAnimation() {
         console.log('Iniciando animação do botão personalizar');
         customizeButtons.forEach(button => {
-            button.classList.add('pulse-button');
-            console.log('Botão personalizar encontrado e animado');
+            if (button && button.closest('.model-info').style.display !== 'none') {
+                button.classList.add('pulse-button');
+                console.log('Botão personalizar encontrado e animado');
+            }
         });
     }
 
@@ -42,25 +45,43 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Iniciar com as setas pulsando
-    setTimeout(startArrowsAnimation, 2000); // Dar tempo para os elementos carregarem
+    // Iniciar com as setas pulsando após um pequeno delay
+    setTimeout(startArrowsAnimation, 2000);
+
+    // Observar mudanças na visibilidade dos botões personalizar
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.target.style.display === 'block' && modelSelected) {
+                setTimeout(() => {
+                    startCustomizeButtonAnimation();
+                }, 500); // Pequeno delay para garantir que a transição seja suave
+            }
+        });
+    });
+
+    // Observar mudanças na visibilidade dos painéis de informação
+    document.querySelectorAll('.model-info').forEach(info => {
+        observer.observe(info, { attributes: true, attributeFilter: ['style'] });
+    });
 
     // Quando uma máquina é selecionada (clique em qualquer parte da página)
     document.addEventListener('click', function(event) {
-        // Se clicou em um modelo 3D
+        // Se clicou em um modelo 3D ou seu container
         if (event.target.closest('.model-container') || 
             event.target.closest('#modelo3d-1') ||
             event.target.closest('#modelo3d-2') ||
             event.target.closest('#modelo3d-3')) {
             console.log('Modelo clicado - parando animação das setas');
+            modelSelected = true;
             stopArrowsAnimation();
-            startCustomizeButtonAnimation();
+            // A animação do botão personalizar será iniciada pelo observer
         }
         
         // Se clicou no botão personalizar
         if (event.target.closest('.model-info button')) {
             console.log('Botão personalizar clicado - parando animação');
             stopCustomizeButtonAnimation();
+            localStorage.setItem('tutorialComplete', 'true');
         }
     });
 
@@ -71,13 +92,6 @@ document.addEventListener('DOMContentLoaded', function() {
             stopCustomizeButtonAnimation();
         }
     }
-
-    // Marcar tutorial como completo quando clicar no botão personalizar
-    customizeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            localStorage.setItem('tutorialComplete', 'true');
-        });
-    });
 
     // Verificar estado do tutorial ao carregar
     checkTutorialState();

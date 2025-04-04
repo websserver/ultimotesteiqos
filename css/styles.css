@@ -241,35 +241,44 @@ h1{
   0% {
     transform: scale(1);
     opacity: 1;
+    box-shadow: 0 0 0 0 rgba(0, 209, 210, 0.4);
   }
   50% {
-    transform: scale(1.1);
-    opacity: 0.8;
+    transform: scale(1.2);
+    opacity: 0.9;
+    box-shadow: 0 0 0 15px rgba(0, 209, 210, 0);
   }
   100% {
     transform: scale(1);
     opacity: 1;
+    box-shadow: 0 0 0 0 rgba(0, 209, 210, 0);
   }
 }
 
 /* Animação para as setas de navegação */
 #prev-button.pulse-arrow,
 #next-button.pulse-arrow {
-  animation: pulse 2s infinite;
+  animation: pulse 1.5s infinite;
+  box-shadow: 0 0 10px rgba(0, 209, 210, 0.5);
 }
 
 /* Animação para o botão personalizar */
 .model-info button.pulse-button {
-  animation: pulse 2s infinite;
+  animation: pulse 1.5s infinite;
+  box-shadow: 0 0 10px rgba(0, 209, 210, 0.5);
 }
 
 /* Garantir que os elementos são visíveis durante a animação */
 .pulse-arrow {
   opacity: 1 !important;
+  position: relative;
+  z-index: 1001;
 }
 
 .pulse-button {
   opacity: 1 !important;
+  position: relative;
+  z-index: 1001;
 }
 
 /* Ajustes para garantir que a animação funcione bem */
@@ -277,7 +286,7 @@ h1{
 #next-button,
 .model-info button {
   transform-origin: center;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 /* Manter o hover effect */
@@ -285,4 +294,5 @@ h1{
 #next-button:hover,
 .model-info button:hover {
   transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(0, 209, 210, 0.7);
 }
