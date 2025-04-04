@@ -233,10 +233,12 @@
       <button></button>
     </div>
 
+
     <div id="controls">
       <button id="prev-button" class="nav-button">‹</button>
       <button id="next-button" class="nav-button">›</button>
     </div>
+
 
     <a-scene mindar-image="imageTargetSrc: ./markers/targets.mind;
     filterMinCF: 0.0001; 
@@ -362,22 +364,20 @@
 
     </script>
 
-    <script>
-      const target = document.querySelector('a-entity[mindar-image-target]');
-      
-      target.addEventListener("targetLost", event => {
-        hideModelInfo();
-        document.querySelector('.marker-lost-message').style.display = 'block';
-      });
-
-      target.addEventListener("targetFound", event => {
-        document.querySelector('.marker-lost-message').style.display = 'none';
-      });
-    </script>
 
     <script src="js/main.js"></script>
     <script src="js/camara.js"></script>
-    <script src="js/tutorial-helper.js"></script>
 
   </body>
 </html>
+<script>
+  target.addEventListener("targetLost", event => {
+    hideModelInfo();
+    document.querySelector('.marker-lost-message').style.display = 'block';
+  });
+
+  target.addEventListener("targetFound", event => {
+    document.querySelector('.marker-lost-message').style.display = 'none';
+    // Mostrar todos os modelos
+  });
+</script>

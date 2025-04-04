@@ -111,22 +111,10 @@ function showModelInfo(modelId) {
     const modelInfo = document.querySelector('.model-info');
     if (!modelInfo) return;
 
-    const button = modelInfo.querySelector('button');
-    const wasAnimating = button ? button.classList.contains('pulse-button') : false;
-
     modelInfo.innerHTML = `
         <h2>${modelConfig.name}</h2>
-        <button onclick="window.location.href='${modelConfig.link}'">${modelConfig.buttonText}</button>
+        <button onclick="window.location.href='${modelConfig.link}'">Personalizar</button>
     `;
-
-    // Restaurar a classe de animação se estava ativa
-    if (wasAnimating) {
-        const newButton = modelInfo.querySelector('button');
-        if (newButton) {
-            newButton.classList.add('pulse-button');
-        }
-    }
-
     modelInfo.style.display = 'flex';
 }
 
