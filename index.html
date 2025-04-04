@@ -279,8 +279,26 @@
       shadowCameraRight="30"
       shadowMapHeight="4048"
       shadowMapWidth="4048"
-      shadowBias="-0.001">
+      shadowBias="-0.001"
+      target="#modelo3d-1" >
     </a-light>
+
+    <a-light 
+    type="directional"
+    position="2 4 2"
+    intensity="1.5"
+    color="#ffffff"
+    castShadow="true"
+    shadowCameraTop="4"
+    shadowCameraBottom="-30"
+    shadowCameraLeft="-30"
+    shadowCameraRight="30"
+    shadowMapHeight="4048"
+    shadowMapWidth="4048"
+    shadowBias="-0.001"
+    target="#modelo3d-2" >
+  </a-light>
+
 
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="rayOrigin: mouse; fuse: false;" raycaster="objects: .clickable; far: 10000; interval: 100"></a-camera>
 
