@@ -657,9 +657,48 @@
         });
       });
 
+      // Variável para controlar se a página acabou de ser carregada
+      let paginaAcabouDeCarregar = true;
+      
+      // Inicializa a cor padrão como turquoise quando a página é carregada
+      window.addEventListener('load', function() {
+        console.log('Página carregada - aplicando cor padrão turquoise');
+        
+        // Aplica a cor turquoise quando a página é carregada
+        setTimeout(() => {
+          changeColor('turquoise');
+          paginaAcabouDeCarregar = false;
+        }, 1000);
+      });
+
+      // Adiciona listener para erros de carregamento
+      window.addEventListener('error', function(e) {
+        console.error('Erro global:', e.message);
+        if (e.filename) {
+          console.error('Arquivo:', e.filename);
+        }
+      });
+
+      // Monitora o estado da cena
+      document.querySelector('a-scene').addEventListener('loaded', function () {
+        console.log('A-Frame scene loaded');
+        document.querySelector('#modelo-turquoise-3d').object3D.visible = true;
+      });
+
+      // Modifica o evento targetLost para mostrar o modelo turquoise quando o marcador é perdido
       target.addEventListener('targetLost', function() {
         console.log('Marcador perdido');
-        modeloEl.object3D.visible = false;
+        // Esconde todos os modelos
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
+          model.setAttribute('visible', 'false');
+        });
+        
+        // Mostra apenas o modelo turquoise
+        const turquoiseModel = document.getElementById('modelo-turquoise-3d');
+        if (turquoiseModel) {
+          turquoiseModel.setAttribute('visible', 'true');
+        }
+        
         document.querySelector('.marker-lost-message').style.display = 'block';
       });
 

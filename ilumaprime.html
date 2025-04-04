@@ -853,13 +853,13 @@
       // Variável para controlar se a página acabou de ser carregada
       let paginaAcabouDeCarregar = true;
       
-      // Inicializa a cor padrão como navy apenas quando a página é carregada
+      // Inicializa a cor padrão como turquoise quando a página é carregada
       window.addEventListener('load', function() {
-        console.log('Página carregada - aplicando cor padrão navy');
+        console.log('Página carregada - aplicando cor padrão turquoise');
         
-        // Aplica a cor navy apenas quando a página é carregada
+        // Aplica a cor turquoise quando a página é carregada
         setTimeout(() => {
-          changeColor('navy');
+          changeColor('turquoise');
           paginaAcabouDeCarregar = false;
         }, 1000);
       });
@@ -875,9 +875,10 @@
       // Monitora o estado da cena
       document.querySelector('a-scene').addEventListener('loaded', function () {
         console.log('A-Frame scene loaded');
+        document.querySelector('#modelo-turquoise-3d').object3D.visible = true;
       });
-      
-      // Modifica o evento targetLost para mostrar o modelo navy quando o marcador é perdido
+
+      // Modifica o evento targetLost para mostrar o modelo turquoise quando o marcador é perdido
       target.addEventListener('targetLost', function() {
         console.log('Marcador perdido');
         // Esconde todos os modelos
@@ -885,10 +886,10 @@
           model.setAttribute('visible', 'false');
         });
         
-        // Mostra apenas o modelo navy
-        const navyModel = document.getElementById('modelo-navy-3d');
-        if (navyModel) {
-          navyModel.setAttribute('visible', 'true');
+        // Mostra apenas o modelo turquoise
+        const turquoiseModel = document.getElementById('modelo-turquoise-3d');
+        if (turquoiseModel) {
+          turquoiseModel.setAttribute('visible', 'true');
         }
         
         document.querySelector('.marker-lost-message').style.display = 'block';
