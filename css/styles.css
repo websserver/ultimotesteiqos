@@ -235,3 +235,38 @@ h1{
 
 }
 }
+
+/* Animações de ajuda ao utilizador */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.pulse-arrow {
+  animation: pulse 2s infinite;
+}
+
+.pulse-button {
+  animation: pulse 2s infinite;
+}
+
+/* Garantir que as setas são visíveis durante a animação */
+.pulse-arrow img {
+  opacity: 1 !important;
+}
+
+/* Ajuste para o botão personalizar */
+.pulse-button.btn-personalizar {
+  animation: pulse 2s infinite;
+  transform-origin: center;
+}
