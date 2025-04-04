@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // Eventos de detecção do marcador
   if (target) {
     target.addEventListener("targetFound", () => {
-      // Mostrar o modelo turquoise por padrão
+      // Mostrar o modelo navy por padrão
       Object.values(models).forEach(model => {
         if (model) {
-          model.setAttribute('visible', model.id === 'modelo-turquoise-3d' ? 'true' : 'false');
+          model.setAttribute('visible', model.id === 'modelo-navy-3d' ? 'true' : 'false');
         }
       });
       hideLoading();
