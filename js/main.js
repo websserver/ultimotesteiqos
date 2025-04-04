@@ -70,17 +70,17 @@ const positions = {
 const modelConfigs = {
     'modelo3d-1': {
         name: 'ILUMA i ONE',
-        buttonText: 'Personalizar ILUMA i ONE',
+        buttonText: 'Personalizar',
         link: 'ilumaone.html'
     },
     'modelo3d-2': {
         name: 'ILUMA i',
-        buttonText: 'Personalizar ILUMA i',
+        buttonText: 'Personalizar',
         link: 'ilumai.html'
     },
     'modelo3d-3': {
         name: 'ILUMA i PRIME',
-        buttonText: 'Personalizar ILUMA i PRIME',
+        buttonText: 'Personalizar',
         link: 'ilumaprime.html'
     }
 };

@@ -112,6 +112,10 @@ h1{
   -webkit-font-smoothing: antialiased;
 }
 
+.pulse-button{
+  animation: pulse 2s infinite;
+}
+
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -148,7 +152,6 @@ h1{
   margin-left: auto;
   margin-right: auto;
   margin-top: 15%;
-  animation: pulse 2s infinite;
 }
 
 .model-info button:hover {
