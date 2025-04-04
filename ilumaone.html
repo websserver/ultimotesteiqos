@@ -588,8 +588,8 @@
                     material.depthWrite = true;
                     material.depthTest = true;
                     material.blending = THREE.NoBlending;
-                    material.alphaTest = 0.01; // ou 0.01 para garantir o corte de fragmentos "fantasmas"
-                    material.side = THREE.DoubleSide; // use FrontSide para melhor desempenho (ou DoubleSide se necessário)
+                    material.alphaTest = 0.01;
+                    material.side = THREE.DoubleSide;
                     material.needsUpdate = true;
                   });
                 }
@@ -598,7 +598,6 @@
           });
         }
       });
-
 
       // Debug events com mais detalhes
       modeloEl.addEventListener('model-loaded', function(event) {
