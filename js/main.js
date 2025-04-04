@@ -20,8 +20,8 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 4.0;  // Escala base reduzida para 5
-const SELECTED_SCALE = 6.0;  // Escala quando selecionado alterada para 6
+const BASE_SCALE = 4.0;  // Escala base ajustada para 4
+const SELECTED_SCALE = 6.0;  // Escala quando selecionado em 6
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
   1: "IQOS ILUMA PRIME",
@@ -55,15 +55,15 @@ const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
-const RADIUS = 1.0; // Raio do círculo aumentado para 0.8
+const RADIUS = 1.2; // Raio do círculo ajustado para 1.2
 const ANGLE_STEP = 360; // Ângulo entre cada modelo
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
 const positions = {
-    left: { x: -RADIUS, y: 0, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: BASE_SCALE, opacity: 0.7 },
-    center: { x: 0, y: 0, z: 0, rotation: 0, scale: BASE_SCALE, opacity: 1 },
-    right: { x: RADIUS, y: 0, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: BASE_SCALE, opacity: 0.7 }
+    left: { x: -RADIUS, y: 0.5, z: -RADIUS * 0.5, rotation: -ANGLE_STEP, scale: BASE_SCALE, opacity: 0.7 },
+    center: { x: 0, y: 0.5, z: 0, rotation: 0, scale: BASE_SCALE, opacity: 1 },
+    right: { x: RADIUS, y: 0.5, z: -RADIUS * 0.5, rotation: ANGLE_STEP, scale: BASE_SCALE, opacity: 0.7 }
 };
 
 // Configuração dos modelos com suas informações
