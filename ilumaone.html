@@ -570,7 +570,7 @@
       const sceneEl = document.querySelector('a-scene');
       const modeloEl = document.querySelector('#modelo-turquoise-3d');
       const target = document.querySelector('a-entity[mindar-image-target]');
-      let currentColor = 'turquoise'; // Variável para rastrear a cor atual
+      let currentColor = 'turquoise';
 
       // Componente para remover transparência
       AFRAME.registerComponent('remove-transparency', {
@@ -581,7 +581,6 @@
               model.traverse((node) => {
                 if (node.isMesh && node.material) {
                   const materials = Array.isArray(node.material) ? node.material : [node.material];
-
                   materials.forEach((material) => {
                     material.transparent = false;
                     material.opacity = 1;
@@ -599,102 +598,55 @@
         }
       });
 
-      // Debug events com mais detalhes
-      modeloEl.addEventListener('model-loaded', function(event) {
-        console.log('Modelo 3D carregado com sucesso', event);
-        modeloEl.object3D.visible = true;
-        
-        // Forçar atualização da matriz mundial
-        modeloEl.object3D.updateMatrix();
-        modeloEl.object3D.updateMatrixWorld(true);
-      });
-
-      modeloEl.addEventListener('model-error', function(error) {
-        console.error('Erro ao carregar o modelo 3D:', error);
-        // Tentar recarregar o modelo
-        const modelUrl = modeloEl.getAttribute('gltf-model');
-        setTimeout(() => {
-          console.log('Tentando recarregar o modelo...');
-          modeloEl.setAttribute('gltf-model', '');
-          setTimeout(() => {
-            modeloEl.setAttribute('gltf-model', modelUrl);
-          }, 1000);
-        }, 2000);
-      });
-
-      sceneEl.addEventListener('arReady', function() {
-        console.log('MindAR está pronto');
-        // Verificar se o modelo está visível
-        console.log('Estado do modelo:', {
-          visible: modeloEl.getAttribute('visible'),
-          object3DVisible: modeloEl.object3D.visible,
-          position: modeloEl.object3D.position,
-          rotation: modeloEl.object3D.rotation,
-          scale: modeloEl.object3D.scale
+      function updateModelVisibility() {
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
+          const shouldBeVisible = model.id === `modelo-${currentColor}-3d`;
+          model.object3D.visible = shouldBeVisible;
+          model.setAttribute('visible', shouldBeVisible);
         });
-      });
-
-      sceneEl.addEventListener('arError', function(error) {
-        console.error('Erro no MindAR:', error);
-      });
+      }
 
       // Target events com mais informações
       target.addEventListener('targetFound', function() {
-        console.log('Marcador encontrado');
-        // Mostra o modelo da cor atual
-        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
-          model.object3D.visible = model.id === `modelo-${currentColor}-3d`;
-        });
+        console.log('Marcador encontrado - Mostrando modelo:', currentColor);
+        updateModelVisibility();
         document.querySelector('.marker-lost-message').style.display = 'none';
       });
 
       target.addEventListener('targetLost', function() {
         console.log('Marcador perdido');
-        // Esconde todos os modelos quando o marcador é perdido
         document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
           model.object3D.visible = false;
+          model.setAttribute('visible', 'false');
         });
         document.querySelector('.marker-lost-message').style.display = 'block';
       });
 
       function changeColor(color) {
-        currentColor = color; // Atualiza a cor atual
+        console.log('Mudando cor para:', color);
+        currentColor = color;
         
-        // Remover classe active de todas as opções
         document.querySelectorAll('.color-option').forEach(option => {
           option.classList.remove('active');
         });
         
-        // Adicionar classe active à opção selecionada
         document.querySelector(`[data-color="${color}"]`).classList.add('active');
-        
-        // Esconder todos os modelos
-        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
-          model.object3D.visible = false;
-          model.setAttribute('visible', 'false');
-        });
-        
-        // Mostrar o modelo selecionado
-        const selectedModel = document.querySelector(`#modelo-${color}-3d`);
-        if (selectedModel) {
-          selectedModel.object3D.visible = true;
-          selectedModel.setAttribute('visible', 'true');
-        }
+        updateModelVisibility();
       }
 
-      // Inicializa a cor turquesa quando a página carrega
+      // Inicialização
+      function initializeScene() {
+        console.log('Inicializando cena com cor:', currentColor);
+        changeColor('turquoise');
+      }
+
       window.addEventListener('load', function() {
-        setTimeout(() => {
-          changeColor('turquoise');
-          // Adiciona a classe active ao botão turquesa
-          document.querySelector('[data-color="turquoise"]').classList.add('active');
-        }, 1000);
+        setTimeout(initializeScene, 1000);
       });
 
-      // Monitora o estado da cena
       document.querySelector('a-scene').addEventListener('loaded', function () {
         console.log('A-Frame scene loaded');
-        changeColor('turquoise');
+        initializeScene();
       });
 
       AFRAME.registerComponent('gesture-handler-custom', {
