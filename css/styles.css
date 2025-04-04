@@ -227,21 +227,7 @@ h1{
   }
 
   .features-container {
-    right: 18%!important;
+    right: 14%!important;
   }
-  .frame {
-    position: fixed!important;
-    top: 18px!important;
-    left: 65px!important;
-    width: 87%!important;
-    height: 97%!important;
-    pointer-events: none!important;
-    z-index: 999!important;
-    touch-action: none!important;
-  }
-  .frame img {
-    width: 96%!important;
-    object-fit: cover!important;
-}
 
 }
