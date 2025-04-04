@@ -485,41 +485,33 @@
       const modeloEl = document.querySelector('#modelo-navy-3d');
       const target = document.querySelector('a-entity[mindar-image-target]');
 
-      // Componente para remover transparência
-      AFRAME.registerComponent('remove-transparency', {
-        init: function() {
-          this.el.addEventListener('model-loaded', () => {
-            const model = this.el.getObject3D('mesh');
-            if (model) {
-              model.traverse((node) => {
-                if (node.isMesh && node.material) {
-                  // Força o material a ser opaco
-                  node.material.transparent = false;
-                  node.material.opacity = 1;
-                  node.material.depthWrite = true;
-                  node.material.depthTest = true;
-                  node.material.blending = THREE.NoBlending;
-                  node.material.alphaTest = 1;
-                  node.material.side = THREE.DoubleSide;
-                  
-                  // Se for um array de materiais
-                  if (Array.isArray(node.material)) {
-                    node.material.forEach(material => {
-                      material.transparent = false;
-                      material.opacity = 1;
-                      material.depthWrite = true;
-                      material.depthTest = true;
-                      material.blending = THREE.NoBlending;
-                      material.alphaTest = 1;
-                      material.side = THREE.DoubleSide;
-                    });
-                  }
-                }
-              });
-            }
-          });
-        }
-      });
+       // Componente para remover transparência
+       AFRAME.registerComponent('remove-transparency', {
+      init: function () {
+        this.el.addEventListener('model-loaded', () => {
+          const model = this.el.getObject3D('mesh');
+          if (model) {
+            model.traverse((node) => {
+              if (node.isMesh && node.material) {
+                const materials = Array.isArray(node.material) ? node.material : [node.material];
+
+                materials.forEach((material) => {
+                  material.transparent = false;
+                  material.opacity = 1;
+                  material.depthWrite = true;
+                  material.depthTest = true;
+                  material.blending = THREE.NoBlending;
+                  material.alphaTest = 0.01; // ou 0.01 para garantir o corte de fragmentos "fantasmas"
+                  material.side = THREE.DoubleSide; // use FrontSide para melhor desempenho (ou DoubleSide se necessário)
+                  material.needsUpdate = true;
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+
 
       // Debug events com mais detalhes
       modeloEl.addEventListener('model-loaded', function(event) {
