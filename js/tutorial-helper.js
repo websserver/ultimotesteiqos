@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Elementos que vamos animar
     const leftArrow = document.querySelector('#prev-button');
     const rightArrow = document.querySelector('#next-button');
-    const customizeButtons = document.querySelectorAll('.model-info button');
     let modelSelected = false;
     
     // Função para iniciar animação das setas
@@ -29,36 +28,53 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para iniciar animação do botão personalizar
     function startCustomizeButtonAnimation() {
         console.log('Iniciando animação do botão personalizar');
-        document.querySelectorAll('.model-info').forEach(info => {
-            if (info.style.display === 'block') {
-                const button = info.querySelector('button');
-                if (button) {
-                    button.classList.add('pulse-button');
-                    console.log('Botão personalizar encontrado e animado:', button);
-                }
+        const visiblePanel = document.querySelector('.model-info[style*="display: block"], .model-info[style*="display: flex"]');
+        if (visiblePanel) {
+            const button = visiblePanel.querySelector('button');
+            if (button) {
+                button.classList.add('pulse-button');
+                console.log('Botão personalizar encontrado e animado:', button);
             }
-        });
+        }
     }
 
     // Função para parar animação do botão personalizar
     function stopCustomizeButtonAnimation() {
         console.log('Parando animação do botão personalizar');
-        customizeButtons.forEach(button => {
+        document.querySelectorAll('.model-info button').forEach(button => {
             button.classList.remove('pulse-button');
         });
     }
 
-    // Iniciar com as setas pulsando após um pequeno delay
-    setTimeout(startArrowsAnimation, 2000);
-
     // Função para verificar se algum painel de informações está visível
     function checkVisibleInfoPanel() {
-        const visiblePanel = document.querySelector('.model-info[style*="display: block"]');
+        const visiblePanel = document.querySelector('.model-info[style*="display: block"], .model-info[style*="display: flex"]');
         return visiblePanel !== null;
     }
 
-    // Quando uma máquina é selecionada (clique em qualquer parte da página)
+    // Verificar estado inicial
+    function checkInitialState() {
+        if (localStorage.getItem('tutorialComplete') === 'true') {
+            stopArrowsAnimation();
+            stopCustomizeButtonAnimation();
+            return;
+        }
+
+        // Verificar se já há um modelo selecionado
+        if (checkVisibleInfoPanel()) {
+            modelSelected = true;
+            stopArrowsAnimation();
+            startCustomizeButtonAnimation();
+        } else {
+            // Iniciar com as setas pulsando após um pequeno delay
+            setTimeout(startArrowsAnimation, 1000);
+        }
+    }
+
+    // Quando uma máquina é selecionada
     document.addEventListener('click', function(event) {
+        if (localStorage.getItem('tutorialComplete') === 'true') return;
+
         // Se clicou em um modelo 3D ou seu container
         if (event.target.closest('.model-container') || 
             event.target.closest('#modelo3d-1') ||
@@ -86,9 +102,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Observar mudanças na visibilidade dos painéis de informação
     const observer = new MutationObserver((mutations) => {
+        if (localStorage.getItem('tutorialComplete') === 'true') return;
+
         mutations.forEach((mutation) => {
-            if (mutation.target.style.display === 'block' && modelSelected) {
-                startCustomizeButtonAnimation();
+            if (mutation.target.style.display !== 'none' && modelSelected) {
+                setTimeout(() => {
+                    startCustomizeButtonAnimation();
+                }, 100);
             }
         });
     });
@@ -102,20 +122,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Armazenar estado no localStorage
-    function checkTutorialState() {
-        if (localStorage.getItem('tutorialComplete') === 'true') {
-            stopArrowsAnimation();
-            stopCustomizeButtonAnimation();
-        }
-    }
-
-    // Verificar estado do tutorial ao carregar
-    checkTutorialState();
+    // Inicializar o estado
+    checkInitialState();
 
     // Log para debug
     console.log('Tutorial helper carregado');
     console.log('Seta esquerda:', leftArrow);
     console.log('Seta direita:', rightArrow);
-    console.log('Botões personalizar:', customizeButtons);
+    console.log('Estado do modelo:', modelSelected);
 }); 
