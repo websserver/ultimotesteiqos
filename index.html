@@ -245,7 +245,7 @@
     filterBeta: 0.001;
     warmupTolerance: 30;
     missTolerance: 5;
-    smoothCount: 30;
+    smoothCount: 10;
     smoothTolerance: 0.005;
     smoothThreshold: 0.5;
     maxTrack: 1;
@@ -254,8 +254,8 @@
     trackingMethod: best;
     trackingSmoothingFactor: 0.7;
     trackingThreshold: 0.1;
-    trackingTimeout: 3000;
-    trackingResetTimeout: 6000;
+    trackingTimeout: 2000;
+    trackingResetTimeout: 2000;
     trackingResetThreshold: 0.3;
     debugUIEnabled: true" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" loading-screen="enabled: false">
       <a-assets>
@@ -295,6 +295,36 @@
         </a-entity>
       </a-entity>
     </a-scene>
+
+    <script>
+       // Componente para remover transparência
+       AFRAME.registerComponent('remove-transparency', {
+      init: function () {
+        this.el.addEventListener('model-loaded', () => {
+          const model = this.el.getObject3D('mesh');
+          if (model) {
+            model.traverse((node) => {
+              if (node.isMesh && node.material) {
+                const materials = Array.isArray(node.material) ? node.material : [node.material];
+
+                materials.forEach((material) => {
+                  material.transparent = false;
+                  material.opacity = 1;
+                  material.depthWrite = true;
+                  material.depthTest = true;
+                  material.blending = THREE.NoBlending;
+                  material.alphaTest = 0.01; // ou 0.01 para garantir o corte de fragmentos "fantasmas"
+                  material.side = THREE.DoubleSide; // use FrontSide para melhor desempenho (ou DoubleSide se necessário)
+                  material.needsUpdate = true;
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+
+    </script>
 
 
     <script src="js/main.js"></script>
