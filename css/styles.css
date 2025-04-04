@@ -212,12 +212,12 @@ h1{
 @media only screen and (min-width: 750px) and (max-width: 1024px) {
 
   .color-selector {
-    bottom: 137px;
+    bottom: 137px!important;
   }
 
   .color-option {
-    width: 32px;
-    height: 32px;
+    width: 32pxx!important;
+    height: 32pxx!important;
   }
 
   h1 {
@@ -227,21 +227,21 @@ h1{
   }
 
   .features-container {
-    right: 15%;
+    right: 18%!important;
   }
   .frame {
-    position: fixed;
-    top: 0;
-    left: 65px;
-    width: 87%;
-    height: 90%;
-    pointer-events: none;
-    z-index: 999;
-    touch-action: none;
+    position: fixedx!important;
+    top: 18pxx!important;
+    left: 65pxx!important;
+    width: 87%x!important;
+    height: 97%x!important;
+    pointer-events: none!important;
+    z-index: 999!important;
+    touch-action: none!important;
   }
   .frame img {
-    width: 98%;
-    object-fit: cover;
+    width: 96%!important;
+    object-fit: cover!important;
 }
 
 }
