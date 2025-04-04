@@ -29,10 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para iniciar animação do botão personalizar
     function startCustomizeButtonAnimation() {
         console.log('Iniciando animação do botão personalizar');
-        customizeButtons.forEach(button => {
-            if (button && button.closest('.model-info').style.display !== 'none') {
-                button.classList.add('pulse-button');
-                console.log('Botão personalizar encontrado e animado');
+        document.querySelectorAll('.model-info').forEach(info => {
+            if (info.style.display === 'block') {
+                const button = info.querySelector('button');
+                if (button) {
+                    button.classList.add('pulse-button');
+                    console.log('Botão personalizar encontrado e animado:', button);
+                }
             }
         });
     }
@@ -48,21 +51,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Iniciar com as setas pulsando após um pequeno delay
     setTimeout(startArrowsAnimation, 2000);
 
-    // Observar mudanças na visibilidade dos botões personalizar
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.target.style.display === 'block' && modelSelected) {
-                setTimeout(() => {
-                    startCustomizeButtonAnimation();
-                }, 500); // Pequeno delay para garantir que a transição seja suave
-            }
-        });
-    });
-
-    // Observar mudanças na visibilidade dos painéis de informação
-    document.querySelectorAll('.model-info').forEach(info => {
-        observer.observe(info, { attributes: true, attributeFilter: ['style'] });
-    });
+    // Função para verificar se algum painel de informações está visível
+    function checkVisibleInfoPanel() {
+        const visiblePanel = document.querySelector('.model-info[style*="display: block"]');
+        return visiblePanel !== null;
+    }
 
     // Quando uma máquina é selecionada (clique em qualquer parte da página)
     document.addEventListener('click', function(event) {
@@ -74,7 +67,13 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Modelo clicado - parando animação das setas');
             modelSelected = true;
             stopArrowsAnimation();
-            // A animação do botão personalizar será iniciada pelo observer
+            
+            // Pequeno delay para garantir que o painel de informações esteja visível
+            setTimeout(() => {
+                if (checkVisibleInfoPanel()) {
+                    startCustomizeButtonAnimation();
+                }
+            }, 300);
         }
         
         // Se clicou no botão personalizar
@@ -83,6 +82,24 @@ document.addEventListener('DOMContentLoaded', function() {
             stopCustomizeButtonAnimation();
             localStorage.setItem('tutorialComplete', 'true');
         }
+    });
+
+    // Observar mudanças na visibilidade dos painéis de informação
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.target.style.display === 'block' && modelSelected) {
+                startCustomizeButtonAnimation();
+            }
+        });
+    });
+
+    // Observar mudanças em todos os painéis de informação
+    document.querySelectorAll('.model-info').forEach(info => {
+        observer.observe(info, { 
+            attributes: true, 
+            attributeFilter: ['style'],
+            subtree: false
+        });
     });
 
     // Armazenar estado no localStorage

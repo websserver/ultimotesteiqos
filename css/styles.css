@@ -99,7 +99,7 @@ h1{
   border-radius: 25px;
   text-align: center;
   display: none;
-  z-index: 10000;
+  z-index: 1000;
   width: auto;
   min-width: 200px;
   -webkit-transform: translateX(-50%);
@@ -131,6 +131,7 @@ h1{
   margin-left: auto;
   margin-right: auto;
   margin-top: 15%;
+  z-index: 1001;
 }
 
 .model-info button:hover {
@@ -241,17 +242,17 @@ h1{
   0% {
     transform: scale(1);
     opacity: 1;
-    box-shadow: 0 0 0 0 rgba(0, 209, 210, 0.4);
+    box-shadow: 0 0 0 0 rgba(0, 209, 210, 0.7);
   }
   50% {
     transform: scale(1.2);
     opacity: 0.9;
-    box-shadow: 0 0 0 15px rgba(0, 209, 210, 0);
+    box-shadow: 0 0 20px rgba(0, 209, 210, 0.5);
   }
   100% {
     transform: scale(1);
     opacity: 1;
-    box-shadow: 0 0 0 0 rgba(0, 209, 210, 0);
+    box-shadow: 0 0 0 0 rgba(0, 209, 210, 0.7);
   }
 }
 
@@ -259,23 +260,19 @@ h1{
 #prev-button.pulse-arrow,
 #next-button.pulse-arrow {
   animation: pulse 1.5s infinite;
-  box-shadow: 0 0 10px rgba(0, 209, 210, 0.5);
+  box-shadow: 0 0 15px rgba(0, 209, 210, 0.6);
+  z-index: 1001;
 }
 
 /* Animação para o botão personalizar */
 .model-info button.pulse-button {
-  animation: pulse 1.5s infinite;
-  box-shadow: 0 0 10px rgba(0, 209, 210, 0.5);
+  animation: pulse 1.5s infinite !important;
+  box-shadow: 0 0 15px rgba(0, 209, 210, 0.6) !important;
+  z-index: 1001 !important;
 }
 
 /* Garantir que os elementos são visíveis durante a animação */
-.pulse-arrow {
-  opacity: 1 !important;
-  position: relative;
-  z-index: 1001;
-}
-
-.pulse-button {
+.pulse-arrow, .pulse-button {
   opacity: 1 !important;
   position: relative;
   z-index: 1001;
@@ -287,6 +284,7 @@ h1{
 .model-info button {
   transform-origin: center;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 /* Manter o hover effect */
@@ -294,5 +292,14 @@ h1{
 #next-button:hover,
 .model-info button:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(0, 209, 210, 0.7);
+  box-shadow: 0 0 20px rgba(0, 209, 210, 0.8);
+}
+
+/* Garantir que o botão personalizar sempre fique por cima */
+.model-info {
+  z-index: 1000;
+}
+
+.model-info button {
+  z-index: 1001;
 }
