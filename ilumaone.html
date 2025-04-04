@@ -321,34 +321,20 @@
     <div class="features-container">
       <div class="feature-item">
         <div class="feature-icon">
-          <img src="icons/battery.webp" alt="Bateria">
+          <img src="icons/flex.svg" alt="Flex Puff">
         </div>
         <div class="feature-text">
-          <span class="feature-label">Bateria</span>
+          <span class="feature-label">Flex Puff</span>
+          <span class="feature-value">Experiência personalizada</span>
         </div>
       </div>
       <div class="feature-item">
         <div class="feature-icon">
-          <img src="icons/puff.webp" alt="Puffs">
+          <img src="icons/play.svg" alt="Auto Start">
         </div>
         <div class="feature-text">
-          <span class="feature-label">Puffs</span>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">
-          <img src="icons/pause.webp" alt="Tempo">
-        </div>
-        <div class="feature-text">
-          <span class="feature-label">Tempo</span>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">
-          <img src="icons/touch.webp" alt="Touch">
-        </div>
-        <div class="feature-text">
-          <span class="feature-label">Touch</span>
+          <span class="feature-label">Auto Start</span>
+          <span class="feature-value">Início automático</span>
         </div>
       </div>
     </div>
@@ -564,6 +550,36 @@
       <div class="color-option" style="background-color: #82aaae;" data-color="turquoise" onclick="changeColor('turquoise')"></div>
     </div>
     <div class="color-selector-frame"></div>
+
+    <div class="features-dropdown" style="display: none;">
+      <h3>
+        Features
+        <button class="close-button" onclick="toggleFeatures()">&times;</button>
+      </h3>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <img src="icons/flex.svg" alt="Flex Puff">
+        </div>
+        <div class="feature-text">
+          <span class="feature-label">Flex Puff</span>
+          <span class="feature-value">Experiência personalizada</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <img src="icons/play.svg" alt="Auto Start">
+        </div>
+        <div class="feature-text">
+          <span class="feature-label">Auto Start</span>
+          <span class="feature-value">Início automático</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="toggle-features" onclick="toggleFeatures()">
+      <img src="icons/features.svg" alt="Features">
+      Features
+    </button>
 
     <script>
       const sceneEl = document.querySelector('a-scene');
