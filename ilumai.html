@@ -388,20 +388,21 @@
         <a-entity 
           id="modelo-navy-3d" 
           gltf-model="#modelo-navy"
-          position="0 -0.3 0.1" 
+          position="0 -0.3 0.1"
           rotation="0 0 0" 
-          scale="5 5 5" 
+          scale="5 5 5"  
           class="clickable"
           animation-mixer="loop: repeat"
           animation="property: position; dur: 300; easing: easeOutQuad"
           material="transparent: false; opacity: 1; depthWrite: true; depthTest: true; blending: NoBlending"
           remove-transparency
-          gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08">
+          gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08"
+          visible="false">
         </a-entity>
         <a-entity 
           id="modelo-olive-3d" 
           gltf-model="#modelo-olive"
-          position="0 -0.3 0.1" 
+          position="0 -0.3 0.1"
           rotation="0 0 0" 
           scale="5 5 5" 
           class="clickable"
@@ -445,14 +446,14 @@
           gltf-model="#modelo-turquoise"
           position="0 -0.3 0.1"
           rotation="0 0 0" 
-          scale="5 5 5" 
+          scale="5 5 5"  
           class="clickable"
           animation-mixer="loop: repeat"
           animation="property: position; dur: 300; easing: easeOutQuad"
           material="transparent: false; opacity: 1; depthWrite: true; depthTest: true; blending: NoBlending"
           remove-transparency
           gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08"
-          visible="false">
+          visible="true">
         </a-entity>
       </a-entity>
     </a-scene>
@@ -463,11 +464,11 @@
     </div>
 
     <div class="color-selector">
+      <div class="color-option" style="background-color: #7EC4BC;" data-color="turquoise" onclick="changeColor('turquoise')"></div>
       <div class="color-option" style="background-color: #2D3339;" data-color="navy" onclick="changeColor('navy')"></div>
       <div class="color-option" style="background-color: #8B9C3C;" data-color="olive" onclick="changeColor('olive')"></div>
       <div class="color-option" style="background-color: #8B90C5;" data-color="jacaranda" onclick="changeColor('jacaranda')"></div>
       <div class="color-option" style="background-color: #B84C39;" data-color="rooibos" onclick="changeColor('rooibos')"></div>
-      <div class="color-option" style="background-color: #7EC4BC;" data-color="turquoise" onclick="changeColor('turquoise')"></div>
     </div>
     <div class="color-selector-frame"></div>
 

@@ -485,7 +485,8 @@
           animation="property: position; dur: 300; easing: easeOutQuad"
           material="transparent: false; opacity: 1; depthWrite: true; depthTest: true; blending: NoBlending"
           remove-transparency
-          gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08">
+          gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08"
+          visible="false">
         </a-entity>
         <a-entity 
           id="modelo-olive-3d" 
@@ -541,7 +542,7 @@
           material="transparent: false; opacity: 1; depthWrite: true; depthTest: true; blending: NoBlending"
           remove-transparency
           gesture-handler-custom="minScale: 4; maxScale: 12; rotationSensitivity: 0.2; scaleSensitivity: 0.08"
-          visible="false">
+          visible="true">
         </a-entity>
       </a-entity>
     </a-scene>
@@ -557,11 +558,11 @@
 
 
     <div class="color-selector">
+      <div class="color-option active" style="background-color: #82aaae;" data-color="turquoise" onclick="changeColor('turquoise')"></div>
       <div class="color-option" style="background-color: #131d2b;" data-color="navy" onclick="changeColor('navy')"></div>
       <div class="color-option" style="background-color: #0f2e27;" data-color="olive" onclick="changeColor('olive')"></div>
       <div class="color-option" style="background-color: #898FC8;" data-color="jacaranda" onclick="changeColor('jacaranda')"></div>
       <div class="color-option" style="background-color: #2d1e27;" data-color="rooibos" onclick="changeColor('rooibos')"></div>
-      <div class="color-option" style="background-color: #82aaae;" data-color="turquoise" onclick="changeColor('turquoise')"></div>
     </div>
     <div class="color-selector-frame"></div>
 
