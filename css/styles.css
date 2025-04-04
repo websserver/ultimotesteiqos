@@ -206,6 +206,7 @@ h1{
 } 
 
 
+
 /*----------------------alteracoes tablet----------------------*/
 
 
@@ -229,5 +230,8 @@ h1{
   .features-container {
     right: 14%!important;
   }
+  .feature-label {
+    font-size: 18px;
 
+}
 }
