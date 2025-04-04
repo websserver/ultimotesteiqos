@@ -209,7 +209,7 @@ h1{
 /*----------------------alteracoes tablet----------------------*/
 
 
-@media only screen and (max-width: 600px) {
+@media only screen and (min-width: 770px) and (max-width: 1024px) {
 
   .color-selector {
     bottom: 137px;
@@ -225,6 +225,7 @@ h1{
     margin-top: 15% !important;
     color: white !important;
   }
+  
   .features-container {
     right: 15%;
   }
@@ -243,21 +244,4 @@ h1{
     object-fit: cover;
 }
 
-}
-
-/*----------------------para o index tablet-------*/
-.nav-button {
-  width: 59px;
-  height: 59px;
-}
-
-#controls {
-  bottom: 46px;
-}
-
-@media (max-width: 768px) {
-  #controls button {
-      padding: 12px 24px;
-      font-size: 25px;
-  }
 }
