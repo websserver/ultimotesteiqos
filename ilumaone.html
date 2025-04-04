@@ -568,7 +568,7 @@
 
     <script>
       const sceneEl = document.querySelector('a-scene');
-      const modeloEl = document.querySelector('#modelo-navy-3d');
+      const modeloEl = document.querySelector('#modelo-turquoise-3d');
       const target = document.querySelector('a-entity[mindar-image-target]');
 
        // Componente para remover transparência
@@ -838,7 +838,7 @@
         console.log('Inicializando cor padrão...');
         // Pequeno delay para garantir que a cena A-Frame esteja pronta
         setTimeout(() => {
-          changeColor('navy');
+          changeColor('turquoise');
         }, 1000);
       });
 
@@ -853,7 +853,7 @@
       // Monitora o estado da cena
       document.querySelector('a-scene').addEventListener('loaded', function () {
         console.log('A-Frame scene loaded');
-        document.querySelector('#modelo-navy-3d').object3D.visible = true;
+        document.querySelector('#modelo-turquoise-3d').object3D.visible = true;
       });
     </script>
   </body>
