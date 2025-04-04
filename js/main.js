@@ -20,7 +20,7 @@ AFRAME.registerComponent('model-handler', {
 });
 
 // Constants and variables
-const BASE_SCALE = 5.0;  // Escala base ajustada para 4
+const BASE_SCALE = 6.0;  // Escala base ajustada para 4
 const SELECTED_SCALE = 7.0;  // Escala quando selecionado em 6
 const MODEL_NAMES = {
   0: "IQOS ILUMA",
@@ -55,7 +55,7 @@ const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
-const RADIUS = 1; // Raio do círculo ajustado para 1.2
+const RADIUS = 1.2; // Raio do círculo ajustado para 1.2
 const ANGLE_STEP = 360; // Ângulo entre cada modelo
 const TRANSITION_DURATION = 1000; // Duração da transição em ms
 
