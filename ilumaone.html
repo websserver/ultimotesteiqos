@@ -37,10 +37,10 @@
         position: fixed;
         bottom: 80px;
         right: 20px;
-        width: 300px;
+        width: 200px;
         background: rgba(206, 206, 206, 0.9);
         border-radius: 20px;
-        padding: 20px;
+        padding: 15px;
         color: black;
         z-index: 1000;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -78,13 +78,11 @@
 
       .feature-item {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 0px;
-        padding: 10px;
+        gap: 10px;
+        padding: 8px;
         border-radius: 12px;
         transition: transform 0.3s ease;
-        width: auto;
       }
 
       .feature-item:hover {
@@ -551,27 +549,25 @@
     </div>
     <div class="color-selector-frame"></div>
 
-    <div class="features-dropdown" style="display: none;">
+    <div class="features-dropdown" id="featuresDropdown" style="display: none;">
       <h3>
         Features
         <button class="close-button" onclick="toggleFeatures()">&times;</button>
       </h3>
       <div class="feature-item">
         <div class="feature-icon">
-          <img src="icons/flex.svg" alt="Flex Puff">
+          <img src="icons/flex.svg" alt="Flex Icon">
         </div>
         <div class="feature-text">
           <span class="feature-label">Flex Puff</span>
-          <span class="feature-value">Experiência personalizada</span>
         </div>
       </div>
       <div class="feature-item">
         <div class="feature-icon">
-          <img src="icons/play.svg" alt="Auto Start">
+          <img src="icons/pause.svg" alt="Pause Icon">
         </div>
         <div class="feature-text">
           <span class="feature-label">Auto Start</span>
-          <span class="feature-value">Início automático</span>
         </div>
       </div>
     </div>
