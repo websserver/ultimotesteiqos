@@ -55,9 +55,9 @@ const models = document.querySelectorAll('.model-container');
 const carousel = document.querySelector('.carousel-container');
 
 // Configuração do carrossel
-const RADIUS = 1.2; // Raio do círculo ajustado para 1.2
+const RADIUS = 1.5; // Raio do círculo ajustado para 1.2
 const ANGLE_STEP = 360; // Ângulo entre cada modelo
-const TRANSITION_DURATION = 1000; // Duração da transição em ms
+const TRANSITION_DURATION = 500; // Duração da transição em ms
 
 // Posições dos modelos no carrossel
 const positions = {
