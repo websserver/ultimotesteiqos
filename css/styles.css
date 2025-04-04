@@ -252,21 +252,37 @@ h1{
   }
 }
 
+/* Animação para as setas de navegação */
+#prev-button.pulse-arrow,
+#next-button.pulse-arrow {
+  animation: pulse 2s infinite;
+}
+
+/* Animação para o botão personalizar */
+.model-info button.pulse-button {
+  animation: pulse 2s infinite;
+}
+
+/* Garantir que os elementos são visíveis durante a animação */
 .pulse-arrow {
-  animation: pulse 2s infinite;
-}
-
-.pulse-button {
-  animation: pulse 2s infinite;
-}
-
-/* Garantir que as setas são visíveis durante a animação */
-.pulse-arrow img {
   opacity: 1 !important;
 }
 
-/* Ajuste para o botão personalizar */
-.pulse-button.btn-personalizar {
-  animation: pulse 2s infinite;
+.pulse-button {
+  opacity: 1 !important;
+}
+
+/* Ajustes para garantir que a animação funcione bem */
+#prev-button,
+#next-button,
+.model-info button {
   transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+/* Manter o hover effect */
+#prev-button:hover,
+#next-button:hover,
+.model-info button:hover {
+  transform: scale(1.1);
 }
