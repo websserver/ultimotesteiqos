@@ -2,11 +2,9 @@
 <html>
   <head>
    <!----push-->
-    <title>IQOS ILUMA i</title>
+    <title>IQOS ILUMA i ONE</title>
     <link rel="icon" type="image/webp" href="icons/favicon-32x32.webp">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
@@ -76,20 +74,6 @@
 
       .close-button:hover {
         background-color: rgba(255, 255, 255, 0.1);
-      }
-
-      .features-container {
-        position: fixed;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 8px;
-        z-index: 100;
-        width: auto;
-        padding-right: 3%;
       }
 
       .feature-item {
@@ -168,6 +152,7 @@
         font-family: 'IQOSSans-Bold', sans-serif;
       }
 
+
       .toggle-features img {
         width: 20px;
         height: 20px;
@@ -188,7 +173,7 @@
       .title-container h1 {
         color: #00A0DC;
         font-family: 'IQOSSans-Bold', sans-serif;
-        font-size: 30px;
+        font-size: 24px;
         margin-bottom: 20px;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
       }
@@ -290,11 +275,33 @@
         transform: translate(-50%, -50%);
         background: rgba(0, 0, 0, 0.8);
         color: white;
-        padding: 20px;
+        padding: 15px 30px;
         border-radius: 10px;
+        font-family: 'IQOSSans-Regular', sans-serif;
+        font-size: 16px;
         text-align: center;
-        display: none;
         z-index: 1000;
+        display: none;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      .features-container {
+        position: fixed;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+        z-index: 100;
+        width: auto;
+        padding-right: 3%;
       }
     </style>
   </head>
@@ -307,43 +314,27 @@
     <div class="frame">
       <img src="iconheader.svg" alt="Frame">
     </div>
-    <img style="margin-top: 18%; width: 116px; padding-bottom: 5%;" id="logo" src="logo iluma.svg" alt="Logo Iluma">
+    <img style="margin-top: 14%; width: 116px; padding-bottom: 5%;" id="logo" src="logo iluma.svg" alt="Logo Iluma">
 
-    <div class="title-container">
-      <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">IQOS ILUMA i</h1>
-    </div>
+   
 
     <div class="features-container">
       <div class="feature-item">
-        <div class="feature-icon">
-          <img src="icons/battery.webp" alt="Bateria">
-        </div>
-        <div class="feature-text">
-          <span class="feature-label">Flex <br> Battery</span>
-        </div>
       </div>
       <div class="feature-item">
         <div class="feature-icon">
           <img src="icons/puff.webp" alt="Puffs">
         </div>
         <div class="feature-text">
-          <span class="feature-label">Flex <br>Puff</span>
+          <span class="feature-label">Flex <br> Puff</span>
         </div>
       </div>
       <div class="feature-item">
         <div class="feature-icon">
-          <img src="icons/pause.webp" alt="Tempo">
+          <img src="icons/inicioautomatico.webp" alt="automatico">
         </div>
         <div class="feature-text">
-          <span class="feature-label">Modo <br> Pausa</span>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">
-          <img src="icons/touch.webp" alt="Touch">
-        </div>
-        <div class="feature-text">
-          <span class="feature-label">Ecrã <br> Tátil</span>
+          <span class="feature-label">Início <br> Automático</span>
         </div>
       </div>
     </div>
@@ -368,7 +359,7 @@
       trackingResetThreshold: 0.3;
       debugUIEnabled: true"
       color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
+      renderer="colorManagement: true, physicallyCorrectLights, alpha: false, hadowMapType: pcfsoft" 
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
       loading-screen="enabled: false">
@@ -380,17 +371,101 @@
         <a-asset-item id="modelo-turquoise" src="modelo3d/modelo2/pastel-turquoise.glb"></a-asset-item>
       </a-assets>
 
-      <a-light type="directional" color="#ffffff" intensity="3" position="0 1 1"></a-light>
+  
 
+    <a-light 
+      type="directional"
+      position="2 4 2"
+      intensity="0.5"
+      color="#ffffff"
+      castShadow="true"
+      shadowCameraTop="4"
+      shadowCameraBottom="-30"
+      shadowCameraLeft="-30"
+      shadowCameraRight="30"
+      shadowMapHeight="4048"
+      shadowMapWidth="4048"
+      shadowBias="-0.001"
+      target="#modelo-navy-3d" >
+    </a-light>
+
+    <a-light 
+      type="directional"
+      position="2 4 2"
+      intensity="0.5"
+      color="#ffffff"
+      castShadow="true"
+      shadowCameraTop="4"
+      shadowCameraBottom="-30"
+      shadowCameraLeft="-30"
+      shadowCameraRight="30"
+      shadowMapHeight="4048"
+      shadowMapWidth="4048"
+      shadowBias="-0.001"
+      target="#modelo-olive-3d" >
+    </a-light>
+
+    <a-light 
+      type="directional"
+      position="2 4 2"
+      intensity="0.5"
+      color="#ffffff"
+      castShadow="true"
+      shadowCameraTop="4"
+      shadowCameraBottom="-30"
+      shadowCameraLeft="-30"
+      shadowCameraRight="30"
+      shadowMapHeight="4048"
+      shadowMapWidth="4048"
+      shadowBias="-0.001"
+      target="#modelo-jacaranda-3d" >
+    </a-light>
+
+    <a-light 
+      type="directional"
+      position="2 4 2"
+      intensity="0.5"
+      color="#ffffff"
+      castShadow="true"
+      shadowCameraTop="4"
+      shadowCameraBottom="-30"
+      shadowCameraLeft="-30"
+      shadowCameraRight="30"
+      shadowMapHeight="4048"
+      shadowMapWidth="4048"
+      shadowBias="-0.001"
+      target="#modelo-rooibos-3d" >
+    </a-light>
+
+    <a-light 
+      type="directional"
+      position="2 4 2"
+      intensity="0.5"
+      color="#ffffff"
+      castShadow="true"
+      shadowCameraTop="4"
+      shadowCameraBottom="-30"
+      shadowCameraLeft="-30"
+      shadowCameraRight="30"
+      shadowMapHeight="4048"
+      shadowMapWidth="4048"
+      shadowBias="-0.001"
+      target="#modelo-turquoise-3d" >
+    </a-light>
+    
+
+
+  
+            
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-entity 
           id="modelo-navy-3d" 
           gltf-model="#modelo-navy"
-          position="0 -0.3 0.1"
+          position="0 -0.5 0.1" 
           rotation="0 0 0" 
-          scale="5 5 5"  
+          scale="5 5 5" 
           class="clickable"
           animation-mixer="loop: repeat"
           animation="property: position; dur: 300; easing: easeOutQuad"
@@ -402,7 +477,7 @@
         <a-entity 
           id="modelo-olive-3d" 
           gltf-model="#modelo-olive"
-          position="0 -0.3 0.1"
+          position="0 -0.5 0.1" 
           rotation="0 0 0" 
           scale="5 5 5" 
           class="clickable"
@@ -416,7 +491,7 @@
         <a-entity 
           id="modelo-jacaranda-3d" 
           gltf-model="#modelo-jacaranda"
-          position="0 -0.3 0.1"
+          position="0 -0.5 0.1"
           rotation="0 0 0" 
           scale="5 5 5" 
           class="clickable"
@@ -430,7 +505,7 @@
         <a-entity 
           id="modelo-rooibos-3d" 
           gltf-model="#modelo-rooibos"
-          position="0 -0.3 0.1"
+          position="0 -0.5 0.1"
           rotation="0 0 0" 
           scale="5 5 5" 
           class="clickable"
@@ -444,9 +519,9 @@
         <a-entity 
           id="modelo-turquoise-3d" 
           gltf-model="#modelo-turquoise"
-          position="0 -0.3 0.1"
+          position="0 -0.5 0.1" 
           rotation="0 0 0" 
-          scale="5 5 5"  
+          scale="5 5 5" 
           class="clickable"
           animation-mixer="loop: repeat"
           animation="property: position; dur: 300; easing: easeOutQuad"
@@ -463,12 +538,17 @@
       Por favor, mantenha a câmara apontada para a imagem.
     </div>
 
+    <div class="title-container">
+      <h1 style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">IQOS ILUMA i ONE</h1>
+    </div>
+
+
     <div class="color-selector">
-      <div class="color-option" style="background-color: #7EC4BC;" data-color="turquoise" onclick="changeColor('turquoise')"></div>
-      <div class="color-option" style="background-color: #2D3339;" data-color="navy" onclick="changeColor('navy')"></div>
-      <div class="color-option" style="background-color: #8B9C3C;" data-color="olive" onclick="changeColor('olive')"></div>
-      <div class="color-option" style="background-color: #8B90C5;" data-color="jacaranda" onclick="changeColor('jacaranda')"></div>
-      <div class="color-option" style="background-color: #B84C39;" data-color="rooibos" onclick="changeColor('rooibos')"></div>
+      <div class="color-option active" style="background-color: #82aaae;" data-color="turquoise" onclick="changeColor('turquoise')"></div>
+      <div class="color-option" style="background-color: #131d2b;" data-color="navy" onclick="changeColor('navy')"></div>
+      <div class="color-option" style="background-color: #0f2e27;" data-color="olive" onclick="changeColor('olive')"></div>
+      <div class="color-option" style="background-color: #898FC8;" data-color="jacaranda" onclick="changeColor('jacaranda')"></div>
+      <div class="color-option" style="background-color: #2d1e27;" data-color="rooibos" onclick="changeColor('rooibos')"></div>
     </div>
     <div class="color-selector-frame"></div>
 
@@ -476,94 +556,83 @@
       const sceneEl = document.querySelector('a-scene');
       const modeloEl = document.querySelector('#modelo-turquoise-3d');
       const target = document.querySelector('a-entity[mindar-image-target]');
-      let currentColor = 'turquoise'; // Variável para rastrear a cor atual
+      let currentColor = 'turquoise';
 
       // Componente para remover transparência
       AFRAME.registerComponent('remove-transparency', {
-      init: function () {
-        this.el.addEventListener('model-loaded', () => {
-          const model = this.el.getObject3D('mesh');
-          if (model) {
-            model.traverse((node) => {
-              if (node.isMesh && node.material) {
-                const materials = Array.isArray(node.material) ? node.material : [node.material];
+        init: function () {
+          this.el.addEventListener('model-loaded', () => {
+            const model = this.el.getObject3D('mesh');
+            if (model) {
+              model.traverse((node) => {
+                if (node.isMesh && node.material) {
+                  const materials = Array.isArray(node.material) ? node.material : [node.material];
+                  materials.forEach((material) => {
+                    material.transparent = false;
+                    material.opacity = 1;
+                    material.depthWrite = true;
+                    material.depthTest = true;
+                    material.blending = THREE.NoBlending;
+                    material.alphaTest = 0.01;
+                    material.side = THREE.DoubleSide;
+                    material.needsUpdate = true;
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
 
-                materials.forEach((material) => {
-                  material.transparent = false;
-                  material.opacity = 1;
-                  material.depthWrite = true;
-                  material.depthTest = true;
-                  material.blending = THREE.NoBlending;
-                  material.alphaTest = 0.01; // ou 0.01 para garantir o corte de fragmentos "fantasmas"
-                  material.side = THREE.DoubleSide; // use FrontSide para melhor desempenho (ou DoubleSide se necessário)
-                  material.needsUpdate = true;
-                });
-              }
-            });
-          }
+      function updateModelVisibility() {
+        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
+          const shouldBeVisible = model.id === `modelo-${currentColor}-3d`;
+          model.object3D.visible = shouldBeVisible;
+          model.setAttribute('visible', shouldBeVisible);
         });
       }
-    });
-
-
- 
-
-      // Debug events com mais detalhes
-      modeloEl.addEventListener('model-loaded', function(event) {
-        console.log('Modelo 3D carregado com sucesso', event);
-        modeloEl.object3D.visible = true;
-        
-        // Forçar atualização da matriz mundial
-        modeloEl.object3D.updateMatrix();
-        modeloEl.object3D.updateMatrixWorld(true);
-      });
-
-      modeloEl.addEventListener('model-error', function(error) {
-        console.error('Erro ao carregar o modelo 3D:', error);
-        // Tentar recarregar o modelo
-        const modelUrl = modeloEl.getAttribute('gltf-model');
-        setTimeout(() => {
-          console.log('Tentando recarregar o modelo...');
-          modeloEl.setAttribute('gltf-model', '');
-          setTimeout(() => {
-            modeloEl.setAttribute('gltf-model', modelUrl);
-          }, 1000);
-        }, 2000);
-      });
-
-      sceneEl.addEventListener('arReady', function() {
-        console.log('MindAR está pronto');
-        // Verificar se o modelo está visível
-        console.log('Estado do modelo:', {
-          visible: modeloEl.getAttribute('visible'),
-          object3DVisible: modeloEl.object3D.visible,
-          position: modeloEl.object3D.position,
-          rotation: modeloEl.object3D.rotation,
-          scale: modeloEl.object3D.scale
-        });
-      });
-
-      sceneEl.addEventListener('arError', function(error) {
-        console.error('Erro no MindAR:', error);
-      });
 
       // Target events com mais informações
       target.addEventListener('targetFound', function() {
-        console.log('Marcador encontrado');
-        // Mostra o modelo da cor atual
-        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
-          model.object3D.visible = model.id === `modelo-${currentColor}-3d`;
-        });
+        console.log('Marcador encontrado - Mostrando modelo:', currentColor);
+        updateModelVisibility();
         document.querySelector('.marker-lost-message').style.display = 'none';
       });
 
       target.addEventListener('targetLost', function() {
         console.log('Marcador perdido');
-        // Esconde todos os modelos quando o marcador é perdido
         document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
           model.object3D.visible = false;
+          model.setAttribute('visible', 'false');
         });
         document.querySelector('.marker-lost-message').style.display = 'block';
+      });
+
+      function changeColor(color) {
+        console.log('Mudando cor para:', color);
+        currentColor = color;
+        
+        document.querySelectorAll('.color-option').forEach(option => {
+          option.classList.remove('active');
+        });
+        
+        document.querySelector(`[data-color="${color}"]`).classList.add('active');
+        updateModelVisibility();
+      }
+
+      // Inicialização
+      function initializeScene() {
+        console.log('Inicializando cena com cor:', currentColor);
+        changeColor('turquoise');
+      }
+
+      window.addEventListener('load', function() {
+        setTimeout(initializeScene, 1000);
+      });
+
+      document.querySelector('a-scene').addEventListener('loaded', function () {
+        console.log('A-Frame scene loaded');
+        initializeScene();
       });
 
       AFRAME.registerComponent('gesture-handler-custom', {
@@ -707,63 +776,10 @@
         console.log('Cena carregada - verificando visibilidade');
         modeloEl.object3D.visible = true;
       });
-
-      function changeColor(color) {
-        currentColor = color; // Atualiza a cor atual
-        
-        // Remover classe active de todas as opções
-        document.querySelectorAll('.color-option').forEach(option => {
-          option.classList.remove('active');
-        });
-        
-        // Adicionar classe active à opção selecionada
-        document.querySelector(`[data-color="${color}"]`).classList.add('active');
-        
-        // Esconder todos os modelos
-        document.querySelectorAll('[id^="modelo-"][id$="-3d"]').forEach(model => {
-          model.object3D.visible = false;
-          model.setAttribute('visible', 'false');
-        });
-        
-        // Mostrar o modelo selecionado
-        const selectedModel = document.querySelector(`#modelo-${color}-3d`);
-        if (selectedModel) {
-          selectedModel.object3D.visible = true;
-          selectedModel.setAttribute('visible', 'true');
-        }
-      }
-
-      // Inicializa a cor turquesa quando a página carrega
-      window.addEventListener('load', function() {
-        setTimeout(() => {
-          changeColor('turquoise');
-          // Adiciona a classe active ao botão turquesa
-          document.querySelector('[data-color="turquoise"]').classList.add('active');
-        }, 1000);
-      });
-
-      // Monitora o estado da cena
-      document.querySelector('a-scene').addEventListener('loaded', function () {
-        console.log('A-Frame scene loaded');
-        changeColor('turquoise');
-      });
     </script>
 
-    <script src="js/color-switcher-iluma.js"></script>
     <script src="js/age-verification.js"></script>
-    <script src="js/ilumai.js"></script>
-    <script>
-      // Variável para controlar se a página acabou de ser carregada
-      let paginaAcabouDeCarregar = true;
-      
-      // Adiciona listener para erros de carregamento
-      window.addEventListener('error', function(e) {
-        console.error('Erro global:', e.message);
-        if (e.filename) {
-          console.error('Arquivo:', e.filename);
-        }
-      });
-    </script>
-   
+    <script src="js/ilumaprime-one.js"></script>
+    <script src="js/camara.js"></script>
   </body>
 </html> 
