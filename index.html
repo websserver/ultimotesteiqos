@@ -12,45 +12,23 @@
     <link rel="stylesheet" href="css/orientation.css">
     <script src="js/color-switcher.js"></script>
     <script src="js/age-verification.js"></script>
-    <script>
-      window.addEventListener("pageshow", function (event) {
-        if (event.persisted) {
-          window.location.reload();
-        }
-      });
-
-      // Função para forçar atualização do viewport e layout
-      function forceViewportUpdate() {
-        // Força atualização do viewport
-        const viewport = document.querySelector('meta[name=viewport]');
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
-        
-        // Força reflow do layout
-        document.body.style.display = 'none';
-        document.body.offsetHeight; // Força o reflow
-        document.body.style.display = '';
-
-        // Atualiza a altura da janela
-        document.documentElement.style.height = window.innerHeight + 'px';
-        document.body.style.height = window.innerHeight + 'px';
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      a-scene {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
       }
 
-      // Atualiza quando a orientação muda
-      window.addEventListener('orientationchange', function() {
-        setTimeout(forceViewportUpdate, 300);
-      });
-
-      // Atualiza também quando a janela é redimensionada
-      window.addEventListener('resize', function() {
-        forceViewportUpdate();
-      });
-
-      // Atualiza quando a página carrega
-      window.addEventListener('load', function() {
-        forceViewportUpdate();
-      });
-    </script>
-    <style>
       .marker-lost-message {
         position: fixed;
         top: 50%;
@@ -418,4 +396,62 @@
     document.querySelector('.marker-lost-message').style.display = 'none';
     // Mostrar todos os modelos
   });
+</script>
+<script>
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      window.location.reload();
+    }
+  });
+
+  function forceViewportUpdate() {
+    // Atualiza as dimensões do corpo e da cena
+    const updateDimensions = () => {
+      const scene = document.querySelector('a-scene');
+      const height = window.innerHeight;
+      const width = window.innerWidth;
+      
+      document.body.style.height = `${height}px`;
+      document.body.style.width = `${width}px`;
+      
+      if (scene) {
+        scene.style.height = `${height}px`;
+        scene.style.width = `${width}px`;
+      }
+      
+      // Força reflow
+      document.body.offsetHeight;
+    };
+
+    // Executa imediatamente
+    updateDimensions();
+    
+    // E novamente após um pequeno delay para garantir
+    setTimeout(updateDimensions, 300);
+  }
+
+  // Atualiza quando a orientação muda
+  window.addEventListener('orientationchange', function() {
+    // Primeiro update imediato
+    forceViewportUpdate();
+    
+    // Segundo update após a transição
+    setTimeout(forceViewportUpdate, 300);
+    
+    // Terceiro update para garantir
+    setTimeout(forceViewportUpdate, 600);
+  });
+
+  // Atualiza também quando a janela é redimensionada
+  let resizeTimeout;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(forceViewportUpdate, 100);
+  });
+
+  // Atualiza quando a página carrega
+  window.addEventListener('load', forceViewportUpdate);
+  
+  // Atualiza quando a cena AR é iniciada
+  document.addEventListener('scene-loaded', forceViewportUpdate);
 </script>
