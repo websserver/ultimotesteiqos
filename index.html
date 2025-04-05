@@ -9,6 +9,7 @@
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/orientation.css">
     <script src="js/color-switcher.js"></script>
     <script src="js/age-verification.js"></script>
     <script>
@@ -16,6 +17,22 @@
         if (event.persisted) {
           window.location.reload();
         }
+      });
+
+      window.addEventListener('orientationchange', function() {
+        // Pequeno delay para garantir que a transição de orientação foi completada
+        setTimeout(function() {
+          // Força a atualização do viewport
+          const viewport = document.querySelector('meta[name=viewport]');
+          const originalContent = viewport.getAttribute('content');
+          viewport.setAttribute('content', originalContent);
+          
+          // Força o reflow do layout
+          document.body.style.opacity = 0.99;
+          setTimeout(function() {
+            document.body.style.opacity = 1;
+          }, 10);
+        }, 300);
       });
     </script>
     <style>
@@ -220,6 +237,12 @@
     <div class="overlay-gradient"></div>
     <div class="marker-lost-message">
       Por favor, mantenha a câmara apontada para a imagem.
+    </div>
+
+    <div class="orientation-message">
+      <img src="icons/rotate-device.svg" alt="Rotate device">
+      <h2>Por favor, rode o dispositivo</h2>
+      <p>Esta experiência foi projetada para ser visualizada apenas na orientação vertical (retrato).</p>
     </div>
 
     <div class="frame">
