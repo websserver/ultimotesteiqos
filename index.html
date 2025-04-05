@@ -19,20 +19,35 @@
         }
       });
 
+      // Função para forçar atualização do viewport e layout
+      function forceViewportUpdate() {
+        // Força atualização do viewport
+        const viewport = document.querySelector('meta[name=viewport]');
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        
+        // Força reflow do layout
+        document.body.style.display = 'none';
+        document.body.offsetHeight; // Força o reflow
+        document.body.style.display = '';
+
+        // Atualiza a altura da janela
+        document.documentElement.style.height = window.innerHeight + 'px';
+        document.body.style.height = window.innerHeight + 'px';
+      }
+
+      // Atualiza quando a orientação muda
       window.addEventListener('orientationchange', function() {
-        // Pequeno delay para garantir que a transição de orientação foi completada
-        setTimeout(function() {
-          // Força a atualização do viewport
-          const viewport = document.querySelector('meta[name=viewport]');
-          const originalContent = viewport.getAttribute('content');
-          viewport.setAttribute('content', originalContent);
-          
-          // Força o reflow do layout
-          document.body.style.opacity = 0.99;
-          setTimeout(function() {
-            document.body.style.opacity = 1;
-          }, 10);
-        }, 300);
+        setTimeout(forceViewportUpdate, 300);
+      });
+
+      // Atualiza também quando a janela é redimensionada
+      window.addEventListener('resize', function() {
+        forceViewportUpdate();
+      });
+
+      // Atualiza quando a página carrega
+      window.addEventListener('load', function() {
+        forceViewportUpdate();
       });
     </script>
     <style>
