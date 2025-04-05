@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/orientation.css">
     <script>
       window.addEventListener("pageshow", function (event) {
         if (event.persisted) {
@@ -551,6 +552,12 @@
       <div class="color-option" style="background-color: #2d1e27;" data-color="rooibos" onclick="changeColor('rooibos')"></div>
     </div>
     <div class="color-selector-frame"></div>
+
+    <div class="orientation-message">
+      <img src="icons/rotate-device.svg" alt="Rotate device">
+      <h2>Por favor, rode o dispositivo</h2>
+      <p>Esta experiência foi projetada para ser visualizada apenas na orientação vertical (retrato).</p>
+    </div>
 
     <script>
       const sceneEl = document.querySelector('a-scene');

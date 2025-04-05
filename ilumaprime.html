@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
     <script src="js/age-verification.js"></script>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/orientation.css">
     <script>
       window.addEventListener("pageshow", function (event) {
         if (event.persisted) {
@@ -585,6 +586,12 @@
     <div class="overlay-gradient"></div>
     <div class="marker-lost-message">
       Por favor, mantenha a câmara apontada para a imagem.
+    </div>
+
+    <div class="orientation-message">
+      <img src="icons/rotate-device.svg" alt="Rotate device">
+      <h2>Por favor, rode o dispositivo</h2>
+      <p>Esta experiência foi projetada para ser visualizada apenas na orientação vertical (retrato).</p>
     </div>
 
     <script>
